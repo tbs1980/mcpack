@@ -50,16 +50,15 @@ BOOST_AUTO_TEST_CASE(classic_hmc_init)
 
 	IntegratorType Lp(G,K);
 
-	HMCType hmc(Lp,eps,Nsteps,12346l);
+	HMCType hmc(Lp,eps,Nsteps,12346l,q0);
 
 	const IndexType NSamples=1000;
 
 	RealMatrixType Samples(NSamples,N);
 
-	RealType AccRate=0;
-	hmc.Generate(q0,Samples,AccRate);
+	hmc.Generate(Samples);
 	
-	std::cout<<"Acceptace Rate= "<<AccRate<<std::endl;
+	std::cout<<"Acceptace Rate= "<<hmc.GetAcceptanceRate()<<std::endl;
 	
 	mcpack::utils::WriteMatrix2TextFile(Samples,"./samples.dat",6,",");
 }

@@ -34,12 +34,13 @@ namespace mcpack { namespace hamiltonian {
 		typedef typename mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
 		typedef typename RandVarGenType::SeedType SeedType;
 
-		ClassicHMC(DiscretisationType const & Discr,RealType eps,IndexType NSteps,SeedType seed)
-		:m_Discr(Discr),m_eps(eps),m_NSteps(NSteps),m_RVGen(seed)
+		ClassicHMC(DiscretisationType const & Discr,RealType eps,IndexType NSteps,
+			SeedType seed,RealVectorType const& q0)
+		:m_Discr(Discr),m_eps(eps),m_NSteps(NSteps),m_RVGen(seed),m_q0(q0)
 		{
 		}
 
-		void Generate(RealVectorType & q0,RealMatrixType & Samples,RealType & AccRate)
+		void Generate(RealMatrixType & Samples)
 		{
 			IndexType NSamples=Samples.rows();
 			IndexType NDim=Samples.cols();
@@ -64,26 +65,31 @@ namespace mcpack { namespace hamiltonian {
 				}
 
 				RealType dH=0;
-				RealVectorType q1(q0);
+				RealVectorType q1(m_q0);
 				m_Discr.Integrate(q1,p0,eps,NSteps,dH);
 
 				u=m_eps*m_RVGen.Uniform();
 				if(u < exp(-dH))
 				{
-					q0=q1;
-					Samples.row(samp)=q0;
+					m_q0=q1;
+					Samples.row(samp)=m_q0;
 					++samp;
 				}
 				
 				iter++;
 			}
 
-			AccRate=(RealType)samp/(RealType)iter;
+			m_AccRate=(RealType)samp/(RealType)iter;
 		}
 
-		void GetRandState(std::stringstream & RNGstate)
+		void GetRandState(std::stringstream & RNGstate) const
 		{
 			m_RVGen.GetState(RNGstate);
+		}
+		
+		RealType GetAcceptanceRate(void) const
+		{
+			return m_AccRate;
 		}
 
 	private:
@@ -91,6 +97,8 @@ namespace mcpack { namespace hamiltonian {
 		RealType m_eps;
 		IndexType m_NSteps;
 		RandVarGenType m_RVGen;
+		RealVectorType m_q0;
+		RealType m_AccRate;
 	};
 
 

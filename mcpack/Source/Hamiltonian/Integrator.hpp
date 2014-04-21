@@ -79,14 +79,21 @@ namespace mcpack { namespace hamiltonian {
 
 			RealType h0=-(valG+valK);
 
+			//take half a step 
+			p=p+0.5*eps*dq;
+
 			for(IndexType i=0;i<NSteps;++i)
 			{
-				p=p+0.5*eps*dq;
+				//now full steps
 				m_K.Evaluate(p,valK,dp);
 				q=q-eps*dp;
 				m_G.Evaluate(q,valG,dq);
-				p=p+0.5*eps*dq;				
+				p=p+eps*dq;				
 			}
+			
+			//move the momentum back half a step
+			p=p-0.5*eps*dq;
+			
 			m_K.Evaluate(p,valK,dp);
 			RealType h1=-(valG+valK);
 			deltaH=h1-h0;
