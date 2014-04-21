@@ -28,31 +28,37 @@ namespace mcpack { namespace hamiltonian {
 	{
 	public:
 		static_assert(std::is_floating_point<_RealType>::value,
-			"Parameter should be a floating point type");
+			"PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
 		typedef _RealType RealType;
 		typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, 1> RealVectorType;
 		typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, Eigen::Dynamic> RealMatrixType;
 		typedef typename RealVectorType::Index IndexType;
-		
+		typedef typename Eigen::LLT<RealMatrixType> LLTType;
+
 		explicit GaussKineticEnergy(RealMatrixType const& MInv)
-		:m_MInv(MInv)
+		:m_MInv(MInv),m_Chol(MInv.rows(),MInv.cols())
 		{
 			MCPACK_ASSERT(MInv.rows()==MInv.cols(),"Mass^-1 should be a square matrix: rows==cols");
+
+			//find the inverse of the matrix
+			LLTType lltOfMInv(m_MInv);
+
+			MCPACK_ASSERT(lltOfMInv.info()==Eigen::Success,"Mass^-1 is not positive definite");
+
+			m_Chol=lltOfMInv.matrixL();
 		}
 		
-		~GaussKineticEnergy(){}
-		
-		GaussKineticEnergy(GaussKineticEnergy const & other)
+		void Evaluate(RealVectorType const & p, RealType & val,RealVectorType & dp) const
 		{
-			m_MInv=other.m_MInv;
+			MCPACK_ASSERT(p.rows()==dp.rows(),"p and dp shoudl have the same dimensionality");
+			dp=-m_MInv*p;
+			val=0.5*p.transpose()*dp;
 		}
-		
-		void Evaluate(RealVectorType const & p, RealType & val,RealVectorType & g) const
+
+		void Rotate(RealVectorType & p) const
 		{
-			MCPACK_ASSERT(p.rows()==g.rows(),"p and g shoudl have the same dimensionality");
-			g=-m_MInv*p;
-			val=0.5*p.transpose()*g;
+			p=m_Chol*p;
 		}
 
 		IndexType NDim(void) const
@@ -62,6 +68,7 @@ namespace mcpack { namespace hamiltonian {
 
 	private:
 		RealMatrixType m_MInv;
+		RealMatrixType m_Chol;
 	};
 
 	template<typename _RealType>
@@ -69,29 +76,36 @@ namespace mcpack { namespace hamiltonian {
 	{
 	public:
 		static_assert(std::is_floating_point<_RealType>::value,
-			"Parameter should be a floating point type");
+			"PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
 		typedef _RealType RealType;
 		typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, 1> RealVectorType;
 		typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, 1> RealDiagMatrixType;
 		typedef typename RealDiagMatrixType::Index IndexType;
+
+		GaussKineticEnergyDiag()
+		:m_MInv((IndexType)0)
+		{
+
+		}
 		
 		explicit GaussKineticEnergyDiag(RealDiagMatrixType const& MInv)
 		:m_MInv(MInv)
 		{}
 		
-		~GaussKineticEnergyDiag(){}
-		
-		GaussKineticEnergyDiag(GaussKineticEnergyDiag const & other)
+		void Evaluate(RealVectorType const & p, RealType & val,RealVectorType & dp) const
 		{
-			m_MInv=other.m_MInv;
+			MCPACK_ASSERT(p.rows()==dp.rows(),"p and dp shoudl have the same dimensionality");
+			dp=-m_MInv.cwiseProduct(p);
+			val=0.5*p.transpose()*dp;		
 		}
-		
-		void Evaluate(RealVectorType const & p, RealType & val,RealVectorType & g) const
+
+		void Rotate(RealVectorType & p) const
 		{
-			MCPACK_ASSERT(p.rows()==g.rows(),"p and g shoudl have the same dimensionality");
-			g=-m_MInv.cwiseProduct(p);
-			val=0.5*p.transpose()*g;		
+			for(IndexType i=0;i<p.rows();++i)
+			{
+				p(i)*=sqrt(m_MInv(i));
+			}
 		}
 
 		IndexType NDim(void) const

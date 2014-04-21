@@ -22,25 +22,18 @@
 
 #include <cmath>
 #include <sstream>
-#include <string>
-#include <fstream>
 #include <iostream>
-#include <iomanip>
 #include <limits>
 #include <type_traits>
 #include <type_traits>
 #include <typeinfo>
 #include <random>
-#include <algorithm> 
-#include <exception>
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
 
 #include "Source/Utils/Macros.hpp"
 #include "Source/Utils/Random.hpp"
-#include "Source/Utils/GaussLogPost.hpp"
-#include "Source/Utils/TextDataIO.hpp"
 
 #include "Source/Hamiltonian/KineticEnergy.hpp"
 #include "Source/Hamiltonian/Integrator.hpp"

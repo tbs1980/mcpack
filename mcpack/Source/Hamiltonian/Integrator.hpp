@@ -1,3 +1,22 @@
+/* 
+* 
+* Copyright (C) 2014 Sreekumar Thaithara Balan
+* 
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 3 of the License, or (at
+* your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+*/
+
 #ifndef MCPACK_INTEGRATOR_HPP
 #define MCPACK_INTEGRATOR_HPP
 
@@ -10,74 +29,78 @@ namespace mcpack { namespace hamiltonian {
 		typedef _PotEngType PotEngType;
 		typedef _KinEngType KinEngType;
 
-		static_assert(typeid(PotEngType::RealType)==typeid(KinEngType::RealType),
-			"Parameter should be a floating point type");
-
 		typedef typename PotEngType::RealType RealType;
-		typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, 1> RealVectorType;
+		typedef typename PotEngType::RealVectorType RealVectorType;
 		typedef typename RealVectorType::Index IndexType;
 
-		LeapFrog(PotEngType const & pe,KinEngType const& ke,RealType eps,IndexType N)
-		:m_pe(pe),m_ke(ke),m_eps(eps),m_N(N)
-		{
-			MCPACK_ASSERT(m_pe.NDim()==m_ke.NDim(),
-				"Pot-Energy and Kin-Energy objects should have the same dimensionality.");
-			MCPACK_ASSERT(m_eps>0 and m_eps <2,"For stability of the LeapFrog, we require 0<eps<2");
-			MCPACK_ASSERT(m_N>0,"Number of LeapFrog steps should be a positive integer.");
-		}
-		
-		~LeapFrog(){}
-
-		LeapFrog(LeapFrog const & other)
-		{
-			m_pe=other.m_pe;
-			m_ke=other.m_ke;
-		}
-		
-		void Integrate(RealVectorType & x,RealVectorType & p) const
-		{
-			MCPACK_ASSERT(x.rows()==p.rows(),
-				"position and momentum should have the same number of dimensions");
-			
-			const IndexType N=x.rows();
-			RealVectorType q=RealVectorType::Zero(N);
-			RealVectorType g=RealVectorType::Zero(N);
-			RealType valp=0;
-			RealType valk=0;
-			m_pe.Evaluate(x,valp,g);
-			m_ke.Evaluate(p,valk,q);
-
-			for(IndexType i=0;i<N;++i)
-			{
-				RealVectorType pe2=p+0.5*g;
-				m_ke.Evaluate(pe2,valk,q);
-				x=x-q;
-				m_pe.Evaluate(x,valp,g);
-				p=pe2+0.5*g;				
-			}
-		}
-
-		void SetEps(RealType eps)
-		{
-			MCPACK_ASSERT(eps>0 and eps <2,"For stability of the LeapFrog, we require 0<eps<2");
-			m_eps=eps;
-		}
-
-		void SetN(IndexType N)
-		{
-			MCPACK_ASSERT(N>0,"Number of LeapFrog steps should be a positive integer.");
-			m_N=N;
-		}
-		
 	private:
-		 PotEngType m_pe;
-		 KinEngType m_ke;
-		 RealType m_eps;
-		 RealType m_N;
+		typedef typename KinEngType::RealType RealTypeKE;
+		typedef typename KinEngType::RealVectorType RealVectorTypeKE;
+
+		static_assert(std::is_floating_point<RealType>::value,
+			"PARAMETER SHOULD BE A FLOATING POINT TYPE");
+
+		static_assert(std::is_same<RealType,RealTypeKE>::value,
+			"POTENTIAL ENERGY AND KINTETIC ENERGY SHOULD SHOULD HAVE THE SAME FLOATING POINT TYPE");
+
+		static_assert(std::is_same<RealVectorType,RealVectorTypeKE>::value,
+			"POTENTIAL ENERGY AND KINTETIC ENERGY SHOULD SHOULD HAVE THE SAME FLOATING POINT TYPE");
+	public:
+
+		LeapFrog(PotEngType const & G,KinEngType const& K)
+		:m_G(G),m_K(K)
+		{
+			MCPACK_ASSERT(m_G.NDim()==m_K.NDim(),
+				"Pot-Energy and Kin-Energy objects should have the same dimensionality.");
+		}
 		
+		void Integrate(RealVectorType & q,RealVectorType & p,const RealType eps,
+			const IndexType NSteps,RealType & deltaH) const
+		{
+			MCPACK_ASSERT(q.rows()==p.rows(),
+				"position and momentum should have the same number of dimensions");
+			MCPACK_ASSERT(q.rows()==m_G.NDim(),
+				"position and momentum should have the same number of dimensions");
+
+			MCPACK_ASSERT(eps>0 and eps <2,"For stability of the LeapFrog, we require 0<eps<2");
+			
+			if(NSteps==0) return;
+			
+			const IndexType N=q.rows();
+
+			m_K.Rotate(p);
+
+			RealVectorType dp=RealVectorType::Zero(N);
+			RealVectorType dq=RealVectorType::Zero(N);
+			RealType valG=0;
+			RealType valK=0;
+			m_G.Evaluate(q,valG,dq);
+			m_K.Evaluate(p,valK,dp);
+
+			RealType h0=-(valG+valK);
+
+			for(IndexType i=0;i<NSteps;++i)
+			{
+				p=p+0.5*eps*dq;
+				m_K.Evaluate(p,valK,dp);
+				q=q-eps*dp;
+				m_G.Evaluate(q,valG,dq);
+				p=p+0.5*eps*dq;				
+			}
+			m_K.Evaluate(p,valK,dp);
+			RealType h1=-(valG+valK);
+			deltaH=h1-h0;
+		}
+
+		IndexType NDim(void) const
+		{
+			return m_G.NDim();
+		}
+
+	private:
+		PotEngType m_G;
+		KinEngType m_K;
 	};
-
-
 
 } //namespace hamiltonian
 } //namespace mcpack

@@ -1,0 +1,90 @@
+% 
+% 
+% Copyright (C) 2014 Sreekumar Thaithara Balan
+% 
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 3 of the License, or (at
+% your option) any later version.
+% 
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+%
+
+\section{Hamiltonian Monte Carlo}
+Given the Hamiltonian $H(p,q)$, the equations of motion are
+\begin{eqnarray}
+\label{eqn:hmc_eqn_of_motion}
+\frac{dq_i}{dt} &=& \frac{\partial H}{\partial p_i}, \\
+\frac{dp_i}{dt} &=& -\frac{\partial H}{\partial q_i}.
+\end{eqnarray}
+Let
+\begin{equation}
+H(p,q) = \Psi(q) + \Phi(p).
+\end{equation}
+Then Equation~\ref{eqn:hmc_eqn_of_motion} becomes
+\begin{eqnarray}
+\label{eqn:hmc_deriv_psi_phi}
+\frac{dq_i}{dt} &=&  \frac{\partial \Phi(p)}{\partial p_i}, \\
+\frac{dp_i}{dt} &=& -\,\frac{\partial \Psi(q)}{\partial q_i}.
+\end{eqnarray}
+
+\subsection{Discretizing Hamilton's equations}
+
+\subsubsection{The leapfrog method}
+These equations can be written as
+\begin{eqnarray}
+\label{eqn:hmc_leap_frog_def}
+p_i (t+ \epsilon/2) &=& p_i(t) + (\epsilon/2) \frac{dp_i}{dt} \Big\vert_{t} \\
+q_i (t+\epsilon) &=& q_i(t) + \epsilon \frac{dq_i}{dt} \Big\vert_{t+ \epsilon/2} \\
+p_i (t+\epsilon) &=& p_i (t+ \epsilon/2) + (\epsilon/2) \frac{dp_i}{dt} \Big\vert_{t+\epsilon}
+\end{eqnarray}
+Now substituting Equation~\ref{eqn:hmc_deriv_psi_phi}, into Equation~\ref{eqn:hmc_leap_frog_def} we get
+\begin{eqnarray}
+\label{eqn:hmc_leap_frog_phi_psi}
+p_i (t+ \epsilon/2) &=& p_i(t) - (\epsilon/2) \frac{\partial \Psi(q)}{\partial q_i} \Big\vert_{t} \\
+q_i (t+\epsilon) &=& q_i(t) + \epsilon\frac{\partial \Phi(p)}{\partial p_i} \Big\vert_{t+ \epsilon/2} \\
+p_i (t+\epsilon) &=& p_i (t+ \epsilon/2) - 
+	(\epsilon/2) \frac{\partial \Psi(q)}{\partial q_i} \Big\vert_{t+\epsilon}
+\end{eqnarray}
+Now consider a potentials of the form of Gaussian given by
+\begin{eqnarray}
+\Phi(p) = -K(p) &=& \frac{1}{2} p^T M^{-1} p \\
+\Psi(q) = -G(q) &=& \frac{1}{2} (\mu - q)^T\Sigma^{-1}(\mu - q)
+\end{eqnarray}
+so that
+\begin{eqnarray}
+\label{eqn:hmc_def_K_G}
+\frac{\partial \Phi(p)}{\partial p_i} &=& \frac{-\partial K(p)}{\partial p_i} = M^{-1}p\\
+\frac{\partial \Psi(q)}{\partial q_i} &=& \frac{-\partial G(q)}{\partial q_i} = -\Sigma^{-1}(\mu - q)
+\end{eqnarray}
+The leapfrog Equations~\ref{eqn:hmc_leap_frog_phi_psi} becomes
+\begin{eqnarray}
+p_i (t+ \epsilon/2) &=& p_i(t) + (\epsilon/2) \frac{\partial G(q)}{\partial q_i} \Big\vert_{t} \\
+q_i (t+\epsilon) &=& q_i(t) - \frac{\partial K(p)}{\partial p_i} \Big\vert_{t+ \epsilon/2} \\
+p_i (t+\epsilon) &=& p_i (t+ \epsilon/2) + 
+	(\epsilon/2) \frac{\partial G(q)}{\partial q_i} \Big\vert_{t+\epsilon}
+\end{eqnarray}
+and by making the substitution from Equation~\ref{eqn:hmc_def_K_G}
+\begin{eqnarray}
+p_i (t+ \epsilon/2) &=& p_i(t) + (\epsilon/2)\Sigma^{-1}(\mu - q(t)) \\
+q_i (t+\epsilon) &=& q_i(t) + \epsilon M^{-1}p(t+ \epsilon/2) \\
+p_i (t+\epsilon) &=& p_i(t+ \epsilon/2) + (\epsilon/2)\Sigma^{-1}(\mu - q(t+ \epsilon))
+\end{eqnarray}
+Finally for special case where $M^{-1}=\Sigma^{-1}=I$ and $\mu=0$, we have
+\begin{eqnarray}
+p_i (t+ \epsilon/2) &=& p_i(t) - (\epsilon/2)q(t) \\
+q_i (t+\epsilon) &=& q_i(t) + \epsilon\,p(t+ \epsilon/2) \\
+p_i (t+\epsilon) &=& p_i(t+ \epsilon/2) - (\epsilon/2)q(t+ \epsilon)
+\end{eqnarray}
+and can be further simplyfied to 
+\begin{eqnarray}
+q_i (t+\epsilon) &=& q_i(t) + \epsilon\,p_i(t) -  (\epsilon^2/2)q(t)\\
+p_i (t+\epsilon) &=& \left(1 - \epsilon^2/2\right)p_i(t) + \left( \epsilon^3/4 -\epsilon \right)q(t)\\
+\end{eqnarray}

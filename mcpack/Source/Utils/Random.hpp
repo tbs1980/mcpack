@@ -35,6 +35,7 @@ namespace mcpack{ namespace utils {
 		typedef std::mt19937_64 EngineType;
 		typedef EngineType::result_type SeedType;
 		typedef std::normal_distribution<RealType> NormDistType;
+		typedef std::uniform_real_distribution<RealType> UniDistType;
 		
 		RandomVariateGenerator(SeedType seed=0)
 		{
@@ -55,10 +56,21 @@ namespace mcpack{ namespace utils {
 		{
 			return m_norm(m_eng);
 		}
+
+		ResultType Uniform()
+		{
+			return m_uni(m_eng);
+		}
+
+		void GetState(std::stringstream & state)
+		{
+			state<<m_eng;
+		}
 		
 	private:
 		EngineType m_eng;
 		NormDistType m_norm;
+		UniDistType m_uni;
 	};
 	
 }//namespace utils
