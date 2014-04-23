@@ -45,5 +45,8 @@
 #include "Source/Hamiltonian/KineticEnergy.hpp"
 #include "Source/Hamiltonian/Integrator.hpp"
 #include "Source/Hamiltonian/ClassicHMC.hpp"
+#include "Source/Hamiltonian/IO.hpp"
+#include "Source/Hamiltonian/RuntimeControl.hpp"
+#include "Source/Hamiltonian/Sampler.hpp"
 
 #endif //MCPACK_COREHEADERS_HPP

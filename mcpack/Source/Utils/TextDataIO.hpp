@@ -220,7 +220,8 @@ namespace mcpack{ namespace utils {
 	//A function to write matrix into file
 	//only works with Eigen as we use rows() and cols() functions
 	template<class realMatrixType>
-  	void WriteMatrix2TextFile(realMatrixType const & mat,std::string fileName,unsigned precision,std::string separation,bool append)
+  	void WriteMatrix2TextFile(realMatrixType const & mat,std::string fileName,
+  		unsigned precision,std::string separation)
   	{
    		std::ofstream file;
    		file.open(fileName.c_str(),std::ios::trunc);

@@ -66,3 +66,11 @@ add_test(TestIntegration Integration)
 add_executable(ClassicHMC ClassicHMC.cpp)
 target_link_libraries(ClassicHMC ${Boost_LIBRARIES})
 add_test(TestClassicHMC ClassicHMC)
+
+add_executable(RuntimeControl RuntimeControl.cpp)
+target_link_libraries(RuntimeControl ${Boost_LIBRARIES})
+add_test(TestRuntimeControl RuntimeControl)
+
+add_executable(IO IO.cpp)
+target_link_libraries(IO ${Boost_LIBRARIES})
+add_test(TestIO IO)
