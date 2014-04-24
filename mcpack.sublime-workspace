@@ -4,12 +4,20 @@
 		"selected_items":
 		[
 			[
-				"inc",
-				"include"
+				"Rea",
+				"RealType"
+			],
+			[
+				"In",
+				"IndexType"
 			],
 			[
 				"Ma",
-				"MatrixType"
+				"RealMatrixType"
+			],
+			[
+				"inc",
+				"include"
 			],
 			[
 				"m_",
@@ -18,10 +26,6 @@
 			[
 				"Index",
 				"IndexType"
-			],
-			[
-				"In",
-				"Index"
 			]
 		]
 	},
@@ -31,31 +35,7 @@
 			"file": "mcpack/Source/Hamiltonian/Sampler.hpp",
 			"settings":
 			{
-				"buffer_size": 866,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "mcpack/Source/Hamiltonian/ClassicHMC.hpp",
-			"settings":
-			{
-				"buffer_size": 2871,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "mcpack/Source/Utils/TextDataIO.hpp",
-			"settings":
-			{
-				"buffer_size": 6942,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "mcpack/Source/Hamiltonian/IO.hpp",
-			"settings":
-			{
-				"buffer_size": 1292,
+				"buffer_size": 1634,
 				"line_ending": "Unix"
 			}
 		}
@@ -63,17 +43,34 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 0.0,
+		"height": 66.0,
 		"selected_items":
 		[
+			[
+				"Package Control: in",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: install",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: In",
+				"Package Control: Install Package"
+			]
 		],
-		"width": 0.0
+		"width": 400.0
 	},
 	"console":
 	{
-		"height": 0.0,
+		"height": 118.0,
 		"history":
 		[
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
 		]
 	},
 	"distraction_free":
@@ -87,18 +84,31 @@
 	},
 	"file_history":
 	[
-		"/arxiv/projects/repository/mcpack/mcpack/Source/Diagnostics/FiniteSamples.hpp",
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/IO.hpp",
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/IO.cpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Utils/TextDataIO.hpp",
-		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/ClassicHMC.cpp",
-		"/arxiv/projects/repository/mcpack/mcpack/CoreHeaders.hpp",
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/RuntimeControl.cpp",
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/CMakeLists.txt",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/Sampler.hpp",
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/ClassicHMC.cpp",
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/RuntimeControl.hpp",
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/Integration.cpp",
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/KineticEnergy.cpp",
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Utils/GaussLogPost.hpp",
+		"/arxiv/projects/repository/mcpack/tests/CMakeLists.txt",
+		"/arxiv/projects/repository/mcpack/mcpack/CoreHeaders.hpp",
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Diagnostics/FiniteSamples.hpp",
+		"/arxiv/projects/repository/mcpack/tests/Diagnostics/FiniteSamples.cpp",
+		"/arxiv/projects/repository/mcpack/tests/Diagnostics/CMakeLists.txt",
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/ClassicHMC.hpp",
+		"/arxiv/projects/repository/mcpack/CMakeLists.txt",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/KineticEnergy.hpp",
 		"/arxiv/projects/repository/mcpack/.gitignore",
 		"/arxiv/projects/repository/mcpack/mcpack.sublime-project"
 	],
 	"find":
 	{
-		"height": 0.0
+		"height": 22.0
 	},
 	"find_in_files":
 	{
@@ -112,6 +122,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"add_subdirectory",
+			"\n	"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -129,7 +141,7 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -138,102 +150,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 866,
+						"buffer_size": 1634,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								647,
-								647
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "mcpack/Source/Hamiltonian/ClassicHMC.hpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2871,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2471,
-								2471
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "mcpack/Source/Utils/TextDataIO.hpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 6942,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5373,
-								5373
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 2801.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "mcpack/Source/Hamiltonian/IO.hpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1292,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								765,
-								765
+								307,
+								307
 							]
 						],
 						"settings":
@@ -253,7 +178,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 0.0
+		"height": 22.0
 	},
 	"input":
 	{
@@ -289,7 +214,7 @@
 	"project": "mcpack.sublime-project",
 	"replace":
 	{
-		"height": 0.0
+		"height": 40.0
 	},
 	"save_all_on_build": true,
 	"select_file":
