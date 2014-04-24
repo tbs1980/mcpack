@@ -31,12 +31,13 @@ BOOST_AUTO_TEST_CASE(finite_samples)
 
 	const IndexType NParas=10;
 	const IndexType NSamples=1000;
+	const IndexType NBurn=200;
 	const IndexType PacketSize=100;
-	RCType runctrl(NSamples,PacketSize);
+	RCType runctrl(NSamples,PacketSize,NBurn);
 
 	BOOST_REQUIRE(runctrl.Continue());
 
-	for(IndexType i=0;i<NSamples/PacketSize-1;++i)
+	for(IndexType i=0;i<(NSamples+NBurn)/PacketSize-1;++i)
 	{
 		RealMatrixType Samples=RealMatrixType::Random(PacketSize,NParas);
 		runctrl.Save(Samples);

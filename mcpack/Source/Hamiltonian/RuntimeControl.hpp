@@ -31,27 +31,40 @@ namespace mcpack { namespace hamiltonian {
 		typedef _MatrixType MatrixType;
 		typedef typename MatrixType::Index IndexType;
 
-		explicit RunCtrl_FiniteSamples(IndexType const MaxSamples,IndexType const PacketSize)
-		:m_NumSamples(0),m_MaxSamples(MaxSamples),m_PacketSize(PacketSize)
+		RunCtrl_FiniteSamples(IndexType const NumSamples, IndexType const PacketSize,
+			IndexType const NumBurn)
+		:m_Samples(0),m_NumSamples(NumSamples),m_PacketSize(PacketSize),
+			m_Burn(0),m_NumBurn(NumBurn)
 		{
-			MCPACK_ASSERT(MaxSamples>0,"Maximum number of samples should be a positive integer");
+			MCPACK_ASSERT(m_NumSamples>0,"Maximum number of samples should be a positive integer");
+			MCPACK_ASSERT(m_NumBurn>0,"Number of samples to be burned should be a positive integer");
+			MCPACK_ASSERT(m_NumBurn<m_NumSamples,"NumBurn should be < MaxSamples");
 		}
 
 		bool Continue() const
 		{
-			return m_NumSamples >= m_MaxSamples ? false : true;
+			return m_Samples >= m_NumSamples ? false : true;
 		}
 
 		void Save(MatrixType const & Samples)
 		{
 			IndexType n=Samples.rows();
-			m_NumSamples+=n;
+			if(m_Burn >= m_NumBurn)
+			{
+				m_Samples+=n;
+			}
+			else
+			{
+				m_Burn+=n;
+			}
 		}
 
 	private:
+		IndexType m_Samples;
 		IndexType m_NumSamples;
-		IndexType m_MaxSamples;
 		IndexType m_PacketSize;
+		IndexType m_Burn;
+		IndexType m_NumBurn;
 	};
 
 }
