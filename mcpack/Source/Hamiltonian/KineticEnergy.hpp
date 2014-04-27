@@ -36,6 +36,12 @@ namespace mcpack { namespace hamiltonian {
 		typedef typename RealVectorType::Index IndexType;
 		typedef typename Eigen::LLT<RealMatrixType> LLTType;
 
+		GaussKineticEnergy()
+		:m_MInv(0,0)
+		{
+
+		}
+
 		explicit GaussKineticEnergy(RealMatrixType const& MInv)
 		:m_MInv(MInv),m_Chol(MInv.rows(),MInv.cols())
 		{

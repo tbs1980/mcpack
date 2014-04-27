@@ -62,7 +62,7 @@ namespace mcpack{ namespace utils {
 			return m_uni(m_eng);
 		}
 
-		void GetState(std::stringstream & state)
+		void GetState(std::stringstream & state) const
 		{
 			state<<m_eng;
 		}

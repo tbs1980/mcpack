@@ -15,6 +15,10 @@ namespace mcpack { namespace utils {
 		typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, Eigen::Dynamic> RealMatrixType;
 		typedef typename RealMatrixType::Index IndexType;
 
+		GaussPotentialEnergy()
+		:m_mu(0,0),m_SigmaInv(0,0)
+		{}
+
 		GaussPotentialEnergy(RealMatrixType const& mu,RealMatrixType const& SigmaInv)
 		:m_mu(mu),m_SigmaInv(SigmaInv)
 		{

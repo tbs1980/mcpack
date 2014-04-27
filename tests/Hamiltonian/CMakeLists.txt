@@ -74,3 +74,7 @@ add_test(TestRuntimeControl RuntimeControl)
 add_executable(IO IO.cpp)
 target_link_libraries(IO ${Boost_LIBRARIES})
 add_test(TestIO IO)
+
+add_executable(Sampler Sampler.cpp)
+target_link_libraries(Sampler ${Boost_LIBRARIES})
+add_test(TestSampler Sampler)

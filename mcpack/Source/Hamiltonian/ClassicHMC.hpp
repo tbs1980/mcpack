@@ -34,6 +34,10 @@ namespace mcpack { namespace hamiltonian {
 		typedef typename mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
 		typedef typename RandVarGenType::SeedType SeedType;
 
+		ClassicHMC()
+		:m_eps(0),m_NSteps(0),m_q0(0,0)
+		{}
+
 		ClassicHMC(DiscretisationType const & Discr,RealType eps,IndexType NSteps,
 			SeedType seed,RealVectorType const& q0)
 		:m_Discr(Discr),m_eps(eps),m_NSteps(NSteps),m_RVGen(seed),m_q0(q0)

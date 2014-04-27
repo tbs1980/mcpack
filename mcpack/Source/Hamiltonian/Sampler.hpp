@@ -22,40 +22,50 @@
 
 namespace mcpack{ namespace hamiltonian{
 
-	template<class _Engine,class _IOType,class _DiagType>
+	template<class _Engine,class _IOType,class _RunCtrlType>
 	class Sampler
 	{
 	public:
 		typedef _Engine EngineType;
 		typedef _IOType IOType;
-		typedef _DiagType DiagType;
+		typedef _RunCtrlType RunCtrlType;
 
 		typedef typename EngineType::RealMatrixType RealMatrixType;
 		
-		Sampler(EngineType const & Eng,IOType const& IO,DiagType const& Diag)
-		:m_Eng(Eng),m_IO(IO),m_Diag(Diag)
+		Sampler(EngineType const & Eng,IOType const& IO,RunCtrlType const& RunCtrl)
+		:m_Eng(Eng),m_IO(IO),m_RunCtrl(RunCtrl)
 		{
-			m_Diag.Load();
+			//m_RunCtrl.Load();
 		}
 
 		void Run()
 		{
-			RealMatrixType Samples(100,10);
+			RealMatrixType Samples(m_RunCtrl.PacketSize(),m_RunCtrl.NumParas());
 			std::stringstream RandState;
 
-			while(m_Diag.Continue())
+			while(m_RunCtrl.Continue())
 			{
 				m_Eng.Generate(Samples);
 				m_Eng.GetRandState(RandState);
-				m_Diag.Save(Samples,RandState);
+				SaveRandState(RandState);
+				m_RunCtrl.Add(Samples);
 				m_IO.Write(Samples);
 			}		
+		}
+
+		void SaveRandState(std::stringstream const & rs) const
+		{
+			std::string RngFileName=m_RunCtrl.Root()+std::string(".radnom");
+			std::ofstream RngFile;
+			RngFile.open(RngFileName.c_str(),std::ios::trunc);
+			RngFile<<rs.str()<<std::endl;
+			RngFile.close();
 		}
 		
 	private:
 		EngineType m_Eng;
-		DiagType m_Diag;
 		IOType m_IO;
+		RunCtrlType m_RunCtrl;
 	};
 
 }//namespace hamiltonian

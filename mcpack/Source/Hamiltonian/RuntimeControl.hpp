@@ -31,10 +31,15 @@ namespace mcpack { namespace hamiltonian {
 		typedef _MatrixType MatrixType;
 		typedef typename MatrixType::Index IndexType;
 
-		RunCtrl_FiniteSamples(IndexType const NumSamples, IndexType const PacketSize,
-			IndexType const NumBurn)
-		:m_Samples(0),m_NumSamples(NumSamples),m_PacketSize(PacketSize),
-			m_Burn(0),m_NumBurn(NumBurn)
+		RunCtrl_FiniteSamples()
+		:m_NumParas(0),m_Samples(0),m_NumSamples(0),
+		m_PacketSize(0),m_Burn(0),m_NumBurn(0)
+		{}
+
+		RunCtrl_FiniteSamples(IndexType const NumParas,IndexType const NumSamples, 
+			IndexType const PacketSize,	IndexType const NumBurn,std::string const& root)
+		:m_NumParas(NumParas),m_Samples(0),m_NumSamples(NumSamples),
+		m_PacketSize(PacketSize),m_Burn(0),m_NumBurn(NumBurn),m_root(root)
 		{
 			MCPACK_ASSERT(m_NumSamples>0,"Maximum number of samples should be a positive integer");
 			MCPACK_ASSERT(m_NumBurn>0,"Number of samples to be burned should be a positive integer");
@@ -46,7 +51,7 @@ namespace mcpack { namespace hamiltonian {
 			return m_Samples >= m_NumSamples ? false : true;
 		}
 
-		void Save(MatrixType const & Samples)
+		void Add(MatrixType const & Samples)
 		{
 			IndexType n=Samples.rows();
 			if(m_Burn >= m_NumBurn)
@@ -59,12 +64,29 @@ namespace mcpack { namespace hamiltonian {
 			}
 		}
 
+		IndexType NumParas(void) const
+		{
+			return m_NumParas;
+		}
+
+		IndexType PacketSize(void) const
+		{
+			return m_PacketSize;
+		}
+
+		std::string Root(void) const
+		{
+			return m_root;
+		}
+
 	private:
+		IndexType m_NumParas;
 		IndexType m_Samples;
 		IndexType m_NumSamples;
 		IndexType m_PacketSize;
 		IndexType m_Burn;
 		IndexType m_NumBurn;
+		std::string m_root;
 	};
 
 }

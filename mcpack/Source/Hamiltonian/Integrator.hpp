@@ -47,6 +47,8 @@ namespace mcpack { namespace hamiltonian {
 			"POTENTIAL ENERGY AND KINTETIC ENERGY SHOULD SHOULD HAVE THE SAME FLOATING POINT TYPE");
 	public:
 
+		LeapFrog(){}
+
 		LeapFrog(PotEngType const & G,KinEngType const& K)
 		:m_G(G),m_K(K)
 		{

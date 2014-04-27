@@ -29,10 +29,12 @@ namespace mcpack { namespace hamiltonian{
 		typedef _MatrixType MatrixType;
 		typedef typename MatrixType::Index IndexType;
 
+		IO_WriteAll(){}
+
 		explicit IO_WriteAll(std::string const FileName)
 		:m_FileName(FileName),m_Separation(std::string(",")),m_precision(10)
 		{
-			m_File.open(m_FileName.c_str(),std::ios::trunc);
+			m_File.open(m_FileName.c_str(),std::ios::app);
 
 			if(!m_File.is_open())
 			{
@@ -40,6 +42,14 @@ namespace mcpack { namespace hamiltonian{
 				throw mcpack::utils::TextDataException(message);			
 			}
 
+		}
+
+		IO_WriteAll(IO_WriteAll  const & other)
+		{
+			m_FileName=other.m_FileName;
+			m_File.open(m_FileName.c_str(),std::ios::app);//this is potentialy problematic
+			m_Separation=other.m_Separation;
+			m_precision=other.m_precision;
 		}
 
 		~IO_WriteAll()
