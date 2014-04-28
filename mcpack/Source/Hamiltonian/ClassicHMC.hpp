@@ -96,6 +96,11 @@ namespace mcpack { namespace hamiltonian {
 			return m_AccRate;
 		}
 
+		void SetSeed(unsigned long seed)
+		{
+			m_RVGen.Seed(seed);
+		}
+
 	private:
 		DiscretisationType m_Discr;
 		RealType m_eps;

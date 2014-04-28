@@ -42,7 +42,7 @@ namespace mcpack { namespace hamiltonian {
 		m_PacketSize(PacketSize),m_Burn(0),m_NumBurn(NumBurn),m_root(root)
 		{
 			MCPACK_ASSERT(m_NumSamples>0,"Maximum number of samples should be a positive integer");
-			MCPACK_ASSERT(m_NumBurn>0,"Number of samples to be burned should be a positive integer");
+			MCPACK_ASSERT(m_NumBurn>=0,"Number of samples to be burned should be a >= 0");
 			MCPACK_ASSERT(m_NumBurn<m_NumSamples,"NumBurn should be < MaxSamples");
 		}
 

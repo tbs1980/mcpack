@@ -33,7 +33,8 @@ BOOST_AUTO_TEST_CASE(finite_samples)
 	const IndexType NSamples=1000;
 	const IndexType NBurn=200;
 	const IndexType PacketSize=100;
-	RCType runctrl(NParas,NSamples,PacketSize,NBurn);
+	const std::string FileRoot("./TestRunCtrl");
+	RCType runctrl(NParas,NSamples,PacketSize,NBurn,FileRoot);
 
 	BOOST_REQUIRE(runctrl.Continue());
 

@@ -20,6 +20,7 @@
 #ifndef MCPACK_COREHEADERS_HPP
 #define MCPACK_COREHEADERS_HPP
 
+#include <cstdlib>
 #include <cmath>
 #include <sstream>
 #include <string>

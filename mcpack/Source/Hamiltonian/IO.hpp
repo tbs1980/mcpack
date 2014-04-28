@@ -34,20 +34,12 @@ namespace mcpack { namespace hamiltonian{
 		explicit IO_WriteAll(std::string const FileName)
 		:m_FileName(FileName),m_Separation(std::string(",")),m_precision(10)
 		{
-			m_File.open(m_FileName.c_str(),std::ios::app);
-
-			if(!m_File.is_open())
-			{
-				std::string message=std::string("Error in opening the file ")+m_FileName;
-				throw mcpack::utils::TextDataException(message);			
-			}
 
 		}
 
 		IO_WriteAll(IO_WriteAll  const & other)
 		{
 			m_FileName=other.m_FileName;
-			m_File.open(m_FileName.c_str(),std::ios::app);//this is potentialy problematic
 			m_Separation=other.m_Separation;
 			m_precision=other.m_precision;
 		}
@@ -59,6 +51,11 @@ namespace mcpack { namespace hamiltonian{
 	
 		void Write(MatrixType const& Samples)
 		{
+			if(!m_File.is_open())
+			{
+				m_File.open(m_FileName.c_str(),std::ios::app);
+			}
+
 			if(m_File.is_open())
 			{
 				m_File<<std::scientific;
@@ -78,6 +75,17 @@ namespace mcpack { namespace hamiltonian{
 				throw mcpack::utils::TextDataException(message);
 			}
 		}
+
+		std::string GetFileName(void) const
+		{
+			return m_FileName;
+		}
+
+		void SetFileName(std::string const& FileName)
+		{
+			m_FileName=FileName;
+		}
+		
 	private:
 		std::string m_FileName;
 		std::ofstream m_File;
