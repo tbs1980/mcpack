@@ -72,34 +72,18 @@
 	"buffers":
 	[
 		{
+			"file": "mcpack/Source/Hamiltonian/Sampler.hpp",
+			"settings":
+			{
+				"buffer_size": 1995,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "mcpack/Source/Hamiltonian/MPI_Sampler.hpp",
 			"settings":
 			{
 				"buffer_size": 2600,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "tests/Hamiltonian/MPI_Sampler.cpp",
-			"settings":
-			{
-				"buffer_size": 4025,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "mcpack/Source/Hamiltonian/IO.hpp",
-			"settings":
-			{
-				"buffer_size": 2259,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "mcpack/Source/Hamiltonian/ClassicHMC.hpp",
-			"settings":
-			{
-				"buffer_size": 2993,
 				"line_ending": "Unix"
 			}
 		}
@@ -148,9 +132,11 @@
 	},
 	"file_history":
 	[
-		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/MPI_Sampler.cpp",
-		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/CMakeLists.txt",
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/ClassicHMC.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/IO.hpp",
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/MPI_Sampler.cpp",
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/MPI_Sampler.hpp",
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/CMakeLists.txt",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Utils/Random.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/CoreHeaders.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/RuntimeControl.hpp",
@@ -159,7 +145,6 @@
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/Sampler.hpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/RuntimeControl.cpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/Sampler.cpp",
-		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/ClassicHMC.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Utils/GaussLogPost.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/Integrator.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/KineticEnergy.hpp",
@@ -177,7 +162,7 @@
 	],
 	"find":
 	{
-		"height": 31.0
+		"height": 22.0
 	},
 	"find_in_files":
 	{
@@ -212,81 +197,24 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "mcpack/Source/Hamiltonian/MPI_Sampler.hpp",
+					"file": "mcpack/Source/Hamiltonian/Sampler.hpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2600,
+						"buffer_size": 1995,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1491,
-								1491
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 42.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "tests/Hamiltonian/MPI_Sampler.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4025,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3805,
-								3805
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 420.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "mcpack/Source/Hamiltonian/IO.hpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2259,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2023,
-								2023
+								1254,
+								1254
 							]
 						],
 						"settings":
@@ -298,24 +226,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "mcpack/Source/Hamiltonian/ClassicHMC.hpp",
+					"buffer": 1,
+					"file": "mcpack/Source/Hamiltonian/MPI_Sampler.hpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2993,
+						"buffer_size": 2600,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2702,
-								2702
+								0,
+								0
 							]
 						],
 						"settings":
@@ -323,11 +251,11 @@
 							"syntax": "Packages/C++/C++.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
-						"translation.x": -0.0,
-						"translation.y": 210.0,
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
