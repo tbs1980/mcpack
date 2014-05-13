@@ -22,6 +22,6 @@ project(MCPACK_Theory NONE)
 include(${CMAKE_SOURCE_DIR}/cmake/UseLATEX.cmake)
 add_latex_document(mcpack.tex
 	INPUTS include/hamiltonian.tex
-#	BIBFILES mcpack.bib 
+	BIBFILES mcpack.bib 
 #	IMAGE_DIRS images 
 	DEFAULT_PDF)

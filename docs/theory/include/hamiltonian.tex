@@ -18,6 +18,7 @@
 %
 
 \section{Hamiltonian Monte Carlo}
+Major references include \cite{Duane1987,Neal1993,Neal1996,Neal2012}.
 Given the Hamiltonian $H(p,q)$, the equations of motion are
 \begin{eqnarray}
 \label{eqn:hmc_eqn_of_motion}
@@ -71,7 +72,7 @@ q_i (t+\epsilon) &=& q_i(t) - \frac{\partial K(p)}{\partial p_i} \Big\vert_{t+ \
 p_i (t+\epsilon) &=& p_i (t+ \epsilon/2) + 
 	(\epsilon/2) \frac{\partial G(q)}{\partial q_i} \Big\vert_{t+\epsilon}
 \end{eqnarray}
-and by making the substitution from Equation~\ref{eqn:hmc_def_K_G}
+We make make another the substitution from Equation~\ref{eqn:hmc_def_K_G}
 \begin{eqnarray}
 p_i (t+ \epsilon/2) &=& p_i(t) + (\epsilon/2)\Sigma^{-1}(\mu - q(t)) \\
 q_i (t+\epsilon) &=& q_i(t) + \epsilon M^{-1}p(t+ \epsilon/2) \\
@@ -88,3 +89,30 @@ and can be further simplyfied to
 q_i (t+\epsilon) &=& q_i(t) + \epsilon\,p_i(t) -  (\epsilon^2/2)q(t)\\
 p_i (t+\epsilon) &=& \left(1 - \epsilon^2/2\right)p_i(t) + \left( \epsilon^3/4 -\epsilon \right)q(t)\\
 \end{eqnarray}
+
+\subsection{Implementation}
+These equations can be written in an algorithmic form as show below:
+\begin{algorithm}
+\SetKwData{Left}{left}\SetKwData{This}{this}\SetKwData{Up}{up}
+\SetKwFunction{Union}{Union}\SetKwFunction{FindCompress}{FindCompress}
+\SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+\Input{$\epsilon,N,\mathbf{p},\mathbf{q}$} 
+\Output{$\mathbf{p},\mathbf{q},\Delta H$}
+\BlankLine
+Rotate $\mathbf{p}$ to the principal coordinates\;
+Evaluate $\Psi,\frac{d\Psi}{d\mathbf{q}},\Phi,\frac{d\Phi}{d\mathbf{p}}$ \;
+$H_0 \leftarrow \Psi+ \Phi$ \;
+$ \mathbf{p} \leftarrow \mathbf{p} +  \frac{\epsilon}{2} \frac{d\Psi}{d\mathbf{q}}$\;
+\For{$i \leftarrow 0 $ \KwTo $N-1$}{ 
+Evaluate $\Phi,\frac{d\Phi}{d\mathbf{p}}$ \;
+$ \mathbf{q} \leftarrow \mathbf{q} -  \epsilon \frac{d\Phi}{d\mathbf{p}}$\;
+Evaluate $\Psi,\frac{d\Psi}{d\mathbf{q}}$ \;
+$ \mathbf{p} \leftarrow \mathbf{p} +  \epsilon \frac{d\Psi}{d\mathbf{q}}$\;
+}
+$ \mathbf{p} \leftarrow \mathbf{p} -  \frac{\epsilon}{2} \frac{d\Psi}{d\mathbf{q}}$\;
+Evaluate $\Phi,\frac{d\Phi}{d\mathbf{p}}$ \;
+$H_1 \leftarrow \Psi+ \Phi$ \;
+$\Delta H  \leftarrow H_1-H_0$ \;
+\caption{Leapfrog discretisation}\label{algo:hmc_leapfrog}
+\end{algorithm}
+

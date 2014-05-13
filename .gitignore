@@ -22,3 +22,4 @@
 
 # the build directory
 build/*
+docs/theory/bib/*

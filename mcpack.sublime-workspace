@@ -80,10 +80,18 @@
 			}
 		},
 		{
-			"file": "mcpack/Source/Hamiltonian/MPI_Sampler.hpp",
+			"file": "docs/theory/include/hamiltonian.tex",
 			"settings":
 			{
-				"buffer_size": 2600,
+				"buffer_size": 5289,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "mcpack/Source/Hamiltonian/Integrator.hpp",
+			"settings":
+			{
+				"buffer_size": 3238,
 				"line_ending": "Unix"
 			}
 		}
@@ -132,10 +140,17 @@
 	},
 	"file_history":
 	[
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/MPI_Sampler.hpp",
+		"/arxiv/projects/repository/mcpack/docs/theory/mcpack.tex",
+		"/arxiv/projects/repository/mcpack/docs/theory/mcpack.bib",
+		"/arxiv/projects/repository/mcpack/docs/theory/CMakeLists.txt",
+		"/arxiv/projects/repository/mcpack/docs/theory/bib/neal2012.bib",
+		"/arxiv/projects/repository/mcpack/docs/theory/bib/neal1996.bib",
+		"/arxiv/projects/repository/mcpack/docs/theory/bib/neal1993.bib",
+		"/arxiv/projects/repository/mcpack/docs/theory/bib/duane1987.bib",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/ClassicHMC.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/IO.hpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/MPI_Sampler.cpp",
-		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/MPI_Sampler.hpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/CMakeLists.txt",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Utils/Random.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/CoreHeaders.hpp",
@@ -176,6 +191,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"\n%\\",
 			"\n	",
 			"\n		",
 			"add_subdirectory",
@@ -197,7 +213,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -226,24 +242,52 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "mcpack/Source/Hamiltonian/MPI_Sampler.hpp",
+					"file": "docs/theory/include/hamiltonian.tex",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2600,
+						"buffer_size": 5289,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								2878,
+								2878
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/LaTeX/LaTeX.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 308.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "mcpack/Source/Hamiltonian/Integrator.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3238,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2739,
+								2739
 							]
 						],
 						"settings":
@@ -251,8 +295,8 @@
 							"syntax": "Packages/C++/C++.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.x": -0.0,
+						"translation.y": 168.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
