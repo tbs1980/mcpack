@@ -225,26 +225,26 @@ namespace mcpack{ namespace utils {
   	{
    		std::ofstream file;
    		file.open(fileName.c_str(),std::ios::trunc);
-   		
+
    		if(file.is_open())
    		{
    
-		file<<std::scientific;
+			file<<std::scientific;
     		for(unsigned i=0;i<mat.rows();++i)
     		{
       			for(unsigned j=0;j<mat.cols()-1;++j)
       			{
 				file<<std::setprecision(precision)<<mat(i,j)<<separation;
       			}
-      			file<<mat(i,(mat.cols()-1) )<<std::endl;
+      			file<<std::setprecision(precision)<<mat(i,(mat.cols()-1) )<<std::endl;
     		}
     		file.close();
-	    	}
-	    	else
-	    	{
-				std::string message=std::string("Error in opening the file ")+fileName;
-				throw TextDataException(message);
-	    	}
+	    }
+	    else
+	    {
+			std::string message=std::string("Error in opening the file ")+fileName;
+			throw TextDataException(message);
+	    }
   	}
 
 

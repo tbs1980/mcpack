@@ -72,6 +72,14 @@
 	"buffers":
 	[
 		{
+			"file": "tests/Hamiltonian/Sampler.cpp",
+			"settings":
+			{
+				"buffer_size": 2445,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "mcpack/Source/Hamiltonian/Sampler.hpp",
 			"settings":
 			{
@@ -80,18 +88,10 @@
 			}
 		},
 		{
-			"file": "docs/theory/include/hamiltonian.tex",
+			"file": "mcpack/Source/Hamiltonian/RuntimeControl.hpp",
 			"settings":
 			{
-				"buffer_size": 5289,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "mcpack/Source/Hamiltonian/Integrator.hpp",
-			"settings":
-			{
-				"buffer_size": 3238,
+				"buffer_size": 2363,
 				"line_ending": "Unix"
 			}
 		}
@@ -140,6 +140,10 @@
 	},
 	"file_history":
 	[
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/Sampler.hpp",
+		"/arxiv/projects/repository/mcpack/docs/theory/include/hamiltonian.tex",
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/Integrator.hpp",
+		"/arxiv/projects/repository/mcpack/.gitignore",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/MPI_Sampler.hpp",
 		"/arxiv/projects/repository/mcpack/docs/theory/mcpack.tex",
 		"/arxiv/projects/repository/mcpack/docs/theory/mcpack.bib",
@@ -157,11 +161,9 @@
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/RuntimeControl.hpp",
 		"/arxiv/projects/repository/mcpack/tests/CMakeLists.txt",
 		"/arxiv/projects/repository/mcpack/mcpack/MPICoreHeaders.hpp",
-		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/Sampler.hpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/RuntimeControl.cpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/Sampler.cpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Utils/GaussLogPost.hpp",
-		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/Integrator.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/KineticEnergy.hpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/IO.cpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/ClassicHMC.cpp",
@@ -172,7 +174,6 @@
 		"/arxiv/projects/repository/mcpack/tests/Diagnostics/FiniteSamples.cpp",
 		"/arxiv/projects/repository/mcpack/tests/Diagnostics/CMakeLists.txt",
 		"/arxiv/projects/repository/mcpack/CMakeLists.txt",
-		"/arxiv/projects/repository/mcpack/.gitignore",
 		"/arxiv/projects/repository/mcpack/mcpack.sublime-project"
 	],
 	"find":
@@ -218,19 +219,19 @@
 			[
 				{
 					"buffer": 0,
-					"file": "mcpack/Source/Hamiltonian/Sampler.hpp",
+					"file": "tests/Hamiltonian/Sampler.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1995,
+						"buffer_size": 2445,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1254,
-								1254
+								0,
+								0
 							]
 						],
 						"settings":
@@ -247,27 +248,28 @@
 				},
 				{
 					"buffer": 1,
-					"file": "docs/theory/include/hamiltonian.tex",
+					"file": "mcpack/Source/Hamiltonian/Sampler.hpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5289,
+						"buffer_size": 1995,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2878,
-								2878
+								232,
+								232
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/LaTeX/LaTeX.tmLanguage"
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 308.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -275,19 +277,19 @@
 				},
 				{
 					"buffer": 2,
-					"file": "mcpack/Source/Hamiltonian/Integrator.hpp",
+					"file": "mcpack/Source/Hamiltonian/RuntimeControl.hpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3238,
+						"buffer_size": 2363,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2739,
-								2739
+								1730,
+								1730
 							]
 						],
 						"settings":
@@ -296,7 +298,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": -0.0,
-						"translation.y": 168.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,

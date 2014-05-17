@@ -17,7 +17,7 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-#define BOOST_TEST_MODULE RuntimeControl
+#define BOOST_TEST_MODULE Sampler
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 #include <mcpack/CoreHeaders.hpp>
@@ -60,12 +60,13 @@ BOOST_AUTO_TEST_CASE(sampler_finite_samples)
 	//define the Runtime Control
 	const IndexType NumParas=10;
 	const IndexType NSamples=1000;
-	const IndexType NBurn=200;
+	const IndexType NBurn=2000;
 	const IndexType PacketSize=100;
 	const std::string FileRoot("./TestSampler");
-	RCType runctrl(NumParas,NSamples,PacketSize,NBurn,FileRoot);
+	const bool silent=false;
+	RCType runctrl(NumParas,NSamples,PacketSize,NBurn,FileRoot,silent);
 
 	SamplerType Smp(hmc,iowall,runctrl);
 
-	Smp.Run();
+	//Smp.Run();
 }

@@ -86,11 +86,6 @@ namespace mcpack { namespace hamiltonian {
 			m_AccRate=(RealType)samp/(RealType)iter;
 		}
 
-		void GetRandState(std::stringstream & RNGstate) const
-		{
-			m_RVGen.GetState(RNGstate);
-		}
-		
 		RealType GetAcceptanceRate(void) const
 		{
 			return m_AccRate;
@@ -99,6 +94,16 @@ namespace mcpack { namespace hamiltonian {
 		void SetSeed(unsigned long seed)
 		{
 			m_RVGen.Seed(seed);
+		}
+
+		void GetRandState(std::stringstream & RNGstate) const
+		{
+			m_RVGen.GetState(RNGstate);
+		}
+		
+		void GetChainState(RealVectorType & ChainState) const
+		{
+			ChainState=m_q0;
 		}
 
 	private:

@@ -37,13 +37,14 @@ namespace mcpack { namespace hamiltonian {
 		{}
 
 		RunCtrl_FiniteSamples(IndexType const NumParas,IndexType const NumSamples, 
-			IndexType const PacketSize,	IndexType const NumBurn,std::string const& root)
+			IndexType const PacketSize,	IndexType const NumBurn,std::string const& root,
+			bool silent)
 		:m_NumParas(NumParas),m_Samples(0),m_NumSamples(NumSamples),
-		m_PacketSize(PacketSize),m_Burn(0),m_NumBurn(NumBurn),m_root(root)
+		m_PacketSize(PacketSize),m_Burn(0),m_NumBurn(NumBurn),m_root(root),
+		m_Silent(silent)
 		{
 			MCPACK_ASSERT(m_NumSamples>0,"Maximum number of samples should be a positive integer");
 			MCPACK_ASSERT(m_NumBurn>=0,"Number of samples to be burned should be a >= 0");
-			MCPACK_ASSERT(m_NumBurn<m_NumSamples,"NumBurn should be < MaxSamples");
 		}
 
 		bool Continue() const
@@ -79,6 +80,43 @@ namespace mcpack { namespace hamiltonian {
 			return m_root;
 		}
 
+		void WriteLog(std::stringstream & LogHandle) const
+		{
+			if(m_Burn >= m_NumBurn)
+			{
+				LogHandle<<"Number of samples SAMPLED= "<<m_Samples<<std::endl;
+			}
+			else
+			{
+				LogHandle<<"Number of samples BURNED= "<<m_Burn<<std::endl;
+			}
+		}
+
+		bool Silent(void) const
+		{
+			return m_Silent;
+		}
+
+		bool AreWeSampling(std::ifstream & LogFile) const
+		{
+			std::string chek("SAMPLED");
+			if(LogFile.is_open())
+			{
+				while(!LogFile.eof())
+				{
+					std::string line;
+					std::getline(LogFile,line);
+					std::size_t found = line.find(chek);
+					if(found < line.length() && found >0 )
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+
 	private:
 		IndexType m_NumParas;
 		IndexType m_Samples;
@@ -87,6 +125,7 @@ namespace mcpack { namespace hamiltonian {
 		IndexType m_Burn;
 		IndexType m_NumBurn;
 		std::string m_root;
+		bool m_Silent;
 	};
 
 }
