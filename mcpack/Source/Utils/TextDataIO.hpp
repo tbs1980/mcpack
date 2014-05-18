@@ -279,6 +279,30 @@ namespace mcpack{ namespace utils {
 		}
 			
 	}
+
+	template<class RealVectorType>
+	RealVectorType String2Vector(std::string str,std::string separation)
+	{
+		typedef typename RealVectorType::Index IndexType;
+		typedef typename RealVectorType::Scalar RealType;
+		std::istringstream ss(str);
+		std::string entry;
+		std::vector<RealType> row;
+
+		while(std::getline(ss,entry,*(separation.c_str()) ) )
+		{
+			RealType num=mcpack::utils::StringToNumber<RealType>(entry);
+			row.push_back(num);
+		}
+
+		RealVectorType vect(row.size());
+		for(IndexType i=0;i<row.size();++i)
+		{
+			vect(i)=row[i];
+		}
+		
+		return vect;
+	}
 	
 } //namespace utils
 

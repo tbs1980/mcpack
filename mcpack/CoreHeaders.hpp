@@ -38,6 +38,9 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
+
 #include "Source/Utils/Macros.hpp"
 #include "Source/Utils/Random.hpp"
 #include "Source/Utils/GaussLogPost.hpp"

@@ -64,7 +64,12 @@ namespace mcpack{ namespace utils {
 
 		void GetState(std::stringstream & state) const
 		{
-			state<<m_eng;
+			state << m_eng;
+		}
+
+		void SetState(std::stringstream & state)
+		{
+			state >> m_eng ;
 		}
 		
 	private:

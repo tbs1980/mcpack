@@ -36,6 +36,7 @@ BOOST_AUTO_TEST_CASE(sampler_finite_samples)
 	typedef mcpack::hamiltonian::RunCtrl_FiniteSamples<RealMatrixType> RCType;
 	typedef mcpack::hamiltonian::Sampler<HMCType,IOType,RCType> SamplerType;
 
+	
 	//define the HMC
 	const IndexType N=10;
 	RealVectorType mu=RealVectorType::Zero(N);
@@ -64,9 +65,10 @@ BOOST_AUTO_TEST_CASE(sampler_finite_samples)
 	const IndexType PacketSize=100;
 	const std::string FileRoot("./TestSampler");
 	const bool silent=false;
+
 	RCType runctrl(NumParas,NSamples,PacketSize,NBurn,FileRoot,silent);
 
 	SamplerType Smp(hmc,iowall,runctrl);
 
-	//Smp.Run();
+	Smp.Run();
 }

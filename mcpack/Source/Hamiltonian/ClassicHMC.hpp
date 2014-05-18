@@ -100,10 +100,10 @@ namespace mcpack { namespace hamiltonian {
 		{
 			m_RVGen.GetState(RNGstate);
 		}
-		
-		void GetChainState(RealVectorType & ChainState) const
+
+		void SetRandState(std::stringstream & RNGstate)
 		{
-			ChainState=m_q0;
+			m_RVGen.SetState(RNGstate);
 		}
 
 	private:
