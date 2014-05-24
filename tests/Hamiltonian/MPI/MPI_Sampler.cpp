@@ -114,7 +114,8 @@ int main()
 	const IndexType NBurn=200;
 	const IndexType PacketSize=100;
 	const std::string FileRoot("./TestMPISampler");
-	RCType runctrl(NumParas,NSamples,PacketSize,NBurn,FileRoot);
+	const bool silent=false;
+	RCType runctrl(NumParas,NSamples,PacketSize,NBurn,FileRoot,silent);
 
 	MPISamplerType MPISmp(hmc,iowall,runctrl);
 
