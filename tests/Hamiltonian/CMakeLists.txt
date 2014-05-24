@@ -21,9 +21,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(TestHamiltonianMonteCarlo CXX)
 
-find_package(MPI REQUIRED)
 find_package(Eigen3 3.1.2 REQUIRED)
-find_package(Boost REQUIRED COMPONENTS unit_test_framework mpi serialization)
+find_package(Boost REQUIRED COMPONENTS unit_test_framework)
 
 if(UNIX)
 	if(CMAKE_COMPILER_IS_GNUCXX)
@@ -48,7 +47,6 @@ if(UNIT_TESTS)
 	enable_testing()
 endif()
 
-include_directories(${MPI_CXX_INCLUDE_PATH})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR})
@@ -81,6 +79,5 @@ add_executable(Sampler Sampler.cpp)
 target_link_libraries(Sampler ${Boost_LIBRARIES})
 add_test(TestSampler Sampler)
 
-add_executable(MPI_Sampler MPI_Sampler.cpp)
-target_link_libraries(MPI_Sampler ${Boost_LIBRARIES} ${MPI_CXX_LIBRARIES})
-add_test(TestMPI_Sampler MPI_Sampler)
+add_subdirectory(MPI)
+

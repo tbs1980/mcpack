@@ -269,9 +269,9 @@ namespace mcpack{ namespace utils {
 		else
 		{
 			//assign values
-			for(unsigned i=0;i<mat.rows();++i)
+			for(int i=0;i<mat.rows();++i)
 			{
-				for(unsigned j=0;j<mat.cols();++j)
+				for(int j=0;j<mat.cols();++j)
 				{
 					mat(i,j)=container[i][j];
 				}
@@ -296,7 +296,7 @@ namespace mcpack{ namespace utils {
 		}
 
 		RealVectorType vect(row.size());
-		for(IndexType i=0;i<row.size();++i)
+		for(IndexType i=0;i<(IndexType)row.size();++i)
 		{
 			vect(i)=row[i];
 		}
