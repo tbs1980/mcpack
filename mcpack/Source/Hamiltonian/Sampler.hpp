@@ -38,6 +38,12 @@ namespace mcpack{ namespace hamiltonian{
 		Sampler(EngineType const & Eng,IOType const& IO,RunCtrlType const& RunCtrl)
 		:m_Eng(Eng),m_IO(IO),m_RunCtrl(RunCtrl)
 		{
+			m_RunCtrl.LoadInfoFromLogFile();
+
+			if(!m_RunCtrl.Resume())
+			{
+				m_RunCtrl.WriteInfo2LogFile();
+			}
 		}
 
 		void Run()
@@ -69,22 +75,15 @@ namespace mcpack{ namespace hamiltonian{
 			
 			while(m_RunCtrl.Continue())
 			{
-				//define the local stuff to logging
 				std::stringstream RandState;
-				//RealVectorType ChainState;
 
-				//generate samples
 				m_Eng.Generate(Samples);
 
-				//get states
 				m_Eng.GetRandState(RandState);
-				//m_Eng.GetChainState(ChainState);
 				RealType AccRate=m_Eng.GetAcceptanceRate();
-
 
 				m_RunCtrl.Save(Samples,RandState,AccRate);
 
-				//write extract
 				m_IO.Write(Samples);
 			}
 		}

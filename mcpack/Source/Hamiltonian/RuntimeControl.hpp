@@ -46,13 +46,6 @@ namespace mcpack { namespace hamiltonian {
 		{
 			MCPACK_ASSERT(m_NumSamples>0,"Maximum number of samples should be a positive integer");
 			MCPACK_ASSERT(m_NumBurn>=0,"Number of samples to be burned should be a >= 0");
-
-			LoadInfoFromLogFile();
-
-			if(!Resume())
-			{
-				WriteInfo2LogFile();
-			}
 		}
 
 		bool Continue() const
@@ -128,7 +121,10 @@ namespace mcpack { namespace hamiltonian {
 			return m_ChainState;
 		}
 
-	private:
+		void SetLogFileName(std::string const & LogFileName)
+		{
+			m_LogFileName=LogFileName;
+		}
 
 		void LoadInfoFromLogFile()
 		{
@@ -173,6 +169,9 @@ namespace mcpack { namespace hamiltonian {
 
 			boost::property_tree::ini_parser::write_ini(m_LogFileName,m_Pt);			
 		}
+
+	private:
+
 
 		IndexType m_NumParas;
 		IndexType m_Samples;
