@@ -65,21 +65,42 @@ namespace mcpack{ namespace hamiltonian {
 			{
 				std::vector<MpiRequestType> reqs(m_World.size()-1);
 				std::string IsResuming=Bool2String(m_RunCtrl.Resume());
-				std::cout<<"Chain "<<ss.str()<<" Resuming= "<<IsResuming<<std::endl;
+				std::cout<<"Chain "<<"0"<<" Resuming= "<<IsResuming<<std::endl;
 
 				std::vector<std::string> msgVect(m_World.size()-1);
 
 				//receive the messages
-				for(IndexType i=0;i<m_World.size()-1;++i)
+				for(IndexType i=1;i<m_World.size();++i)
 				{
-					reqs[i] =  m_World.irecv(i, i, msgVect[i]);
+					reqs[i-1] =  m_World.irecv(i, i, msgVect[i-1]);
 				}
 
 				boost::mpi::wait_all(reqs.begin(), reqs.end());
+
+				for(IndexType i=1;i<m_World.size();++i)
+				{
+					std::cout<<"Chain "<<i<<" Resuming= "<<msgVect[i-1]<<std::endl;
+				}
 			}
 			else
 			{
+				std::vector<MpiRequestType> reqs(m_World.size()-1);
 
+				std::string IsResuming;
+				if(m_World.rank() % 2 == 0)
+				{
+					IsResuming=Bool2String(true);
+				}
+				else
+				{
+					IsResuming=Bool2String(false);
+				}
+				
+
+				//send the messages
+				reqs[m_World.rank()-1] =  m_World.isend(0, m_World.rank(), IsResuming);
+
+				boost::mpi::wait_all(reqs.begin(), reqs.end());
 			}
 
 
