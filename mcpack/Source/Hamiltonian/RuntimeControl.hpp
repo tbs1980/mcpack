@@ -43,7 +43,7 @@ namespace mcpack { namespace hamiltonian {
 		:m_NumParas(NumParas),m_Samples(0),m_NumSamples(NumSamples),
 		m_PacketSize(PacketSize),m_Burn(0),m_NumBurn(NumBurn),m_Root(root),
 		m_Silent(silent),m_LogFileName(root+std::string(".log")),m_Resume(false),
-		m_Continue(false)
+		m_Continue(true),m_LogFileHasHeader(false),m_NumChains(1)
 		{
 			MCPACK_ASSERT(m_NumSamples>0,"Maximum number of samples should be a positive integer");
 			MCPACK_ASSERT(m_NumBurn>=0,"Number of samples to be burned should be a >= 0");
@@ -65,6 +65,11 @@ namespace mcpack { namespace hamiltonian {
 			}
 
 			m_Continue = m_Samples >= m_NumSamples ? false : true;
+
+			if(!m_LogFileHasHeader)
+			{
+				WriteInfo2LogFile();
+			}
 
 			m_Pt.put("Control.Burn",(IndexType) m_Burn);
 			m_Pt.put("Control.Samples",(IndexType) m_Samples);
@@ -119,6 +124,11 @@ namespace mcpack { namespace hamiltonian {
 			return m_ChainState;
 		}
 
+		std::string const & GetLogFileName(void) const
+		{
+			return m_LogFileName;
+		}
+
 		void SetLogFileName(std::string const & LogFileName)
 		{
 			m_LogFileName=LogFileName;
@@ -146,7 +156,9 @@ namespace mcpack { namespace hamiltonian {
 				m_Silent=m_Pt.get<bool>("Control.Silent");
 				m_RandState=m_Pt.get<std::string>("Random.State");
 				m_ChainState=m_Pt.get<std::string>("Chain.State");
+				m_NumChains=m_Pt.get<IndexType>("Control.NumChains");
 				m_Resume=true;
+				m_Continue = m_Samples >= m_NumSamples ? false : true;
 
 			}
 			catch(std::exception& e)
@@ -169,13 +181,21 @@ namespace mcpack { namespace hamiltonian {
 			m_Pt.put("Control.PacketSize",(IndexType) m_PacketSize);
 			m_Pt.put("Control.Root",(std::string)  m_Root);
 			m_Pt.put("Control.Silent",(IndexType) m_Silent);
+			m_Pt.put("Control.NumChains",(IndexType) m_NumChains);
 
-			boost::property_tree::ini_parser::write_ini(m_LogFileName,m_Pt);			
+			boost::property_tree::ini_parser::write_ini(m_LogFileName,m_Pt);
+
+			m_LogFileHasHeader=true;		
 		}
 
 		void SetNoSampling(void)
 		{
 			m_Continue=false;
+		}
+
+		void SetNumChains(IndexType NumChains)
+		{
+			m_NumChains=NumChains;
 		}
 
 	private:
@@ -195,6 +215,8 @@ namespace mcpack { namespace hamiltonian {
 		std::string m_ChainState;
 		bool m_Resume;
 		bool m_Continue;
+		bool m_LogFileHasHeader;
+		IndexType m_NumChains;
 	};
 
 }

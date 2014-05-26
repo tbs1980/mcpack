@@ -119,7 +119,7 @@ int main()
 
 	MPISamplerType MPISmp(hmc,iowall,runctrl);
 
-	MPISmp.Run();
+	//MPISmp.Run();
 
 	return 0;
 }

@@ -31,42 +31,80 @@ namespace mcpack{ namespace hamiltonian {
 		typedef _RunCtrlType RunCtrlType;
 
 		typedef typename EngineType::RealMatrixType RealMatrixType;
+		typedef typename EngineType::RealVectorType RealVectorType;
+		typedef typename EngineType::RealType RealType;
+		typedef typename EngineType::IndexType IndexType;
 
 		typedef boost::mpi::environment MpiEnvType;
 		typedef boost::mpi::communicator MpiCommType;
+		typedef boost::mpi::request MpiRequestType;
 		
 		Mpi_Sampler(EngineType const & Eng,IOType const& IO,RunCtrlType const& RunCtrl)
 		:m_Eng(Eng),m_IO(IO),m_RunCtrl(RunCtrl)
 		{
-			std::string filename=m_IO.GetFileName();
 			std::stringstream ss;
-			ss<<"."<<world.rank();
-			filename+=ss.str();
-			m_IO.SetFileName(filename);
+			ss<<"."<<m_World.rank();
 
-			//set the log file names
+			std::string IOFileName=m_IO.GetFileName();
+			IOFileName+=ss.str();
+			m_IO.SetFileName(IOFileName);
 
-			//if we have the right number of start points
-			//then use them
-			if(m_StartPoints.rows()==world.size())
+			std::string LogFileName=m_RunCtrl.GetLogFileName();
+			LogFileName+=ss.str();
+			m_RunCtrl.SetLogFileName(LogFileName);
+
+			m_RunCtrl.LoadInfoFromLogFile();
+
+			if(!m_RunCtrl.Resume())
+			{
+				m_RunCtrl.WriteInfo2LogFile();
+			}
+
+			//print a summary of what we have found
+			if (m_World.rank() == 0)
+			{
+				std::vector<MpiRequestType> reqs(m_World.size()-1);
+				std::string IsResuming=Bool2String(m_RunCtrl.Resume());
+				std::cout<<"Chain "<<ss.str()<<" Resuming= "<<IsResuming<<std::endl;
+
+				std::vector<std::string> msgVect(m_World.size()-1);
+
+				//receive the messages
+				for(IndexType i=0;i<m_World.size()-1;++i)
+				{
+					reqs[i] =  m_World.irecv(i, i, msgVect[i]);
+				}
+
+				boost::mpi::wait_all(reqs.begin(), reqs.end());
+			}
+			else
 			{
 
 			}
+
+
 		}
 
 		void Run()
 		{
 			RealMatrixType Samples(m_RunCtrl.PacketSize(),m_RunCtrl.NumParas());
-			std::stringstream RandState;
+			
 
 			while(m_RunCtrl.Continue())
 			{
+				std::stringstream RandState;
+
 				GenerateRandomSeed();
 
 				m_Eng.Generate(Samples);
+
 				m_Eng.GetRandState(RandState);
-				SaveRandState(RandState);
-				m_RunCtrl.Add(Samples);
+				RealType AccRate=m_Eng.GetAcceptanceRate();
+
+				//SaveRandState(RandState);
+
+				m_RunCtrl.Save(Samples,RandState,AccRate);
+
 				m_IO.Write(Samples);
 
 				break;
@@ -76,7 +114,7 @@ namespace mcpack{ namespace hamiltonian {
 		void SaveRandState(std::stringstream const & rs) const
 		{
 			std::stringstream ss;
-			ss<<"."<<world.rank();
+			ss<<"."<<m_World.rank();
 			std::string RngFileName=m_RunCtrl.Root()+std::string(".radnom")+ss.str();
 			std::ofstream RngFile;
 			RngFile.open(RngFileName.c_str(),std::ios::trunc);
@@ -86,23 +124,34 @@ namespace mcpack{ namespace hamiltonian {
 
 		void GenerateRandomSeed()
 		{
-				std::vector<unsigned long> seedVect(world.size());
+				std::vector<unsigned long> seedVect(m_World.size());
 
-				for(size_t i=0;i<world.size();++i)
+				for(size_t i=0;i<(size_t)m_World.size();++i)
 				{
 					seedVect[i]=(unsigned long)rand();
 				}
 
-				m_Eng.SetSeed(seedVect[world.rank()]);
+				m_Eng.SetSeed(seedVect[m_World.rank()]);
+		}
+
+		std::string Bool2String(bool val)
+		{
+			if(val==true)
+			{
+				return std::string("True");
+			}
+			else
+			{
+				return std::string("False");
+			}
 		}
 		
 	private:
 		EngineType m_Eng;
 		IOType m_IO;
 		RunCtrlType m_RunCtrl;
-		MpiEnvType env;
-		MpiCommType world;
-		RealMatrixType m_StartPoints;
+		MpiEnvType m_Env;
+		MpiCommType m_World;
 
 	};
 

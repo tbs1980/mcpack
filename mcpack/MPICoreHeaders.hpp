@@ -20,8 +20,10 @@
 #ifndef MCPACK_MPICOREHEADERS_HPP
 #define MCPACK_MPICOREHEADERS_HPP
 
-#include <boost/mpi/environment.hpp>
-#include <boost/mpi/communicator.hpp>
+//#include <boost/mpi/environment.hpp>
+//#include <boost/mpi/communicator.hpp>
+//#include <boost/serialization/string.hpp>
+#include <boost/mpi.hpp>
 
 #include "CoreHeaders.hpp"
 
