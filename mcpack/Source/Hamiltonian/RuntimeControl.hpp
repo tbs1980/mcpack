@@ -42,15 +42,11 @@ namespace mcpack { namespace hamiltonian {
 			bool silent)
 		:m_NumParas(NumParas),m_Samples(0),m_NumSamples(NumSamples),
 		m_PacketSize(PacketSize),m_Burn(0),m_NumBurn(NumBurn),m_Root(root),
-		m_Silent(silent),m_LogFileName(root+std::string(".log")),m_Resume(false)
+		m_Silent(silent),m_LogFileName(root+std::string(".log")),m_Resume(false),
+		m_Continue(false)
 		{
 			MCPACK_ASSERT(m_NumSamples>0,"Maximum number of samples should be a positive integer");
 			MCPACK_ASSERT(m_NumBurn>=0,"Number of samples to be burned should be a >= 0");
-		}
-
-		bool Continue() const
-		{
-			return m_Samples >= m_NumSamples ? false : true;
 		}
 
 		void Save(MatrixType const & Samples,std::stringstream const& RandState,
@@ -67,6 +63,8 @@ namespace mcpack { namespace hamiltonian {
 			{
 				m_Burn+=n;
 			}
+
+			m_Continue = m_Samples >= m_NumSamples ? false : true;
 
 			m_Pt.put("Control.Burn",(IndexType) m_Burn);
 			m_Pt.put("Control.Samples",(IndexType) m_Samples);
@@ -126,6 +124,11 @@ namespace mcpack { namespace hamiltonian {
 			m_LogFileName=LogFileName;
 		}
 
+		bool Continue() const
+		{
+			return m_Continue;
+		}
+
 		void LoadInfoFromLogFile()
 		{
 			try
@@ -170,6 +173,11 @@ namespace mcpack { namespace hamiltonian {
 			boost::property_tree::ini_parser::write_ini(m_LogFileName,m_Pt);			
 		}
 
+		void SetNoSampling(void)
+		{
+			m_Continue=false;
+		}
+
 	private:
 
 
@@ -186,6 +194,7 @@ namespace mcpack { namespace hamiltonian {
 		std::string m_RandState;
 		std::string m_ChainState;
 		bool m_Resume;
+		bool m_Continue;
 	};
 
 }

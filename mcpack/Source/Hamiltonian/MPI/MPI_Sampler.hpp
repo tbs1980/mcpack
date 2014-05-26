@@ -43,6 +43,15 @@ namespace mcpack{ namespace hamiltonian {
 			ss<<"."<<world.rank();
 			filename+=ss.str();
 			m_IO.SetFileName(filename);
+
+			//set the log file names
+
+			//if we have the right number of start points
+			//then use them
+			if(m_StartPoints.rows()==world.size())
+			{
+
+			}
 		}
 
 		void Run()
@@ -93,6 +102,7 @@ namespace mcpack{ namespace hamiltonian {
 		RunCtrlType m_RunCtrl;
 		MpiEnvType env;
 		MpiCommType world;
+		RealMatrixType m_StartPoints;
 
 	};
 
