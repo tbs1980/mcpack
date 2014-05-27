@@ -106,6 +106,11 @@ namespace mcpack { namespace hamiltonian {
 			m_RVGen.SetState(RNGstate);
 		}
 
+		void SetStartPoint(RealVectorType const & q0)
+		{
+			m_q0=q0;
+		}
+
 	private:
 		DiscretisationType m_Discr;
 		RealType m_eps;

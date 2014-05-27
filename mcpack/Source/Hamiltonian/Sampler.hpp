@@ -42,6 +42,8 @@ namespace mcpack{ namespace hamiltonian{
 
 			if(!m_RunCtrl.Resume())
 			{
+				WriteOutput2Console(std::string("No resume files present "),m_RunCtrl.Silent());
+
 				m_RunCtrl.WriteInfo2LogFile();
 			}
 		}
@@ -54,18 +56,19 @@ namespace mcpack{ namespace hamiltonian{
 			{
 				WriteOutput2Console(std::string("Resuming from previous run"),m_RunCtrl.Silent());
 
-				if(!m_RunCtrl.Continue())
-				{
-					WriteOutput2Console(std::string("Sampling already finished in the previous run"),m_RunCtrl.Silent());
-				}	
-				else
+				if(m_RunCtrl.Continue())
 				{
 					std::stringstream RandState;
 					RandState<<m_RunCtrl.RandState();
 					m_Eng.SetRandState(RandState);
 
 					RealVectorType ChainState=
-						mcpack::utils::String2Vector<RealVectorType>(m_RunCtrl.ChainState(),std::string(" "));		
+						mcpack::utils::String2Vector<RealVectorType>(m_RunCtrl.ChainState(),std::string(" "));
+					m_Eng.SetStartPoint(ChainState);
+				}	
+				else
+				{
+					WriteOutput2Console(std::string("Sampling already finished in the previous run"),m_RunCtrl.Silent());
 				}
 			}
 			else
@@ -88,7 +91,7 @@ namespace mcpack{ namespace hamiltonian{
 			}
 		}
 
-		void WriteOutput2Console(std::string message,bool silent)
+		static void WriteOutput2Console(std::string message,bool silent)
 		{
 			if(!silent)
 			{

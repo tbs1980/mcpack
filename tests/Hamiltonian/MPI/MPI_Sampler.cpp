@@ -17,61 +17,7 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-//#define BOOST_TEST_MODULE MPI_RuntimeControl
-//#define BOOST_TEST_DYN_LINK
-//#include <boost/test/unit_test.hpp>
 #include <mcpack/MPICoreHeaders.hpp>
-
-/*
-BOOST_AUTO_TEST_CASE(mpi_sampler_finite_samples)
-{
-	typedef double RealType;
-	typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
-	typedef PotEngType::RealVectorType RealVectorType;
-	typedef PotEngType::RealMatrixType RealMatrixType;
-	typedef RealMatrixType::Index IndexType;
-	typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
-	typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-	typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
-	typedef mcpack::hamiltonian::IO_WriteAll<RealMatrixType> IOType;
-	typedef mcpack::hamiltonian::RunCtrl_FiniteSamples<RealMatrixType> RCType;
-	typedef mcpack::hamiltonian::Mpi_Sampler<HMCType,IOType,RCType> MPISamplerType;
-
-	//define the HMC
-	const IndexType N=10;
-	RealVectorType mu=RealVectorType::Zero(N);
-	RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
-	RealMatrixType MInv=RealMatrixType::Identity(N,N);
-	RealVectorType q0=RealVectorType::Random(N);
-
-	const RealType eps=1;
-	const IndexType Nsteps=10;
-
-	PotEngType G(mu,SigmaInv);
-	KinEngType K(MInv);
-
-	IntegratorType Lp(G,K);
-
-	HMCType hmc(Lp,eps,Nsteps,12346l,q0);
-
-	//define the IO
-	const std::string FileName("TestMPISampler.extract");
-	IOType iowall(FileName);
-
-	//define the Runtime Control
-	const IndexType NumParas=10;
-	const IndexType NSamples=100;
-	const IndexType NBurn=0;
-	const IndexType PacketSize=100;
-	const std::string FileRoot("./TestMPISampler");
-	RCType runctrl(NumParas,NSamples,PacketSize,NBurn,FileRoot);
-
-	MPISamplerType MPISmp(hmc,iowall,runctrl);
-
-	MPISmp.Run();
-}
-
-*/
 
 int main()
 {
@@ -119,7 +65,7 @@ int main()
 
 	MPISamplerType MPISmp(hmc,iowall,runctrl);
 
-	//MPISmp.Run();
+	MPISmp.Run();
 
 	return 0;
 }
