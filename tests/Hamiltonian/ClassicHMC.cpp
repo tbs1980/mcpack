@@ -24,41 +24,41 @@
 
 BOOST_AUTO_TEST_CASE(classic_hmc_10)
 {
-	typedef double RealType;
-	typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
-	typedef PotEngType::RealVectorType RealVectorType;
-	typedef PotEngType::RealMatrixType RealMatrixType;
-	typedef RealMatrixType::Index IndexType;
-	typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
-	typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-	typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef double RealType;
+    typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
+    typedef PotEngType::RealVectorType RealVectorType;
+    typedef PotEngType::RealMatrixType RealMatrixType;
+    typedef RealMatrixType::Index IndexType;
+    typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
+    typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
+    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
 
-	const IndexType N=10;
+    const IndexType N=10;
 
-	RealVectorType mu=RealVectorType::Zero(N);
-	RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
-	RealMatrixType MInv=RealMatrixType::Identity(N,N);
-	RealVectorType q0=RealVectorType::Random(N);
+    RealVectorType mu=RealVectorType::Zero(N);
+    RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
+    RealMatrixType MInv=RealMatrixType::Identity(N,N);
+    RealVectorType q0=RealVectorType::Random(N);
 
-	const RealType eps=1;
-	const IndexType Nsteps=10;
+    const RealType eps=1;
+    const IndexType Nsteps=10;
 
-	PotEngType G(mu,SigmaInv);
-	KinEngType K(MInv);
+    PotEngType G(mu,SigmaInv);
+    KinEngType K(MInv);
 
-	IntegratorType Lp(G,K);
+    IntegratorType Lp(G,K);
 
-	HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
 
-	const IndexType NSamples=1000;
+    const IndexType NSamples=1000;
 
-	RealMatrixType Samples(NSamples,N);
+    RealMatrixType Samples(NSamples,N);
 
-	hmc.Generate(Samples);
-	
-	std::cout<<"Acceptace Rate= "<<hmc.GetAcceptanceRate()<<std::endl;
+    hmc.Generate(Samples);
+    
+    std::cout<<"Acceptace Rate= "<<hmc.GetAcceptanceRate()<<std::endl;
 
-	BOOST_REQUIRE(0.91 < hmc.GetAcceptanceRate() and hmc.GetAcceptanceRate() < 0.95);
+    BOOST_REQUIRE(0.91 < hmc.GetAcceptanceRate() and hmc.GetAcceptanceRate() < 0.95);
 
 }
 
@@ -66,40 +66,40 @@ BOOST_AUTO_TEST_CASE(classic_hmc_10)
 
 BOOST_AUTO_TEST_CASE(classic_hmc_100)
 {
-	typedef double RealType;
-	typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
-	typedef PotEngType::RealVectorType RealVectorType;
-	typedef PotEngType::RealMatrixType RealMatrixType;
-	typedef RealMatrixType::Index IndexType;
-	typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
-	typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-	typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef double RealType;
+    typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
+    typedef PotEngType::RealVectorType RealVectorType;
+    typedef PotEngType::RealMatrixType RealMatrixType;
+    typedef RealMatrixType::Index IndexType;
+    typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
+    typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
+    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
 
-	const IndexType N=100;
+    const IndexType N=100;
 
-	RealVectorType mu=RealVectorType::Zero(N);
-	RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
-	RealMatrixType MInv=RealMatrixType::Identity(N,N);
-	RealVectorType q0=RealVectorType::Random(N);
+    RealVectorType mu=RealVectorType::Zero(N);
+    RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
+    RealMatrixType MInv=RealMatrixType::Identity(N,N);
+    RealVectorType q0=RealVectorType::Random(N);
 
-	const RealType eps=1;
-	const IndexType Nsteps=10;
+    const RealType eps=1;
+    const IndexType Nsteps=10;
 
-	PotEngType G(mu,SigmaInv);
-	KinEngType K(MInv);
+    PotEngType G(mu,SigmaInv);
+    KinEngType K(MInv);
 
-	IntegratorType Lp(G,K);
+    IntegratorType Lp(G,K);
 
-	HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
 
-	const IndexType NSamples=1000;
+    const IndexType NSamples=1000;
 
-	RealMatrixType Samples(NSamples,N);
+    RealMatrixType Samples(NSamples,N);
 
-	hmc.Generate(Samples);
-	
-	std::cout<<"Acceptace Rate= "<<hmc.GetAcceptanceRate()<<std::endl;
+    hmc.Generate(Samples);
+    
+    std::cout<<"Acceptace Rate= "<<hmc.GetAcceptanceRate()<<std::endl;
 
-	BOOST_REQUIRE(0.79 < hmc.GetAcceptanceRate() and hmc.GetAcceptanceRate() < 0.83);
+    BOOST_REQUIRE(0.79 < hmc.GetAcceptanceRate() and hmc.GetAcceptanceRate() < 0.83);
 
 }

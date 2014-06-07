@@ -23,3 +23,7 @@
 # the build directory
 build/*
 docs/theory/bib/*
+nbproject/*
+
+# from mac
+*.DS_Store

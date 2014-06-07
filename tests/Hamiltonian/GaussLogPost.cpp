@@ -26,31 +26,31 @@
 
 BOOST_AUTO_TEST_CASE(gaussian_log_posterior)
 {
-	typedef double RealType;
-	typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
-	typedef PotEngType::RealVectorType RealVectorType;
-	typedef PotEngType::RealMatrixType RealMatrixType;
-	typedef RealMatrixType::Index IndexType;
+    typedef double RealType;
+    typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
+    typedef PotEngType::RealVectorType RealVectorType;
+    typedef PotEngType::RealMatrixType RealMatrixType;
+    typedef RealMatrixType::Index IndexType;
 
-	const IndexType N=100;
+    const IndexType N=100;
 
-	RealVectorType mu=RealVectorType::Zero(N);
-	RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
-	RealVectorType q=RealVectorType::Random(N);
+    RealVectorType mu=RealVectorType::Zero(N);
+    RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
+    RealVectorType q=RealVectorType::Random(N);
 
-	PotEngType G(mu,SigmaInv);
-	
-	RealVectorType dq=SigmaInv*(mu-q);
-	RealType val=-0.5*(mu-q).transpose()*SigmaInv*(mu-q);
-	
-	RealVectorType dqTest=RealVectorType::Zero(N);
-	RealType valTest=0;
-	G.Evaluate(q,valTest,dqTest);
-	BOOST_CHECK_EQUAL(val,valTest);
-	
-	for(IndexType i=0;i<N;++i)
-	{
-		BOOST_CHECK_EQUAL(dq(i),dqTest(i));
-	}
-	
+    PotEngType G(mu,SigmaInv);
+    
+    RealVectorType dq=SigmaInv*(mu-q);
+    RealType val=-0.5*(mu-q).transpose()*SigmaInv*(mu-q);
+    
+    RealVectorType dqTest=RealVectorType::Zero(N);
+    RealType valTest=0;
+    G.Evaluate(q,valTest,dqTest);
+    BOOST_CHECK_EQUAL(val,valTest);
+    
+    for(IndexType i=0;i<N;++i)
+    {
+        BOOST_CHECK_EQUAL(dq(i),dqTest(i));
+    }
+    
 }

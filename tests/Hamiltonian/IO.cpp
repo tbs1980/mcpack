@@ -24,32 +24,32 @@
 
 BOOST_AUTO_TEST_CASE(finite_samples)
 {
-	typedef double RealType;
-	typedef Eigen::Matrix<RealType, Eigen::Dynamic, Eigen::Dynamic> RealMatrixType;
-	typedef RealMatrixType::Index IndexType;
-	typedef mcpack::hamiltonian::IO_WriteAll<RealMatrixType> IOType;
+    typedef double RealType;
+    typedef Eigen::Matrix<RealType, Eigen::Dynamic, Eigen::Dynamic> RealMatrixType;
+    typedef RealMatrixType::Index IndexType;
+    typedef mcpack::hamiltonian::IO_WriteAll<RealMatrixType> IOType;
 
-	const IndexType NParas=10;
-	const IndexType PacketSize=100;
-	const std::string FileName("TestIO.dat");
-	IOType iowall(FileName);
+    const IndexType NParas=10;
+    const IndexType PacketSize=100;
+    const std::string FileName("TestIO.dat");
+    IOType iowall(FileName);
 
-	RealMatrixType Samples=RealMatrixType::Random(PacketSize,NParas);
+    RealMatrixType Samples=RealMatrixType::Random(PacketSize,NParas);
 
-	iowall.Write(Samples);
+    iowall.Write(Samples);
 
-	RealMatrixType SamplesTest=RealMatrixType::Zero(PacketSize,NParas);
+    RealMatrixType SamplesTest=RealMatrixType::Zero(PacketSize,NParas);
 
-	const std::string separation(",");
-	mcpack::utils::ReadMatrixFromTextFile(SamplesTest,FileName,separation);
+    const std::string separation(",");
+    mcpack::utils::ReadMatrixFromTextFile(SamplesTest,FileName,separation);
 
-	for(IndexType i=0;i<PacketSize;++i)
-	{
-		for(IndexType j=0;j<NParas;++j)
-		{
-			RealType rel_diff=( Samples(i,j)-SamplesTest(i,j) )/Samples(i,j);
-			BOOST_REQUIRE(fabs( rel_diff )  < 1e-5);
-		}
-	}
+    for(IndexType i=0;i<PacketSize;++i)
+    {
+        for(IndexType j=0;j<NParas;++j)
+        {
+            RealType rel_diff=( Samples(i,j)-SamplesTest(i,j) )/Samples(i,j);
+            BOOST_REQUIRE(fabs( rel_diff )  < 1e-5);
+        }
+    }
 
 }

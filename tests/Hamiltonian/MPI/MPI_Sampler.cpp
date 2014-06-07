@@ -21,51 +21,51 @@
 
 int main()
 {
-	typedef double RealType;
-	typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
-	typedef PotEngType::RealVectorType RealVectorType;
-	typedef PotEngType::RealMatrixType RealMatrixType;
-	typedef RealMatrixType::Index IndexType;
-	typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
-	typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-	typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
-	typedef mcpack::hamiltonian::IO_WriteAll<RealMatrixType> IOType;
-	typedef mcpack::hamiltonian::RunCtrl_FiniteSamples<RealMatrixType> RCType;
-	typedef mcpack::hamiltonian::Mpi_Sampler<HMCType,IOType,RCType> MPISamplerType;
+    typedef double RealType;
+    typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
+    typedef PotEngType::RealVectorType RealVectorType;
+    typedef PotEngType::RealMatrixType RealMatrixType;
+    typedef RealMatrixType::Index IndexType;
+    typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
+    typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
+    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef mcpack::hamiltonian::IO_WriteAll<RealMatrixType> IOType;
+    typedef mcpack::hamiltonian::RunCtrl_FiniteSamples<RealMatrixType> RCType;
+    typedef mcpack::hamiltonian::Mpi_Sampler<HMCType,IOType,RCType> MPISamplerType;
 
-	//define the HMC
-	const IndexType N=10;
-	RealVectorType mu=RealVectorType::Zero(N);
-	RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
-	RealMatrixType MInv=RealMatrixType::Identity(N,N);
-	RealVectorType q0=RealVectorType::Random(N);
+    //define the HMC
+    const IndexType N=10;
+    RealVectorType mu=RealVectorType::Zero(N);
+    RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
+    RealMatrixType MInv=RealMatrixType::Identity(N,N);
+    RealVectorType q0=RealVectorType::Random(N);
 
-	const RealType eps=1;
-	const IndexType Nsteps=10;
+    const RealType eps=1;
+    const IndexType Nsteps=10;
 
-	PotEngType G(mu,SigmaInv);
-	KinEngType K(MInv);
+    PotEngType G(mu,SigmaInv);
+    KinEngType K(MInv);
 
-	IntegratorType Lp(G,K);
+    IntegratorType Lp(G,K);
 
-	HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
 
-	//define the IO
-	const std::string FileName("TestMPISampler.extract");
-	IOType iowall(FileName);
+    //define the IO
+    const std::string FileName("TestMPISampler.extract");
+    IOType iowall(FileName);
 
-	//define the Runtime Control
-	const IndexType NumParas=10;
-	const IndexType NSamples=1000;
-	const IndexType NBurn=200;
-	const IndexType PacketSize=100;
-	const std::string FileRoot("./TestMPISampler");
-	const bool silent=false;
-	RCType runctrl(NumParas,NSamples,PacketSize,NBurn,FileRoot,silent);
+    //define the Runtime Control
+    const IndexType NumParas=10;
+    const IndexType NSamples=1000;
+    const IndexType NBurn=200;
+    const IndexType PacketSize=100;
+    const std::string FileRoot("./TestMPISampler");
+    const bool silent=false;
+    RCType runctrl(NumParas,NSamples,PacketSize,NBurn,FileRoot,silent);
 
-	MPISamplerType MPISmp(hmc,iowall,runctrl);
+    MPISamplerType MPISmp(hmc,iowall,runctrl);
 
-	MPISmp.Run();
+    MPISmp.Run();
 
-	return 0;
+    return 0;
 }

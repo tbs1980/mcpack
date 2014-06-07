@@ -22,219 +22,219 @@
 
 namespace mcpack{ namespace hamiltonian {
 
-	template<class _Engine,class _IOType,class _RunCtrlType>
-	class Mpi_Sampler
-	{
-	public:
-		typedef _Engine EngineType;
-		typedef _IOType IOType;
-		typedef _RunCtrlType RunCtrlType;
+    template<class _Engine,class _IOType,class _RunCtrlType>
+    class Mpi_Sampler
+    {
+    public:
+        typedef _Engine EngineType;
+        typedef _IOType IOType;
+        typedef _RunCtrlType RunCtrlType;
 
-		typedef typename EngineType::RealMatrixType RealMatrixType;
-		typedef typename EngineType::RealVectorType RealVectorType;
-		typedef typename EngineType::RealType RealType;
-		typedef typename EngineType::IndexType IndexType;
+        typedef typename EngineType::RealMatrixType RealMatrixType;
+        typedef typename EngineType::RealVectorType RealVectorType;
+        typedef typename EngineType::RealType RealType;
+        typedef typename EngineType::IndexType IndexType;
 
-		typedef boost::mpi::environment MpiEnvType;
-		typedef boost::mpi::communicator MpiCommType;
-		typedef boost::mpi::request MpiRequestType;
-		
-		Mpi_Sampler(EngineType const & Eng,IOType const& IO,RunCtrlType const& RunCtrl)
-		:m_Eng(Eng),m_IO(IO),m_RunCtrl(RunCtrl)
-		{
-			std::stringstream ss;
-			ss<<"."<<m_World.rank();
+        typedef boost::mpi::environment MpiEnvType;
+        typedef boost::mpi::communicator MpiCommType;
+        typedef boost::mpi::request MpiRequestType;
+        
+        Mpi_Sampler(EngineType const & Eng,IOType const& IO,RunCtrlType const& RunCtrl)
+        :m_Eng(Eng),m_IO(IO),m_RunCtrl(RunCtrl)
+        {
+            std::stringstream ss;
+            ss<<"."<<m_World.rank();
 
-			std::string IOFileName=m_IO.GetFileName();
-			IOFileName+=ss.str();
-			m_IO.SetFileName(IOFileName);
+            std::string IOFileName=m_IO.GetFileName();
+            IOFileName+=ss.str();
+            m_IO.SetFileName(IOFileName);
 
-			std::string LogFileName=m_RunCtrl.GetLogFileName();
-			LogFileName+=ss.str();
-			m_RunCtrl.SetLogFileName(LogFileName);
+            std::string LogFileName=m_RunCtrl.GetLogFileName();
+            LogFileName+=ss.str();
+            m_RunCtrl.SetLogFileName(LogFileName);
 
-			m_RunCtrl.LoadInfoFromLogFile();
+            m_RunCtrl.LoadInfoFromLogFile();
 
-			if(!m_RunCtrl.Resume())
-			{
-				m_RunCtrl.WriteInfo2LogFile();
-			}
+            if(!m_RunCtrl.Resume())
+            {
+                m_RunCtrl.WriteInfo2LogFile();
+            }
 
-			PrintResumeInfo();
-			PrintSamplingInfo();
-		}
+            PrintResumeInfo();
+            PrintSamplingInfo();
+        }
 
-		void Run()
-		{
-			RealMatrixType Samples(m_RunCtrl.PacketSize(),m_RunCtrl.NumParas());
-			
-			if(m_RunCtrl.Resume() )
-			{
-				if(m_RunCtrl.Continue())
-				{
-					std::stringstream RandState;
-					RandState<<m_RunCtrl.RandState();
-					m_Eng.SetRandState(RandState);
+        void Run()
+        {
+            RealMatrixType Samples(m_RunCtrl.PacketSize(),m_RunCtrl.NumParas());
+            
+            if(m_RunCtrl.Resume() )
+            {
+                if(m_RunCtrl.Continue())
+                {
+                    std::stringstream RandState;
+                    RandState<<m_RunCtrl.RandState();
+                    m_Eng.SetRandState(RandState);
 
-					RealVectorType ChainState=
-						mcpack::utils::String2Vector<RealVectorType>(m_RunCtrl.ChainState(),std::string(" "));
+                    RealVectorType ChainState=
+                        mcpack::utils::String2Vector<RealVectorType>(m_RunCtrl.ChainState(),std::string(" "));
 
-					m_Eng.SetStartPoint(ChainState);					
-				}
-			}
-			else
-			{
-				GenerateRandomSeed();				
-			}
+                    m_Eng.SetStartPoint(ChainState);                    
+                }
+            }
+            else
+            {
+                GenerateRandomSeed();               
+            }
 
-			while(m_RunCtrl.Continue())
-			{
-				std::stringstream RandState;
+            while(m_RunCtrl.Continue())
+            {
+                std::stringstream RandState;
 
-				m_Eng.Generate(Samples);
+                m_Eng.Generate(Samples);
 
-				m_Eng.GetRandState(RandState);
-				RealType AccRate=m_Eng.GetAcceptanceRate();
+                m_Eng.GetRandState(RandState);
+                RealType AccRate=m_Eng.GetAcceptanceRate();
 
-				m_RunCtrl.Save(Samples,RandState,AccRate);
+                m_RunCtrl.Save(Samples,RandState,AccRate);
 
-				m_IO.Write(Samples);
-			}
-		}
-
-
-	private:
+                m_IO.Write(Samples);
+            }
+        }
 
 
-		void GenerateRandomSeed()
-		{
-			std::vector<unsigned long> seedVect(m_World.size());
-			for(size_t i=0;i<(size_t)m_World.size();++i)
-			{
-				seedVect[i]=(unsigned long)rand();
-			}
-			m_Eng.SetSeed(seedVect[m_World.rank()]);
-		}
+    private:
 
-		void PrintResumeInfo(void) const
-		{
 
-			//print a summary of what we have found
-			if (m_World.rank() == 0)
-			{
-				std::vector<MpiRequestType> reqs(m_World.size()-1);
+        void GenerateRandomSeed()
+        {
+            std::vector<unsigned long> seedVect(m_World.size());
+            for(size_t i=0;i<(size_t)m_World.size();++i)
+            {
+                seedVect[i]=(unsigned long)rand();
+            }
+            m_Eng.SetSeed(seedVect[m_World.rank()]);
+        }
 
-				//Is chain zero resuming from previous run?
-				std::string IsResuming=Bool2String(m_RunCtrl.Resume());
+        void PrintResumeInfo(void) const
+        {
 
-				std::stringstream ss_resume;
-				ss_resume<<"Chain 0 resuming = "<<IsResuming;
-				WriteOutput2Console(ss_resume.str(),m_RunCtrl.Silent());
+            //print a summary of what we have found
+            if (m_World.rank() == 0)
+            {
+                std::vector<MpiRequestType> reqs(m_World.size()-1);
 
-				//we need messages from other np-1 processes.
-				std::vector<std::string> msgVect(m_World.size()-1);
+                //Is chain zero resuming from previous run?
+                std::string IsResuming=Bool2String(m_RunCtrl.Resume());
 
-				//receive the messages from other processes
-				for(IndexType i=1;i<m_World.size();++i)
-				{
-					reqs[i-1] =  m_World.irecv(i, i, msgVect[i-1]);
-				}
+                std::stringstream ss_resume;
+                ss_resume<<"Chain 0 resuming = "<<IsResuming;
+                WriteOutput2Console(ss_resume.str(),m_RunCtrl.Silent());
 
-				boost::mpi::wait_all(reqs.begin(), reqs.end());
+                //we need messages from other np-1 processes.
+                std::vector<std::string> msgVect(m_World.size()-1);
 
-				for(IndexType i=1;i<m_World.size();++i)
-				{
-					std::stringstream SSResumeOthers;
-					SSResumeOthers<<"Chain "<<i<<" resuming = "<<msgVect[i-1];
-					WriteOutput2Console(SSResumeOthers.str(),m_RunCtrl.Silent());
-				}
-			}
-			else
-			{
-				std::vector<MpiRequestType> reqs(m_World.size()-1);
+                //receive the messages from other processes
+                for(IndexType i=1;i<m_World.size();++i)
+                {
+                    reqs[i-1] =  m_World.irecv(i, i, msgVect[i-1]);
+                }
 
-				std::string IsResuming=Bool2String(m_RunCtrl.Resume());
+                boost::mpi::wait_all(reqs.begin(), reqs.end());
 
-				//send the messages to process 0
-				reqs[m_World.rank()-1] =  m_World.isend(0, m_World.rank(), IsResuming);
+                for(IndexType i=1;i<m_World.size();++i)
+                {
+                    std::stringstream SSResumeOthers;
+                    SSResumeOthers<<"Chain "<<i<<" resuming = "<<msgVect[i-1];
+                    WriteOutput2Console(SSResumeOthers.str(),m_RunCtrl.Silent());
+                }
+            }
+            else
+            {
+                std::vector<MpiRequestType> reqs(m_World.size()-1);
 
-				boost::mpi::wait_all(reqs.begin(), reqs.end());
-			}
-		}
+                std::string IsResuming=Bool2String(m_RunCtrl.Resume());
 
-		void  PrintSamplingInfo(void) const
-		{
+                //send the messages to process 0
+                reqs[m_World.rank()-1] =  m_World.isend(0, m_World.rank(), IsResuming);
 
-			//print a summary of what we have found
-			if (m_World.rank() == 0)
-			{
-				std::vector<MpiRequestType> reqs(m_World.size()-1);
+                boost::mpi::wait_all(reqs.begin(), reqs.end());
+            }
+        }
 
-				//Is chain zero resuming from previous run?
-				std::string IsResuming=Bool2String(!m_RunCtrl.Continue());
+        void  PrintSamplingInfo(void) const
+        {
 
-				std::stringstream ss_resume;
-				ss_resume<<"Chain 0 sampling finished = "<<IsResuming;
-				WriteOutput2Console(ss_resume.str(),m_RunCtrl.Silent());
+            //print a summary of what we have found
+            if (m_World.rank() == 0)
+            {
+                std::vector<MpiRequestType> reqs(m_World.size()-1);
 
-				//we need messages from other np-1 processes.
-				std::vector<std::string> msgVect(m_World.size()-1);
+                //Is chain zero resuming from previous run?
+                std::string IsResuming=Bool2String(!m_RunCtrl.Continue());
 
-				//receive the messages from other processes
-				for(IndexType i=1;i<m_World.size();++i)
-				{
-					reqs[i-1] =  m_World.irecv(i, i, msgVect[i-1]);
-				}
+                std::stringstream ss_resume;
+                ss_resume<<"Chain 0 sampling finished = "<<IsResuming;
+                WriteOutput2Console(ss_resume.str(),m_RunCtrl.Silent());
 
-				boost::mpi::wait_all(reqs.begin(), reqs.end());
+                //we need messages from other np-1 processes.
+                std::vector<std::string> msgVect(m_World.size()-1);
 
-				for(IndexType i=1;i<m_World.size();++i)
-				{
-					std::stringstream SSResumeOthers;
-					SSResumeOthers<<"Chain "<<i<<" sampling finished = "<<msgVect[i-1];
-					WriteOutput2Console(SSResumeOthers.str(),m_RunCtrl.Silent());
-				}
-			}
-			else
-			{
-				std::vector<MpiRequestType> reqs(m_World.size()-1);
+                //receive the messages from other processes
+                for(IndexType i=1;i<m_World.size();++i)
+                {
+                    reqs[i-1] =  m_World.irecv(i, i, msgVect[i-1]);
+                }
 
-				std::string IsResuming=Bool2String(!m_RunCtrl.Continue());
+                boost::mpi::wait_all(reqs.begin(), reqs.end());
 
-				//send the messages to process 0
-				reqs[m_World.rank()-1] =  m_World.isend(0, m_World.rank(), IsResuming);
+                for(IndexType i=1;i<m_World.size();++i)
+                {
+                    std::stringstream SSResumeOthers;
+                    SSResumeOthers<<"Chain "<<i<<" sampling finished = "<<msgVect[i-1];
+                    WriteOutput2Console(SSResumeOthers.str(),m_RunCtrl.Silent());
+                }
+            }
+            else
+            {
+                std::vector<MpiRequestType> reqs(m_World.size()-1);
 
-				boost::mpi::wait_all(reqs.begin(), reqs.end());
-			}
-		}
+                std::string IsResuming=Bool2String(!m_RunCtrl.Continue());
 
-		std::string Bool2String(bool val) const
-		{
-			if(val==true)
-			{
-				return std::string("True");
-			}
-			else
-			{
-				return std::string("False");
-			}
-		}
-		
-		static void WriteOutput2Console(std::string message,bool silent)
-		{
-			if(!silent)
-			{
-				std::cout<<"-->"<<message<<"\n"<<std::endl;
-			}
-		}
+                //send the messages to process 0
+                reqs[m_World.rank()-1] =  m_World.isend(0, m_World.rank(), IsResuming);
 
-		EngineType m_Eng;
-		IOType m_IO;
-		RunCtrlType m_RunCtrl;
-		MpiEnvType m_Env;
-		MpiCommType m_World;
+                boost::mpi::wait_all(reqs.begin(), reqs.end());
+            }
+        }
 
-	};
+        std::string Bool2String(bool val) const
+        {
+            if(val==true)
+            {
+                return std::string("True");
+            }
+            else
+            {
+                return std::string("False");
+            }
+        }
+        
+        static void WriteOutput2Console(std::string message,bool silent)
+        {
+            if(!silent)
+            {
+                std::cout<<"-->"<<message<<"\n"<<std::endl;
+            }
+        }
+
+        EngineType m_Eng;
+        IOType m_IO;
+        RunCtrlType m_RunCtrl;
+        MpiEnvType m_Env;
+        MpiCommType m_World;
+
+    };
 
 }//namespace hamiltonian
 }//namespace mcpack

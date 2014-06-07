@@ -22,7 +22,7 @@ project(mcpack)
 
 # guard against in-source builds (got this from Eigen)
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-  message(FATAL_ERROR "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there. You may need to remove CMakeCache.txt. ")
+    message(FATAL_ERROR "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there. You may need to remove CMakeCache.txt. ")
 endif()
 
 #add the customised package searches to the module path
@@ -31,10 +31,10 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 add_subdirectory(tests)
 
 if(COMPILE_DOCS)
-	add_subdirectory(docs)
+    add_subdirectory(docs)
 endif()
 
 if(UNIT_TESTS)
-	enable_testing()
+    enable_testing()
 endif()
 
