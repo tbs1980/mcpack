@@ -54,3 +54,40 @@ BOOST_AUTO_TEST_CASE(gaussian_log_posterior)
     }
     
 }
+
+BOOST_AUTO_TEST_CASE(gaussian_log_posterior_diag_sigma_inv)
+{
+    typedef double RealType;
+    typedef mcpack::utils::GaussPotentialEnergyDiag<RealType> PotEngType;
+    typedef PotEngType::RealVectorType RealVectorType;
+    typedef PotEngType::RealDiagMatrixType RealDiagMatrixType;
+    typedef RealDiagMatrixType::Index IndexType;
+
+    const IndexType N=100;
+
+    RealVectorType mu=RealVectorType::Zero(N);
+    RealVectorType q=RealVectorType::Random(N);
+    RealDiagMatrixType SigmaInv(N);
+    for(IndexType i=0;i<N;++i)
+    {
+        SigmaInv(i)=1;
+    }
+
+    PotEngType G(mu,SigmaInv);
+    
+    RealVectorType dq=SigmaInv.cwiseProduct(mu-q);
+    RealType val=-0.5*(mu-q).transpose()*(SigmaInv.cwiseProduct(mu-q));
+
+    RealVectorType dqTest=RealVectorType::Zero(N);
+    RealType valTest=0;
+    G.Evaluate(q,valTest,dqTest);
+
+    
+    BOOST_REQUIRE(fabs(val-valTest) < 1e-15);
+    
+    for(IndexType i=0;i<N;++i)
+    {
+        BOOST_REQUIRE( fabs(dq(i)-dqTest(i)) < 1e-15);
+    }
+}
+

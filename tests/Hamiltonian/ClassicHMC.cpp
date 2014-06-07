@@ -22,6 +22,7 @@
 #include <boost/test/unit_test.hpp>
 #include <mcpack/CoreHeaders.hpp>
 
+
 BOOST_AUTO_TEST_CASE(classic_hmc_10)
 {
     typedef double RealType;
@@ -103,3 +104,99 @@ BOOST_AUTO_TEST_CASE(classic_hmc_100)
     BOOST_REQUIRE(0.79 < hmc.GetAcceptanceRate() and hmc.GetAcceptanceRate() < 0.83);
 
 }
+
+BOOST_AUTO_TEST_CASE(classic_hmc_diag_mass_mat)
+{
+    typedef double RealType;
+    typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
+    typedef PotEngType::RealVectorType RealVectorType;
+    typedef PotEngType::RealMatrixType RealMatrixType;
+    typedef RealMatrixType::Index IndexType;
+    typedef mcpack::hamiltonian::GaussKineticEnergyDiag<RealType> KinEngType;
+    typedef KinEngType::RealDiagMatrixType RealDiagMatrixType;
+    typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
+    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+
+    const IndexType N=100;
+
+    RealVectorType mu=RealVectorType::Zero(N);
+    RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
+    RealVectorType q0=RealVectorType::Random(N);
+
+    const RealType eps=1;
+    const IndexType Nsteps=10;
+
+    RealDiagMatrixType MInv(N);
+    for(IndexType i=0;i<N;++i)
+    {
+        MInv(i)=1;
+    }
+
+    PotEngType G(mu,SigmaInv);
+    KinEngType K(MInv);
+
+    IntegratorType Lp(G,K);
+
+    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+
+    const IndexType NSamples=1000;
+
+    RealMatrixType Samples(NSamples,N);
+
+    hmc.Generate(Samples);
+    
+    std::cout<<"Acceptace Rate= "<<hmc.GetAcceptanceRate()<<std::endl;
+
+    BOOST_REQUIRE(0.79 < hmc.GetAcceptanceRate() and hmc.GetAcceptanceRate() < 0.83);
+
+}
+
+BOOST_AUTO_TEST_CASE(classic_hmc_diag_mass_mat_sigma_inv)
+{
+    typedef double RealType;
+    typedef mcpack::utils::GaussPotentialEnergyDiag<RealType> PotEngType;
+    typedef PotEngType::RealVectorType RealVectorType;
+    typedef PotEngType::RealDiagMatrixType RealDiagMatrixType;
+    typedef RealDiagMatrixType::Index IndexType;
+    typedef mcpack::hamiltonian::GaussKineticEnergyDiag<RealType> KinEngType;
+    typedef KinEngType::RealDiagMatrixType RealDiagMatrixType;
+    typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
+    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef Eigen::MatrixXd RealMatrixType;
+
+    const IndexType N=1000;
+
+    RealVectorType mu=RealVectorType::Zero(N);
+    RealVectorType q0=RealVectorType::Random(N);
+
+    const RealType eps=1;
+    const IndexType Nsteps=10;
+
+    RealDiagMatrixType MInv(N);
+    RealDiagMatrixType SigmaInv(N);
+   for(IndexType i=0;i<N;++i)
+    {
+        RealType s=2;
+        SigmaInv(i)=s;
+        MInv(i)=1./s;
+    }
+
+    PotEngType G(mu,SigmaInv);
+    KinEngType K(MInv);
+
+    IntegratorType Lp(G,K);
+
+    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+
+    const IndexType NSamples=1000;
+
+    RealMatrixType Samples(NSamples,N);
+
+    hmc.Generate(Samples);
+    
+    std::cout<<"Acceptace Rate= "<<hmc.GetAcceptanceRate()<<std::endl;
+
+    BOOST_REQUIRE(0.56 < hmc.GetAcceptanceRate() and hmc.GetAcceptanceRate() < 0.58);
+
+}
+

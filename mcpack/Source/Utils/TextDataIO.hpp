@@ -263,6 +263,7 @@ namespace mcpack{ namespace utils {
         //now check if the sizes are the same
         if(container.size()!= (sizeType)mat.rows() || container[0].size()!= (sizeType) mat.cols())
         {
+            std::cout<<container.size()<<"\t"<< (sizeType)mat.rows()<<"\t"<<container[0].size() <<"\t"<<(sizeType) mat.cols()<<std::endl;
             std::string message=std::string("Dimensions of the matrix do not agree with the dimension of the matrix in ")+fileName;
             throw TextDataException(message);           
         }

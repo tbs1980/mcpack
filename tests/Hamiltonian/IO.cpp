@@ -22,8 +22,10 @@
 #include <boost/test/unit_test.hpp>
 #include <mcpack/CoreHeaders.hpp>
 
+
 BOOST_AUTO_TEST_CASE(finite_samples)
 {
+    
     typedef double RealType;
     typedef Eigen::Matrix<RealType, Eigen::Dynamic, Eigen::Dynamic> RealMatrixType;
     typedef RealMatrixType::Index IndexType;
@@ -32,7 +34,13 @@ BOOST_AUTO_TEST_CASE(finite_samples)
     const IndexType NParas=10;
     const IndexType PacketSize=100;
     const std::string FileName("TestIO.dat");
+    //clear the contents of TestIO.dat if previous versions exist
+    std::ofstream of;
+    of.open(FileName.c_str(),std::ios::trunc);
+    of.close();
+
     IOType iowall(FileName);
+
 
     RealMatrixType Samples=RealMatrixType::Random(PacketSize,NParas);
 
@@ -42,7 +50,7 @@ BOOST_AUTO_TEST_CASE(finite_samples)
 
     const std::string separation(",");
     mcpack::utils::ReadMatrixFromTextFile(SamplesTest,FileName,separation);
-
+    
     for(IndexType i=0;i<PacketSize;++i)
     {
         for(IndexType j=0;j<NParas;++j)

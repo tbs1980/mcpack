@@ -47,10 +47,10 @@ namespace mcpack { namespace hamiltonian {
         {
             MCPACK_ASSERT(MInv.rows()==MInv.cols(),"Mass^-1 should be a square matrix: rows==cols");
 
-            //find the inverse of the matrix
-            LLTType lltOfMInv(m_MInv);
+            //find the inverse of the Minv ie we need the mass matrix M
+            LLTType lltOfMInv(m_MInv.inverse());
 
-            MCPACK_ASSERT(lltOfMInv.info()==Eigen::Success,"Mass^-1 is not positive definite");
+            MCPACK_ASSERT(lltOfMInv.info()==Eigen::Success,"Mass matrix is not positive definite");
 
             m_Chol=lltOfMInv.matrixL();
         }
@@ -110,7 +110,7 @@ namespace mcpack { namespace hamiltonian {
         {
             for(IndexType i=0;i<p.rows();++i)
             {
-                p(i)*=sqrt(m_MInv(i));
+                p(i)*=sqrt(1./m_MInv(i));
             }
         }
 

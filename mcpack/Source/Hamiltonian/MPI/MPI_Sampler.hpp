@@ -60,8 +60,7 @@ namespace mcpack{ namespace hamiltonian {
                 m_RunCtrl.WriteInfo2LogFile();
             }
 
-            PrintResumeInfo();
-            PrintSamplingInfo();
+            PrintInfo();
         }
 
         void Run()
@@ -116,20 +115,27 @@ namespace mcpack{ namespace hamiltonian {
             m_Eng.SetSeed(seedVect[m_World.rank()]);
         }
 
-        void PrintResumeInfo(void) const
+        void PrintInfo(void) const
         {
 
             //print a summary of what we have found
             if (m_World.rank() == 0)
             {
+                std::string Header("\n----------------------------------------------------------------\n"); 
+                Header+=std::string("        Chain        Logfile present?        Sampling finished?\n");
+                Header+=std::string("----------------------------------------------------------------");
+
+                WriteOutput2Console(Header);
+
                 std::vector<MpiRequestType> reqs(m_World.size()-1);
 
                 //Is chain zero resuming from previous run?
                 std::string IsResuming=Bool2String(m_RunCtrl.Resume());
+                std::string IsSampling=Bool2String(!m_RunCtrl.Continue());
 
                 std::stringstream ss_resume;
-                ss_resume<<"Chain 0 resuming = "<<IsResuming;
-                WriteOutput2Console(ss_resume.str(),m_RunCtrl.Silent());
+                ss_resume<<"         0                 "<<IsResuming<<"                     "<<IsSampling;
+                WriteOutput2Console(ss_resume.str());
 
                 //we need messages from other np-1 processes.
                 std::vector<std::string> msgVect(m_World.size()-1);
@@ -145,8 +151,8 @@ namespace mcpack{ namespace hamiltonian {
                 for(IndexType i=1;i<m_World.size();++i)
                 {
                     std::stringstream SSResumeOthers;
-                    SSResumeOthers<<"Chain "<<i<<" resuming = "<<msgVect[i-1];
-                    WriteOutput2Console(SSResumeOthers.str(),m_RunCtrl.Silent());
+                    SSResumeOthers<<"         "<<i<<"                 "<<msgVect[i-1];
+                    WriteOutput2Console(SSResumeOthers.str());
                 }
             }
             else
@@ -154,55 +160,11 @@ namespace mcpack{ namespace hamiltonian {
                 std::vector<MpiRequestType> reqs(m_World.size()-1);
 
                 std::string IsResuming=Bool2String(m_RunCtrl.Resume());
+                std::string IsSampling=Bool2String(!m_RunCtrl.Continue());
+                std::string messg=IsResuming+std::string("                     ")+IsSampling;
 
                 //send the messages to process 0
-                reqs[m_World.rank()-1] =  m_World.isend(0, m_World.rank(), IsResuming);
-
-                boost::mpi::wait_all(reqs.begin(), reqs.end());
-            }
-        }
-
-        void  PrintSamplingInfo(void) const
-        {
-
-            //print a summary of what we have found
-            if (m_World.rank() == 0)
-            {
-                std::vector<MpiRequestType> reqs(m_World.size()-1);
-
-                //Is chain zero resuming from previous run?
-                std::string IsResuming=Bool2String(!m_RunCtrl.Continue());
-
-                std::stringstream ss_resume;
-                ss_resume<<"Chain 0 sampling finished = "<<IsResuming;
-                WriteOutput2Console(ss_resume.str(),m_RunCtrl.Silent());
-
-                //we need messages from other np-1 processes.
-                std::vector<std::string> msgVect(m_World.size()-1);
-
-                //receive the messages from other processes
-                for(IndexType i=1;i<m_World.size();++i)
-                {
-                    reqs[i-1] =  m_World.irecv(i, i, msgVect[i-1]);
-                }
-
-                boost::mpi::wait_all(reqs.begin(), reqs.end());
-
-                for(IndexType i=1;i<m_World.size();++i)
-                {
-                    std::stringstream SSResumeOthers;
-                    SSResumeOthers<<"Chain "<<i<<" sampling finished = "<<msgVect[i-1];
-                    WriteOutput2Console(SSResumeOthers.str(),m_RunCtrl.Silent());
-                }
-            }
-            else
-            {
-                std::vector<MpiRequestType> reqs(m_World.size()-1);
-
-                std::string IsResuming=Bool2String(!m_RunCtrl.Continue());
-
-                //send the messages to process 0
-                reqs[m_World.rank()-1] =  m_World.isend(0, m_World.rank(), IsResuming);
+                reqs[m_World.rank()-1] =  m_World.isend(0, m_World.rank(), messg);
 
                 boost::mpi::wait_all(reqs.begin(), reqs.end());
             }
@@ -212,19 +174,19 @@ namespace mcpack{ namespace hamiltonian {
         {
             if(val==true)
             {
-                return std::string("True");
+                return std::string("Yes");
             }
             else
             {
-                return std::string("False");
+                return std::string("No");
             }
         }
         
-        static void WriteOutput2Console(std::string message,bool silent)
+        void WriteOutput2Console(std::string message) const
         {
-            if(!silent)
+            if(!m_RunCtrl.Silent())
             {
-                std::cout<<"-->"<<message<<"\n"<<std::endl;
+                std::cout<<message<<std::endl;
             }
         }
 

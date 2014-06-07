@@ -95,7 +95,7 @@ namespace mcpack{ namespace hamiltonian{
         {
             if(!silent)
             {
-                std::cout<<"-->"<<message<<"\n"<<std::endl;
+                std::cout<<"--> "<<message<<"\n"<<std::endl;
             }
         }
 
