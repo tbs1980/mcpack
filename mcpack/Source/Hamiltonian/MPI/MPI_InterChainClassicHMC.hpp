@@ -1,11 +1,7 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+#ifndef MCPACK_MPIINTERCHAINCLASSICHMC_HPP
+#define MCPACK_MPIINTERCHAINCLASSICHMC_HPP
 
-#ifndef MCPACK_CLASSIC_HMC_HPP
-#define MCPACK_CLASSIC_HMC_HPP
-
-namespace mcpack { namespace hamiltonian {
+namespace mcpack{ namespace hamiltonian {
 
     template<class _ProposalType>
     class ClassicHMC
@@ -18,14 +14,20 @@ namespace mcpack { namespace hamiltonian {
         typedef typename ProposalType::RandVarGenType RandVarGenType;
         typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, Eigen::Dynamic> RealMatrixType;
         typedef typename RandVarGenType::SeedType SeedType;
+        std::vector<ProposalType> PropVectorType;
+        std::vector<RealType> DeltaHVectorType;
+        typedef boost::mpi::environment MpiEnvType;
+        typedef boost::mpi::communicator MpiCommType;
 
         ClassicHMC()
         :m_q0(0,0),m_AccRate(0),m_RVGen(0)
         {}
 
         ClassicHMC(ProposalType const & Prop,RealVectorType const& q0,const SeedType seed)
-        :m_Prop(Prop),m_q0(q0),m_AccRate(0),m_RVGen(seed)
+        :m_q0(q0),m_AccRate(0),m_RVGen(seed)
         {
+            m_PropVector=PropVectorType(m_World.size(),Prop);
+            m_DeltaVector=DeltaHVectorType(m_World.size(),0.);
         }
 
         void Generate(RealMatrixType & Samples)
@@ -41,9 +43,33 @@ namespace mcpack { namespace hamiltonian {
 
             while(samp < NSamples)
             {
-                RealType dH=0;
+                
                 RealVectorType q1(m_q0);
-                m_Prop.Propose(q1,dH,m_RVGen);
+
+                std::vector<RealVectorType> q1Vector(m_World.size(),q1);
+                
+                //m_Prop.Propose(q1,dH,m_RVGen);
+                for(IndexType i=0;i<m_World.size();++i)
+                {
+                    if(i == (IndexType) m_World.rank())
+                    {
+                        RealType dH=0;
+                        m_PropVector[i].Propose(q1,dH,m_RVGen);
+                        m_DeltaVector[i]=dH;
+                    }
+                }
+
+                m_World.barrier();
+
+                for(IndexType i=0;i<m_World.size();++i)
+                {
+                    if(i ==  (IndexType) m_World.rank() )
+                    {
+                        //1. send the current dh to every other process
+
+                        //2. receive the values of all ther dhs from other processes
+                    }
+                }
 
                 RealType u=m_RVGen.Uniform();
                 if(u < exp(-dH))
@@ -87,15 +113,16 @@ namespace mcpack { namespace hamiltonian {
         }
 
     private:
-        ProposalType m_Prop;
+        PropVectorType m_PropVector;
+        DeltaHVectorType m_DeltaVector;
         RealVectorType m_q0;
         RealType m_AccRate;
         RandVarGenType m_RVGen;
+        MpiEnvType m_Env;
+        MpiCommType m_World;
     };
 
+}//namespace hamiltonian
+}//namespace mcpack
 
-} //namespace hamiltonian
-} //namespace mcpack
-
-
-#endif //MCPACK_CLASSIC_HMC_HPP
+#endif //MCPACK_MPIINTERCHAINCLASSICHMC_HPP
