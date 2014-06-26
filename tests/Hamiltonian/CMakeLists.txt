@@ -47,6 +47,10 @@ add_executable(Integration Integration.cpp)
 target_link_libraries(Integration ${Boost_LIBRARIES})
 add_test(TestIntegration Integration)
 
+add_executable(HMCProposal HMCProposal.cpp)
+target_link_libraries(HMCProposal ${Boost_LIBRARIES})
+add_test(TestHMCProposal HMCProposal)
+
 add_executable(ClassicHMC ClassicHMC.cpp)
 target_link_libraries(ClassicHMC ${Boost_LIBRARIES})
 add_test(TestClassicHMC ClassicHMC)

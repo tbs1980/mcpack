@@ -33,6 +33,7 @@
 
 #include "Source/Hamiltonian/KineticEnergy.hpp"
 #include "Source/Hamiltonian/Integrator.hpp"
+ #include "Source/Hamiltonian/HMCProposal.hpp"
 #include "Source/Hamiltonian/ClassicHMC.hpp"
 #include "Source/Hamiltonian/IO.hpp"
 #include "Source/Hamiltonian/RuntimeControl.hpp"

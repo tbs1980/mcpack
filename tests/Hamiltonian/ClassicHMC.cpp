@@ -7,7 +7,6 @@
 #include <boost/test/unit_test.hpp>
 #include <mcpack/CoreHeaders.hpp>
 
-
 BOOST_AUTO_TEST_CASE(classic_hmc_10)
 {
     typedef double RealType;
@@ -17,7 +16,9 @@ BOOST_AUTO_TEST_CASE(classic_hmc_10)
     typedef RealMatrixType::Index IndexType;
     typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
     typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
+    typedef mcpack::hamiltonian::HMCProposal<IntegratorType,RandVarGenType> HMCProposalType;
+    typedef mcpack::hamiltonian::ClassicHMC<HMCProposalType> HMCType;
 
     const IndexType N=10;
 
@@ -34,7 +35,9 @@ BOOST_AUTO_TEST_CASE(classic_hmc_10)
 
     IntegratorType Lp(G,K);
 
-    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+    HMCProposalType prop(Lp,eps,Nsteps);
+
+    HMCType hmc(prop,q0,12346l);
 
     const IndexType NSamples=1000;
 
@@ -48,7 +51,6 @@ BOOST_AUTO_TEST_CASE(classic_hmc_10)
 
 }
 
-
 BOOST_AUTO_TEST_CASE(classic_hmc_100)
 {
     typedef double RealType;
@@ -58,7 +60,9 @@ BOOST_AUTO_TEST_CASE(classic_hmc_100)
     typedef RealMatrixType::Index IndexType;
     typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
     typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
+    typedef mcpack::hamiltonian::HMCProposal<IntegratorType,RandVarGenType> HMCProposalType;
+    typedef mcpack::hamiltonian::ClassicHMC<HMCProposalType> HMCType;
 
     const IndexType N=100;
 
@@ -75,7 +79,9 @@ BOOST_AUTO_TEST_CASE(classic_hmc_100)
 
     IntegratorType Lp(G,K);
 
-    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+    HMCProposalType prop(Lp,eps,Nsteps);
+
+    HMCType hmc(prop,q0,12346l);
 
     const IndexType NSamples=1000;
 
@@ -99,7 +105,9 @@ BOOST_AUTO_TEST_CASE(classic_hmc_diag_mass_mat)
     typedef mcpack::hamiltonian::GaussKineticEnergyDiag<RealType> KinEngType;
     typedef KinEngType::RealDiagMatrixType RealDiagMatrixType;
     typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
+    typedef mcpack::hamiltonian::HMCProposal<IntegratorType,RandVarGenType> HMCProposalType;
+    typedef mcpack::hamiltonian::ClassicHMC<HMCProposalType> HMCType;
 
     const IndexType N=100;
 
@@ -121,7 +129,9 @@ BOOST_AUTO_TEST_CASE(classic_hmc_diag_mass_mat)
 
     IntegratorType Lp(G,K);
 
-    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+    HMCProposalType prop(Lp,eps,Nsteps);
+
+    HMCType hmc(prop,q0,12346l);
 
     const IndexType NSamples=1000;
 
@@ -145,7 +155,9 @@ BOOST_AUTO_TEST_CASE(classic_hmc_diag_mass_mat_sigma_inv)
     typedef mcpack::hamiltonian::GaussKineticEnergyDiag<RealType> KinEngType;
     typedef KinEngType::RealDiagMatrixType RealDiagMatrixType;
     typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
+    typedef mcpack::hamiltonian::HMCProposal<IntegratorType,RandVarGenType> HMCProposalType;
+    typedef mcpack::hamiltonian::ClassicHMC<HMCProposalType> HMCType;
     typedef Eigen::MatrixXd RealMatrixType;
 
     const IndexType N=1000;
@@ -170,7 +182,9 @@ BOOST_AUTO_TEST_CASE(classic_hmc_diag_mass_mat_sigma_inv)
 
     IntegratorType Lp(G,K);
 
-    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+    HMCProposalType prop(Lp,eps,Nsteps);
+
+    HMCType hmc(prop,q0,12346l);
 
     const IndexType NSamples=1000;
 
@@ -193,7 +207,9 @@ BOOST_AUTO_TEST_CASE(classic_hmc_2d_correlated)
     typedef RealMatrixType::Index IndexType;
     typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
     typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
+    typedef mcpack::hamiltonian::HMCProposal<IntegratorType,RandVarGenType> HMCProposalType;
+    typedef mcpack::hamiltonian::ClassicHMC<HMCProposalType> HMCType;
 
     const IndexType N=2;
 
@@ -222,7 +238,9 @@ BOOST_AUTO_TEST_CASE(classic_hmc_2d_correlated)
 
     IntegratorType Lp(G,K);
 
-    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+    HMCProposalType prop(Lp,eps,Nsteps);
+
+    HMCType hmc(prop,q0,12346l);
 
     const IndexType NSamples=1000;
 
@@ -235,6 +253,7 @@ BOOST_AUTO_TEST_CASE(classic_hmc_2d_correlated)
     BOOST_REQUIRE(0.98 < hmc.GetAcceptanceRate() and hmc.GetAcceptanceRate() < 0.99);
 }
 
+
 BOOST_AUTO_TEST_CASE(classic_hmc_10d_correlated)
 {
     typedef double RealType;
@@ -244,7 +263,9 @@ BOOST_AUTO_TEST_CASE(classic_hmc_10d_correlated)
     typedef RealMatrixType::Index IndexType;
     typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
     typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
+    typedef mcpack::hamiltonian::HMCProposal<IntegratorType,RandVarGenType> HMCProposalType;
+    typedef mcpack::hamiltonian::ClassicHMC<HMCProposalType> HMCType;
 
     const IndexType N=10;
 
@@ -268,7 +289,9 @@ BOOST_AUTO_TEST_CASE(classic_hmc_10d_correlated)
 
     IntegratorType Lp(G,K);
 
-    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+    HMCProposalType prop(Lp,eps,Nsteps);
+
+    HMCType hmc(prop,q0,12346l);
 
     const IndexType NSamples=1000;
 
@@ -280,3 +303,4 @@ BOOST_AUTO_TEST_CASE(classic_hmc_10d_correlated)
 
     BOOST_REQUIRE(0.93 < hmc.GetAcceptanceRate() and hmc.GetAcceptanceRate() < 0.94);
 }
+

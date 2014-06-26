@@ -7,25 +7,25 @@
 
 namespace mcpack { namespace hamiltonian {
 
-    template<class _DiscretisationType>
+    template<class _ProposalType>
     class ClassicHMC
     {
     public:
-        typedef _DiscretisationType DiscretisationType;
-        typedef typename DiscretisationType::RealType RealType;
-        typedef typename DiscretisationType::IndexType IndexType;
-        typedef typename DiscretisationType::RealVectorType RealVectorType;
+        typedef _ProposalType ProposalType;
+        typedef typename ProposalType::RealType RealType;
+        typedef typename ProposalType::IndexType IndexType;
+        typedef typename ProposalType::RealVectorType RealVectorType;
+        typedef typename ProposalType::RandVarGenType RandVarGenType;
         typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, Eigen::Dynamic> RealMatrixType;
-        typedef typename mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
+        //typedef typename mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
         typedef typename RandVarGenType::SeedType SeedType;
 
         ClassicHMC()
-        :m_eps(0),m_NSteps(0),m_q0(0,0)
+        :m_q0(0,0),m_AccRate(0),m_RVGen(0)
         {}
 
-        ClassicHMC(DiscretisationType const & Discr,RealType eps,IndexType NSteps,
-            SeedType seed,RealVectorType const& q0)
-        :m_Discr(Discr),m_eps(eps),m_NSteps(NSteps),m_RVGen(seed),m_q0(q0)
+        ClassicHMC(ProposalType const & Prop,RealVectorType const& q0,const SeedType seed)
+        :m_Prop(Prop),m_q0(q0),m_AccRate(0),m_RVGen(seed)
         {
         }
 
@@ -34,30 +34,19 @@ namespace mcpack { namespace hamiltonian {
             IndexType NSamples=Samples.rows();
             IndexType NDim=Samples.cols();
 
-            MCPACK_ASSERT(m_Discr.NDim()==NDim,
-                "DiscretisationType and Samples should have the same dimensionality.");
+            //MCPACK_ASSERT(m_Discr.NDim()==NDim,
+                //"DiscretisationType and Samples should have the same dimensionality.");
 
             IndexType iter=0;
             IndexType samp=0;
 
             while(samp < NSamples)
             {
-                RealType u=m_eps*m_RVGen.Uniform();
-                RealType eps=m_eps*u;
-                u=m_eps*m_RVGen.Uniform();
-                IndexType NSteps=(IndexType)(u*(RealType)m_NSteps);
-                
-                RealVectorType p0(NDim);
-                for(IndexType i=0;i<NDim;++i)
-                {
-                    p0(i)=m_RVGen.Normal();
-                }
-
                 RealType dH=0;
                 RealVectorType q1(m_q0);
-                m_Discr.Integrate(q1,p0,eps,NSteps,dH);
+                m_Prop.Propose(q1,dH,m_RVGen);
 
-                u=m_eps*m_RVGen.Uniform();
+                RealType u=m_RVGen.Uniform();
                 if(u < exp(-dH))
                 {
                     m_q0=q1;
@@ -76,6 +65,8 @@ namespace mcpack { namespace hamiltonian {
             return m_AccRate;
         }
 
+        //the folling methods are required for 
+        //setting seeds from outside
         void SetSeed(unsigned long seed)
         {
             m_RVGen.Seed(seed);
@@ -97,12 +88,10 @@ namespace mcpack { namespace hamiltonian {
         }
 
     private:
-        DiscretisationType m_Discr;
-        RealType m_eps;
-        IndexType m_NSteps;
-        RandVarGenType m_RVGen;
+        ProposalType m_Prop;
         RealVectorType m_q0;
         RealType m_AccRate;
+        RandVarGenType m_RVGen;
     };
 
 

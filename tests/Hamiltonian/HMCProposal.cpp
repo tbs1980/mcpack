@@ -1,10 +1,13 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+#define BOOST_TEST_MODULE ClassicHMC
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
+#include <mcpack/CoreHeaders.hpp>
 
-#include <mcpack/MPICoreHeaders.hpp>
-
-int main()
+BOOST_AUTO_TEST_CASE(classic_hmc_10)
 {
     typedef double RealType;
     typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
@@ -13,15 +16,11 @@ int main()
     typedef RealMatrixType::Index IndexType;
     typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
     typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-    typedef mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
+    typedef typename mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
     typedef mcpack::hamiltonian::HMCProposal<IntegratorType,RandVarGenType> HMCProposalType;
-    typedef mcpack::hamiltonian::ClassicHMC<HMCProposalType> HMCType;
-    typedef mcpack::hamiltonian::IO_WriteAll<RealMatrixType> IOType;
-    typedef mcpack::hamiltonian::RunCtrl_FiniteSamples<RealMatrixType> RCType;
-    typedef mcpack::hamiltonian::Mpi_Sampler<HMCType,IOType,RCType> MPISamplerType;
 
-    //define the HMC
     const IndexType N=10;
+
     RealVectorType mu=RealVectorType::Zero(N);
     RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
     RealMatrixType MInv=RealMatrixType::Identity(N,N);
@@ -35,26 +34,11 @@ int main()
 
     IntegratorType Lp(G,K);
 
+
     HMCProposalType prop(Lp,eps,Nsteps);
 
-    HMCType hmc(prop,q0,12346l);
+    RealType dH=0;
+    RandVarGenType RVGen(12346l);
 
-    //define the IO
-    const std::string FileName("TestMPISampler.extract");
-    IOType iowall(FileName);
-
-    //define the Runtime Control
-    const IndexType NumParas=10;
-    const IndexType NSamples=1000;
-    const IndexType NBurn=200;
-    const IndexType PacketSize=100;
-    const std::string FileRoot("./TestMPISampler");
-    const bool silent=false;
-    RCType runctrl(NumParas,NSamples,PacketSize,NBurn,FileRoot,silent);
-
-    MPISamplerType MPISmp(hmc,iowall,runctrl);
-
-    MPISmp.Run();
-
-    return 0;
+    prop.Propose(q0,dH,RVGen);
 }
