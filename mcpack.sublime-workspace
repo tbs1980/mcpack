@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"real",
+				"RealVectorType"
+			],
+			[
+				"Re",
+				"RealVectorType"
+			],
+			[
+				"REa",
+				"RealType"
+			],
+			[
 				"log",
 				"logpost"
 			],
@@ -128,18 +140,10 @@
 	"buffers":
 	[
 		{
-			"file": "CMakeLists.txt",
+			"file": "mcpack/Source/Hamiltonian/MPI/MPI_Sampler.hpp",
 			"settings":
 			{
-				"buffer_size": 806,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "examples/Hamiltonian/Rosenbrock.cpp",
-			"settings":
-			{
-				"buffer_size": 3467,
+				"buffer_size": 6044,
 				"line_ending": "Unix"
 			}
 		},
@@ -147,7 +151,63 @@
 			"file": "mcpack/Source/Hamiltonian/ClassicHMC.hpp",
 			"settings":
 			{
-				"buffer_size": 3257,
+				"buffer_size": 2782,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "mcpack/Source/Hamiltonian/MPI/MPI_InterChainClassicHMC.hpp",
+			"settings":
+			{
+				"buffer_size": 11492,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "mcpack/Source/Utils/Random.hpp",
+			"settings":
+			{
+				"buffer_size": 1677,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "mcpack/MPICoreHeaders.hpp",
+			"settings":
+			{
+				"buffer_size": 600,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "tests/Hamiltonian/MPI/MPI_InterChainClassicHMC.cpp",
+			"settings":
+			{
+				"buffer_size": 1654,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "tests/Hamiltonian/ClassicHMC.cpp",
+			"settings":
+			{
+				"buffer_size": 9640,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "tests/Hamiltonian/MPI/CMakeLists.txt",
+			"settings":
+			{
+				"buffer_size": 1054,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "tests/Hamiltonian/MPI/MPI_Sampler.cpp",
+			"settings":
+			{
+				"buffer_size": 2128,
 				"line_ending": "Unix"
 			}
 		}
@@ -196,41 +256,44 @@
 	},
 	"file_history":
 	[
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/MPI/CMakeLists.txt",
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/HMCProposal.hpp",
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/Sampler.hpp",
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/ClassicHMC.cpp",
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/ClassicHMC.hpp",
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/CMakeLists.txt",
+		"/arxiv/projects/repository/mcpack/tests/CMakeLists.txt",
+		"/arxiv/projects/repository/mcpack/CMakeLists.txt",
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/MPI/MPI_Sampler.cpp",
+		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/MPI/MPI_Sampler.hpp",
+		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/HMCProposal.cpp",
+		"/arxiv/projects/repository/mcpack/examples/Hamiltonian/Rosenbrock.cpp",
+		"/arxiv/projects/repository/mcpack/mcpack/CoreHeaders.hpp",
 		"/arxiv/projects/repository/mcpack/README.md",
 		"/arxiv/projects/repository/mcpack/examples/CMakeLists.txt",
 		"/arxiv/projects/repository/mcpack/LICENSE",
 		"/arxiv/projects/repository/mcpack/examples/cpp/CMakeLists.txt",
-		"/arxiv/projects/repository/mcpack/CMakeLists.txt",
 		"/arxiv/projects/repository/mcpack/docs/theory/mcpack.tex",
 		"/arxiv/projects/repository/mcpack/docs/theory/mcpack.bib",
 		"/arxiv/projects/repository/mcpack/docs/theory/include/hamiltonian.tex",
 		"/arxiv/projects/repository/mcpack/docs/theory/CMakeLists.txt",
 		"/arxiv/projects/repository/mcpack/docs/CMakeLists.txt",
-		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/MPI/CMakeLists.txt",
-		"/arxiv/projects/repository/mcpack/tests/CMakeLists.txt",
-		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/CMakeLists.txt",
 		"/arxiv/projects/repository/mcpack/examples/cpp/Rosenbrock.cpp",
-		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/MPI/MPI_Sampler.cpp",
-		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/ClassicHMC.cpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/GaussLogPost.cpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/IO.cpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/Integration.cpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/KineticEnergy.cpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/RuntimeControl.cpp",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/Sampler.cpp",
-		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/MPI/MPI_Sampler.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Utils/TextDataIO.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Utils/Random.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Utils/Macros.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Utils/GaussLogPost.hpp",
-		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/Sampler.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/RuntimeControl.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/KineticEnergy.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/Integrator.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/IO.hpp",
-		"/arxiv/projects/repository/mcpack/mcpack/Source/Hamiltonian/ClassicHMC.hpp",
 		"/arxiv/projects/repository/mcpack/mcpack/MPICoreHeaders.hpp",
-		"/arxiv/projects/repository/mcpack/mcpack/CoreHeaders.hpp",
 		"/arxiv/projects/repository/mcpack/build/RosenBrock.log",
 		"/home/sree/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
 		"/arxiv/projects/repository/mcpack/tests/Hamiltonian/MPI_Sampler.cpp",
@@ -251,7 +314,7 @@
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 31.0
 	},
 	"find_in_files":
 	{
@@ -265,6 +328,13 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"souce",
+			"\n                        ",
+			"                        ",
+			"ClassicHMCProp",
+			"m_RVGen",
+			"\n    ",
+			"\n            ",
 			"\n    ",
 			"\n%\\",
 			"\n	",
@@ -278,6 +348,9 @@
 		"regex": false,
 		"replace_history":
 		[
+			"source",
+			"ClassicHMC",
+			"RVGen"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -293,19 +366,224 @@
 			[
 				{
 					"buffer": 0,
-					"file": "CMakeLists.txt",
+					"file": "mcpack/Source/Hamiltonian/MPI/MPI_Sampler.hpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 806,
+						"buffer_size": 6044,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								3081,
+								3081
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1125.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "mcpack/Source/Hamiltonian/ClassicHMC.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2782,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1034,
+								1034
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": -0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "mcpack/Source/Hamiltonian/MPI/MPI_InterChainClassicHMC.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11492,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3395,
+								3395
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 855.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "mcpack/Source/Utils/Random.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1677,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1050,
+								1050
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "mcpack/MPICoreHeaders.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 600,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								563,
+								563
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "tests/Hamiltonian/MPI/MPI_InterChainClassicHMC.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1654,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1494,
+								1494
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "tests/Hamiltonian/ClassicHMC.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9640,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1003,
+								1003
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "tests/Hamiltonian/MPI/CMakeLists.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1054,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1007,
+								1007
 							]
 						],
 						"settings":
@@ -316,54 +594,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "examples/Hamiltonian/Rosenbrock.cpp",
+					"buffer": 8,
+					"file": "tests/Hamiltonian/MPI/MPI_Sampler.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3467,
+						"buffer_size": 2128,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": -0.0,
-						"translation.y": 225.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "mcpack/Source/Hamiltonian/ClassicHMC.hpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3257,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2071,
-								2071
+								243,
+								243
 							]
 						],
 						"settings":
@@ -373,10 +621,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 90.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 8,
 					"type": "text"
 				}
 			]
@@ -420,7 +668,7 @@
 	"project": "mcpack.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 56.0
 	},
 	"save_all_on_build": true,
 	"select_file":

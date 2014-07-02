@@ -13,5 +13,6 @@
 #include "CoreHeaders.hpp"
 
 #include "Source/Hamiltonian/MPI/MPI_Sampler.hpp"
+#include "Source/Hamiltonian/MPI/MPI_InterChainClassicHMC.hpp"
 
 #endif //MCPACK_MPICOREHEADERS_HPP
