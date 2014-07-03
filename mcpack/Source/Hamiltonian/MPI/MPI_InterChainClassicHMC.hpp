@@ -42,13 +42,10 @@ namespace mcpack{ namespace hamiltonian {
 
             while(samp < NSamples)
             {
-                //if(m_World.rank() == 0 ) std::cout<<"sample "<<samp<<std::endl;
-
                 RealVectorType q1(m_q0);
                 RealVectorType DeltaH=RealVectorType::Zero(m_World.size());
 
                 //propose. ie. each process proposes a new point
-                //if(m_World.rank() == 0 ) std::cout<<"making proposals "<<std::endl;
                 for(IndexType i=0;i<m_World.size();++i)
                 {
                     if(i == (IndexType) m_World.rank())
@@ -58,131 +55,50 @@ namespace mcpack{ namespace hamiltonian {
                         DeltaH(i)=dH;
                     }
                 }
-
                 
                 m_World.barrier();
-                //if(m_World.rank() == 0 ) std::cout<<"done making proposals now distributing"<<std::endl;
 
-
-                //distribute the computed deltaH
                 DistributeDeltaH(DeltaH);
-
-                m_World.barrier();
-
-
-                //if(m_World.rank() == 0 ) std::cout<<"done distributing now finding min(deltaH)"<<std::endl;
 
                 //now find the minimum of deltaH vector
                 IndexType dhInd=FindMinDeltaH(DeltaH);
                 RealType dHMin=DeltaH(dhInd);
 
-                //std::cout<<"\n process "<<m_World.rank()<<"\n"<<DeltaH<<"\n"<<std::endl;
-                m_World.barrier();
-
-                //std::cout<<"\n process "<<m_World.rank()<<"\n"<<dhInd<<"\n"<<std::endl;
-
-                
-                //if(m_World.rank() == 0 ) std::cout<<"done finding min(deltaH) now accept/reject"<<std::endl;
-
                 RealType u=m_RVGen.Uniform();
 
-                DistributeProposal(q1,0);
+                DistributeUniRand(u,0);//otherwise each process will have a different random numner
 
-                m_World.barrier();
-                std::cout<<"process "<<m_World.rank()<<" "<<dHMin<<std::endl;
-                m_World.barrier();
                 if(u < exp(-dHMin))
                 {
-                    //std::cout<<"process "<<m_World.rank()<<" accepted"<<std::endl;
-                    //distribute the accepted proposal 
-                    //to all other processes
-                    //if(m_World.rank() == 0 ) std::cout<<"done accept/reject now distributing proposal dhInd= "<<dhInd<<std::endl;                
-                    
-                    //DistributeProposal(q1,0);
+                    DistributeProposal(q1,0);
 
-                    //if(m_World.rank() == 0 ) std::cout<<"done distributing proposal"<<std::endl;  
-
-                    
-                    //m_q0=q1;
-                    //Samples.row(samp)=m_q0;
-                    //++samp;
-                    samp=samp+1;
-                    m_World.barrier();
-                    double x=10;
-                    
+                    m_q0=q1;
+                    Samples.row(samp)=m_q0;
+                    ++samp;
                 }
                 
-                
-                
                 iter++;
-
-                if(iter > 1000 ) break;
-
-                m_World.barrier();
-                //std::cout<<std::endl;
             }
 
-            //m_AccRate=(RealType)samp/(RealType)iter;
+            m_AccRate=(RealType)samp/(RealType)iter;
         }
 
         void DistributeDeltaH(RealVectorType & DeltaH) const
         {
-
-            /*
-            IndexType rind=0;
-            std::vector<MpiRequestType> reqs1(m_World.size()-1);
-
-            for(IndexType source=0;source<  (IndexType)  m_World.size();++source)
-            {                    
-                if(source ==  (IndexType) m_World.rank() )
-                {
-                    // send my dh to every other process
-                    std::vector<MpiRequestType> reqs2(m_World.size()-1);
-
-                    IndexType sind=0;
-                    for(IndexType dest=0;dest<  (IndexType)  m_World.size();++dest)
-                    {
-                        if(dest != (IndexType) m_World.rank() )
-                        {
-                            reqs2[sind] =  m_World.isend(dest, source, DeltaH(source));
-                            ++sind;
-                        }                            
-                    }
-
-                    boost::mpi::wait_all(reqs2.begin(), reqs2.end());
-                }
-                else
-                {
-                    //receive the values of all ther dhs from other processes
-                    reqs1[rind] =  m_World.irecv(source, source, DeltaH(source));
-                    ++rind;
-                }
-            }
-            boost::mpi::wait_all(reqs1.begin(), reqs1.end());
-
-            */
-
             //send my dh to every other process
             IndexType source=m_World.rank();
 
             std::vector<MpiRequestType> reqs2(m_World.size()-1);
             IndexType sind=0;
 
-            //if(m_World.rank() == 0 ) std::cout<<"@DistributeDeltaH sending to destimations"<<std::endl;  
             for(IndexType dest=0;dest<  (IndexType)  m_World.size();++dest)
             {                
                 if(dest != (IndexType) m_World.rank() ) //I shouldn't be the destimation myself
                 {
-                    //reqs2[sind] =  m_World.isend(dest, source, DeltaH(source));//send the current dh to every other process
                     m_World.send(dest, source, DeltaH(source));//send the current dh to every other process
                     ++sind;
                 }
             }
-            //boost::mpi::wait_all(reqs2.begin(), reqs2.end());
-
-            //m_World.barrier();
-
-            //if(m_World.rank() == 0 ) std::cout<<"@DistributeDeltaH receiving from sources"<<std::endl;
             //receive dh from every other process
             std::vector<MpiRequestType> reqs1(m_World.size()-1);
             IndexType rind=0;
@@ -190,12 +106,10 @@ namespace mcpack{ namespace hamiltonian {
             {
                 if(source !=  (IndexType) m_World.rank() )//I shouldn't reveive stuff from myself
                 {
-                    //reqs1[rind] =  m_World.irecv(source, source, DeltaH(source));//get the values for the indices other than my index
                     m_World.recv(source, source, DeltaH(source));//get the values for the indices other than my index
                     ++rind;
                 }
             }
-            //boost::mpi::wait_all(reqs1.begin(), reqs1.end());
         }
 
         IndexType FindMinDeltaH(RealVectorType const& DeltaH) const
@@ -216,58 +130,39 @@ namespace mcpack{ namespace hamiltonian {
 
         void DistributeProposal(RealVectorType & q1,const IndexType source) const
         {
-            /*
             if((IndexType) m_World.rank() == source)
             {
-                std::vector<MpiRequestType> reqs1(m_World.size()-1);
-                IndexType dind=0;
                 for(IndexType  dest=0;dest< (IndexType) m_World.size();++dest)
                 {
                     if(dest != source )
                     {
-                        reqs1[dind] =  m_World.isend(dest, source, &q1(0,0),q1.rows());
-                        ++dind;
-                    }
-                }
-
-                boost::mpi::wait_all(reqs1.begin(), reqs1.end());
-            }
-            else
-            {
-                std::vector<MpiRequestType> reqs2(m_World.size()-1);
-                IndexType dind = m_World.rank() > source ? m_World.rank()-1 : m_World.rank();
-                reqs2[ dind ] =  m_World.irecv(source, source, &q1(0,0),q1.rows());
-                boost::mpi::wait_all(reqs2.begin(), reqs2.end());
-            }
-            */
-
-            if((IndexType) m_World.rank() == source)
-            {
-                //std::vector<MpiRequestType> reqs1(m_World.size()-1);
-                IndexType dind=0;
-                for(IndexType  dest=0;dest< (IndexType) m_World.size();++dest)
-                {
-                    if(dest != source )
-                    {
-                        //double x=0;
-                        //reqs1[dind] =  m_World.isend(dest, source, &q1(0,0),q1.rows());
-                        //reqs1[dind] =  m_World.isend(dest, source, x);
                         m_World.send(dest, source, &q1(0,0),q1.rows());
-                        ++dind;
                     }
                 }
-                //boost::mpi::wait_all(reqs1.begin(), reqs1.end());
             }
             else
             {
-                //MpiRequestType req = m_World.irecv(source, source, &q1(0,0),q1.rows());
-                //double x=0;
-                //MpiRequestType req = m_World.irecv(source, source, x);
                 m_World.recv(source, source, &q1(0,0),q1.rows());
-                //boost::mpi::wait_all(&req,&req);
             }
+        }
 
-            //m_World.barrier();
+        void DistributeUniRand(RealType & u,IndexType source) const
+        {
+
+            if((IndexType) m_World.rank() == source)
+            {
+                for(IndexType  dest=0;dest< (IndexType) m_World.size();++dest)
+                {
+                    if(dest != source )
+                    {
+                        m_World.send(dest, source, u);
+                    }
+                }
+            }
+            else
+            {
+                m_World.recv(source, source,u);
+            }
         }
 
         RealType GetAcceptanceRate(void) const
@@ -308,8 +203,6 @@ namespace mcpack{ namespace hamiltonian {
         }
 
     private:
-        //PropVectorType m_PropVector;
-        //DeltaHVectorType m_DeltaVector;
         ProposalType m_Prop;
         RealVectorType m_q0;
         RealType m_AccRate;
