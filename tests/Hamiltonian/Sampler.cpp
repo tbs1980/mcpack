@@ -16,7 +16,9 @@ BOOST_AUTO_TEST_CASE(sampler_finite_samples)
     typedef RealMatrixType::Index IndexType;
     typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
     typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
+    typedef mcpack::hamiltonian::HMCProposal<IntegratorType,RandVarGenType> HMCProposalType;
+    typedef mcpack::hamiltonian::ClassicHMC<HMCProposalType> HMCType;
     typedef mcpack::hamiltonian::IO_WriteAll<RealMatrixType> IOType;
     typedef mcpack::hamiltonian::RunCtrl_FiniteSamples<RealMatrixType> RCType;
     typedef mcpack::hamiltonian::Sampler<HMCType,IOType,RCType> SamplerType;
@@ -37,7 +39,9 @@ BOOST_AUTO_TEST_CASE(sampler_finite_samples)
 
     IntegratorType Lp(G,K);
 
-    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+    HMCProposalType prop(Lp,eps,Nsteps);
+
+    HMCType hmc(prop,q0,12346l);
 
     //define the IO
     const std::string FileName("TestSampler.extract");
@@ -68,7 +72,9 @@ BOOST_AUTO_TEST_CASE(sampler_finite_samples_diag_KE_and_PE)
     typedef Eigen::MatrixXd RealMatrixType;
     typedef mcpack::hamiltonian::GaussKineticEnergyDiag<RealType> KinEngType;
     typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
+    typedef mcpack::hamiltonian::HMCProposal<IntegratorType,RandVarGenType> HMCProposalType;
+    typedef mcpack::hamiltonian::ClassicHMC<HMCProposalType> HMCType;
     typedef mcpack::hamiltonian::IO_WriteAll<RealMatrixType> IOType;
     typedef mcpack::hamiltonian::RunCtrl_FiniteSamples<RealMatrixType> RCType;
     typedef mcpack::hamiltonian::Sampler<HMCType,IOType,RCType> SamplerType;
@@ -94,7 +100,9 @@ BOOST_AUTO_TEST_CASE(sampler_finite_samples_diag_KE_and_PE)
 
     IntegratorType Lp(G,K);
 
-    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+    HMCProposalType prop(Lp,eps,Nsteps);
+
+    HMCType hmc(prop,q0,12346l);
 
     //define the IO
     const std::string FileName("TestSamplerDiag.extract");

@@ -57,8 +57,12 @@ int main(void)
     typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
     //define the integrator using the potential and kinetic energies
     typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
+    //define a random variate generator type
+    typedef mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
+    //define a HMC proposal type
+    typedef mcpack::hamiltonian::HMCProposal<IntegratorType,RandVarGenType> HMCProposalType;
     //define the classic HMC type
-    typedef mcpack::hamiltonian::ClassicHMC<IntegratorType> HMCType;
+    typedef mcpack::hamiltonian::ClassicHMC<HMCProposalType> HMCType;
     //define the Input-Output type
     typedef mcpack::hamiltonian::IO_WriteAll<RealMatrixType> IOType;
     //define Runtime control type
@@ -88,10 +92,13 @@ int main(void)
     //starting point
     RealVectorType q0=RealVectorType::Random(N);
 
-    //deinfe HMC
+    //deinfe HMC proposal
     const RealType eps=1;
     const IndexType Nsteps=10;
-    HMCType hmc(Lp,eps,Nsteps,12346l,q0);
+    HMCProposalType prop(Lp,eps,Nsteps);
+
+    //define the HMC
+    HMCType hmc(prop,q0,12346l);
 
     //the IO => MCMC chains for all parameters will be written to *.extract
     const std::string FileRoot("./RosenBrock");
