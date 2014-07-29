@@ -39,7 +39,7 @@ int main(void)
     HMCType hmc(prop,q0,12346l);
 
     
-    const IndexType NSamples=100;
+    const IndexType NSamples=1000;
 
     RealMatrixType Samples(NSamples,N);
 
