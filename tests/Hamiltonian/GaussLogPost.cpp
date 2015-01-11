@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
- 
+
 #define BOOST_TEST_MODULE GaussLogPost
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
@@ -12,68 +12,67 @@
 
 BOOST_AUTO_TEST_CASE(gaussian_log_posterior)
 {
-    typedef double RealType;
-    typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
-    typedef PotEngType::RealVectorType RealVectorType;
-    typedef PotEngType::RealMatrixType RealMatrixType;
-    typedef RealMatrixType::Index IndexType;
+    typedef double realType;
+    typedef mcpack::utils::gaussPotentialEnergy<realType> potEngType;
+    typedef potEngType::realVectorType realVectorType;
+    typedef potEngType::realMatrixType realMatrixType;
+    typedef realMatrixType::Index indexType;
 
-    const IndexType N=100;
+    const indexType N=100;
 
-    RealVectorType mu=RealVectorType::Zero(N);
-    RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
-    RealVectorType q=RealVectorType::Random(N);
+    realVectorType mu=realVectorType::Zero(N);
+    realMatrixType sigmaInv=realMatrixType::Identity(N,N);
+    realVectorType q=realVectorType::Random(N);
 
-    PotEngType G(mu,SigmaInv);
-    
-    RealVectorType dq=SigmaInv*(mu-q);
-    RealType val=-0.5*(mu-q).transpose()*SigmaInv*(mu-q);
-    
-    RealVectorType dqTest=RealVectorType::Zero(N);
-    RealType valTest=0;
-    G.Evaluate(q,valTest,dqTest);
+    potEngType G(mu,sigmaInv);
+
+    realVectorType dq=sigmaInv*(mu-q);
+    realType val=-0.5*(mu-q).transpose()*sigmaInv*(mu-q);
+
+    realVectorType dqTest=realVectorType::Zero(N);
+    realType valTest=0;
+    G.evaluate(q,valTest,dqTest);
     BOOST_CHECK_EQUAL(val,valTest);
-    
-    for(IndexType i=0;i<N;++i)
+
+    for(indexType i=0;i<N;++i)
     {
         BOOST_CHECK_EQUAL(dq(i),dqTest(i));
     }
-    
+
 }
 
 BOOST_AUTO_TEST_CASE(gaussian_log_posterior_diag_sigma_inv)
 {
-    typedef double RealType;
-    typedef mcpack::utils::GaussPotentialEnergyDiag<RealType> PotEngType;
-    typedef PotEngType::RealVectorType RealVectorType;
-    typedef PotEngType::RealDiagMatrixType RealDiagMatrixType;
-    typedef RealDiagMatrixType::Index IndexType;
+    typedef double realType;
+    typedef mcpack::utils::gaussPotentialEnergyDiag<realType> potEngType;
+    typedef potEngType::realVectorType realVectorType;
+    typedef potEngType::realDiagMatrixType realDiagMatrixType;
+    typedef realDiagMatrixType::Index indexType;
 
-    const IndexType N=100;
+    const indexType N=100;
 
-    RealVectorType mu=RealVectorType::Zero(N);
-    RealVectorType q=RealVectorType::Random(N);
-    RealDiagMatrixType SigmaInv(N);
-    for(IndexType i=0;i<N;++i)
+    realVectorType mu=realVectorType::Zero(N);
+    realVectorType q=realVectorType::Random(N);
+    realDiagMatrixType sigmaInv(N);
+    for(indexType i=0;i<N;++i)
     {
-        SigmaInv(i)=1;
+        sigmaInv(i)=1;
     }
 
-    PotEngType G(mu,SigmaInv);
-    
-    RealVectorType dq=SigmaInv.cwiseProduct(mu-q);
-    RealType val=-0.5*(mu-q).transpose()*(SigmaInv.cwiseProduct(mu-q));
+    potEngType G(mu,sigmaInv);
 
-    RealVectorType dqTest=RealVectorType::Zero(N);
-    RealType valTest=0;
-    G.Evaluate(q,valTest,dqTest);
+    realVectorType dq=sigmaInv.cwiseProduct(mu-q);
+    realType val=-0.5*(mu-q).transpose()*(sigmaInv.cwiseProduct(mu-q));
 
-    
+    realVectorType dqTest=realVectorType::Zero(N);
+    realType valTest=0;
+    G.evaluate(q,valTest,dqTest);
+
+
     BOOST_REQUIRE(fabs(val-valTest) < 1e-15);
-    
-    for(IndexType i=0;i<N;++i)
+
+    for(indexType i=0;i<N;++i)
     {
         BOOST_REQUIRE( fabs(dq(i)-dqTest(i)) < 1e-15);
     }
 }
-

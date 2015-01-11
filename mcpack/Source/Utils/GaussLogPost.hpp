@@ -7,92 +7,156 @@
 
 namespace mcpack { namespace utils {
 
-    template<typename _RealType>
-    class GaussPotentialEnergy
+    /**
+     * \ingroup Utils
+     *
+     * \class gaussPotentialEnergy
+     *
+     * \brief A class for computing Gaussian Potential Energy
+     *
+     * \tparam _realType real floating point type
+     */
+    template<typename _realType>
+    class gaussPotentialEnergy
     {
     public:
-        static_assert(std::is_floating_point<_RealType>::value,
+        static_assert(std::is_floating_point<_realType>::value,
             "PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
-        typedef _RealType RealType;
-        typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, 1> RealVectorType;
-        typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, Eigen::Dynamic> RealMatrixType;
-        typedef typename RealMatrixType::Index IndexType;
+        typedef _realType realType;
+        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, 1> realVectorType;
+        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, Eigen::Dynamic> realMatrixType;
+        typedef typename realMatrixType::Index indexType;
 
-        GaussPotentialEnergy()
-        :m_mu(0,0),m_SigmaInv(0,0)
+        /**
+         * \brief The default constructor
+         */
+        gaussPotentialEnergy()
+        :m_mu(0,0),m_sigmaInv(0,0)
         {}
 
-        GaussPotentialEnergy(RealMatrixType const& mu,RealMatrixType const& SigmaInv)
-        :m_mu(mu),m_SigmaInv(SigmaInv)
+        /**
+         * \brief A constructor that allocates the memory
+         *
+         * \param mu the mean of the Gaussian distribution
+         * \param sigmaInv Inverse of the potential energy matrix
+         */
+        gaussPotentialEnergy(realMatrixType const& mu,realMatrixType const& sigmaInv)
+        :m_mu(mu),m_sigmaInv(sigmaInv)
         {
-            MCPACK_ASSERT(SigmaInv.rows()==SigmaInv.cols(),
+            BOOST_ASSERT_MSG(sigmaInv.rows()==sigmaInv.cols(),
                     "Sigma^-1 should be a square matrix: rows==cols");
-            MCPACK_ASSERT(SigmaInv.rows()==mu.rows(),
-                    "Sigma^-1 and mu should have the same dimensionality"); 
-            MCPACK_ASSERT(m_mu.rows()>0,"mu should have at least one element");
+            BOOST_ASSERT_MSG(sigmaInv.rows()==mu.rows(),
+                    "Sigma^-1 and mu should have the same dimensionality");
+            BOOST_ASSERT_MSG(m_mu.rows()>0,"mu should have at least one element");
         }
 
-        void Evaluate(RealVectorType const & q, RealType & val,RealVectorType & dq) const
+        /**
+         * \brief compute the potential energy
+         *
+         * \param q the position at which potential energy is to be calculated
+         * \param val the potential energy at \a q
+         * \param dq the derivative of the potential energy at \a q
+         */
+        void evaluate(realVectorType const & q, realType & val,realVectorType & dq) const
         {
-            MCPACK_ASSERT(q.rows()==dq.rows() && q.cols()==dq.cols(),
+            BOOST_ASSERT_MSG(q.rows()==dq.rows() && q.cols()==dq.cols(),
                     "q and dq shoudl have the same dimensionality");
-            MCPACK_ASSERT(q.rows()==NDim(),"q and dq shoudl have the same dimensionality");
+            BOOST_ASSERT_MSG(q.rows()==numDims(),"q and dq shoudl have the same dimensionality");
 
-            dq=m_SigmaInv*(m_mu-q);
+            dq=m_sigmaInv*(m_mu-q);
             val=-0.5*(m_mu-q).transpose()*dq;
         }
 
-        IndexType NDim(void) const
+        /**
+         * \brief return the number of dimensions of the potential energy matrix
+         *
+         * \return the number of dimensions of the potential energy matrix
+         */
+        indexType numDims(void) const
         {
-            return m_SigmaInv.rows();
+            return m_sigmaInv.rows();
         }
+
     private:
-        RealVectorType m_mu;
-        RealMatrixType m_SigmaInv;
+        realVectorType m_mu; /**< the mean of the potential energy distribution */
+        realMatrixType m_sigmaInv; /**< the inverse of the potential energy matrix */
     };
 
-    template<typename _RealType>
-    class GaussPotentialEnergyDiag
+
+    /**
+     * \ingroup Utils
+     *
+     * \class gaussPotentialEnergy
+     *
+     * \brief A class for computing Gaussian Potential Energy with diagonal matrix
+     *
+     * \tparam _realType real floating point type
+     */
+    template<typename _realType>
+    class gaussPotentialEnergyDiag
     {
     public:
-        static_assert(std::is_floating_point<_RealType>::value,
+        static_assert(std::is_floating_point<_realType>::value,
             "PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
-        typedef _RealType RealType;
-        typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, 1> RealVectorType;
-        typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, 1> RealDiagMatrixType;
-        typedef typename RealDiagMatrixType::Index IndexType;
+        typedef _realType realType;
+        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, 1> realVectorType;
+        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, 1> realDiagMatrixType;
+        typedef typename realDiagMatrixType::Index indexType;
 
-        GaussPotentialEnergyDiag()
-        :m_mu(0,0),m_SigmaInv(0,0)
+        /**
+         * \brief The default constructor
+         */
+        gaussPotentialEnergyDiag()
+        :m_mu(0,0),m_sigmaInv(0,0)
         {}
 
-        GaussPotentialEnergyDiag(RealVectorType const& mu,RealDiagMatrixType const& SigmaInv)
-        :m_mu(mu),m_SigmaInv(SigmaInv)
+        /**
+         * \brief A constructor that allocates the memory
+         *
+         * \param mu the mean of the Gaussian distribution
+         * \param sigmaInv Inverse of the potential energy matrix
+         */
+        gaussPotentialEnergyDiag(realVectorType const& mu,realDiagMatrixType const& sigmaInv)
+        :m_mu(mu),m_sigmaInv(sigmaInv)
         {
-            MCPACK_ASSERT(SigmaInv.rows()==mu.rows(),
-                    "Sigma^-1 and mu should have the same dimensionality"); 
-            MCPACK_ASSERT(m_mu.rows()>0,"mu should have at least one element");
+            BOOST_ASSERT_MSG(sigmaInv.rows()==mu.rows(),
+                    "Sigma^-1 and mu should have the same dimensionality");
+            BOOST_ASSERT_MSG(m_mu.rows()>0,"mu should have at least one element");
         }
 
-        void Evaluate(RealVectorType const & q, RealType & val,RealVectorType & dq) const
+        /**
+         * \brief compute the potential energy
+         *
+         * \param q the position at which potential energy is to be calculated
+         * \param val the potential energy at \a q
+         * \param dq the derivative of the potential energy at \a q
+         */
+        void evaluate(realVectorType const & q, realType & val,realVectorType & dq) const
         {
-            MCPACK_ASSERT(q.rows()==dq.rows() && q.cols()==dq.cols(),
+            BOOST_ASSERT_MSG(q.rows()==dq.rows() && q.cols()==dq.cols(),
                     "q and dq shoudl have the same dimensionality");
-            MCPACK_ASSERT(q.rows()==NDim(),"q and dq shoudl have the same dimensionality");
+            BOOST_ASSERT_MSG(q.rows()==numDims(),"q and dq shoudl have the same dimensionality");
 
-            dq=m_SigmaInv.cwiseProduct(m_mu-q);
+            dq=m_sigmaInv.cwiseProduct(m_mu-q);
             val=-0.5*(m_mu-q).transpose()*dq;
         }
 
-        IndexType NDim(void) const
+        /**
+         * \brief return the number of dimensions of the potential energy matrix
+         *
+         * \return the number of dimensions of the potential energy matrix
+         */
+        indexType numDims(void) const
         {
-            return m_SigmaInv.rows();
+            return m_sigmaInv.rows();
         }
+
     private:
-        RealVectorType m_mu;
-        RealDiagMatrixType m_SigmaInv;
+        
+        realVectorType m_mu; /**< the mean of the potential energy distribution */
+        realDiagMatrixType m_sigmaInv; /**< the inverse of the potential energy matrix */
     };
 
 

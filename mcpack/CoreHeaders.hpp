@@ -17,7 +17,7 @@
 #include <type_traits>
 #include <typeinfo>
 #include <random>
-#include <algorithm> 
+#include <algorithm>
 #include <exception>
 
 #include <Eigen/Core>
@@ -25,18 +25,25 @@
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
+#include <boost/assert.hpp>
 
+#include "Source/Utils/gaussLogPost.hpp"
+
+/*
 #include "Source/Utils/Macros.hpp"
 #include "Source/Utils/Random.hpp"
-#include "Source/Utils/GaussLogPost.hpp"
 #include "Source/Utils/TextDataIO.hpp"
+*/
 
-#include "Source/Hamiltonian/KineticEnergy.hpp"
+#include "Source/Hamiltonian/kineticEnergy.hpp"
+
+/*
 #include "Source/Hamiltonian/Integrator.hpp"
- #include "Source/Hamiltonian/HMCProposal.hpp"
+#include "Source/Hamiltonian/HMCProposal.hpp"
 #include "Source/Hamiltonian/ClassicHMC.hpp"
 #include "Source/Hamiltonian/IO.hpp"
 #include "Source/Hamiltonian/RuntimeControl.hpp"
 #include "Source/Hamiltonian/Sampler.hpp"
+*/
 
 #endif //MCPACK_COREHEADERS_HPP

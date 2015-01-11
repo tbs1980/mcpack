@@ -8,104 +8,171 @@
 
 namespace mcpack { namespace hamiltonian {
 
-    template<typename _RealType>
-    class GaussKineticEnergy
+    /**
+     * \ingroup Hamiltonian
+     *
+     * \class gaussKineticEnergy
+     *
+     * \brief A class for computing Gaussain Kinetic Enegry.
+     *
+     * \tparam _realType real floating point type
+     */
+    template<typename _realType>
+    class gaussKineticEnergy
     {
     public:
-        static_assert(std::is_floating_point<_RealType>::value,
+        static_assert(std::is_floating_point<_realType>::value,
             "PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
-        typedef _RealType RealType;
-        typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, 1> RealVectorType;
-        typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, Eigen::Dynamic> RealMatrixType;
-        typedef typename RealVectorType::Index IndexType;
-        typedef typename Eigen::LLT<RealMatrixType> LLTType;
+        typedef _realType realType;
+        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, 1> realVectorType;
+        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, Eigen::Dynamic> realMatrixType;
+        typedef typename realVectorType::Index indexType;
+        typedef typename Eigen::LLT<realMatrixType> LLTType;
 
-        GaussKineticEnergy()
-        :m_MInv(0,0)
+        /**
+         * \brief The default constructor
+         */
+        gaussKineticEnergy()
+        :m_mInv(0,0)
+        {}
+
+        /**
+         * \brief The default constructor that allocates the memory.
+         *
+         * \param mInv the inverse of the kinetic energy matrix
+         */
+        explicit gaussKineticEnergy(realMatrixType const& mInv)
+        :m_mInv(mInv),m_Chol(mInv.rows(),mInv.cols())
         {
+            BOOST_ASSERT_MSG(mInv.rows()==mInv.cols(),"Mass^-1 should be a square matrix: rows==cols");
 
+            //find the inverse of the mInv ie we need the mass matrix M
+            LLTType lltOfmInv(m_mInv.inverse());
+
+            BOOST_ASSERT_MSG(lltOfmInv.info()==Eigen::Success,"Mass matrix is not positive definite");
+
+            m_Chol=lltOfmInv.matrixL();
         }
 
-        explicit GaussKineticEnergy(RealMatrixType const& MInv)
-        :m_MInv(MInv),m_Chol(MInv.rows(),MInv.cols())
+        /**
+         * \brief evaluate the kinetic energy
+         *
+         * \param p momentum at which kinetic energy is to be calculated
+         * \param val value kinetic energy at \a p
+         * \param dp derivative of the kinetic energy at \a p
+         */
+        void evaluate(realVectorType const & p, realType & val,realVectorType & dp) const
         {
-            MCPACK_ASSERT(MInv.rows()==MInv.cols(),"Mass^-1 should be a square matrix: rows==cols");
-
-            //find the inverse of the Minv ie we need the mass matrix M
-            LLTType lltOfMInv(m_MInv.inverse());
-
-            MCPACK_ASSERT(lltOfMInv.info()==Eigen::Success,"Mass matrix is not positive definite");
-
-            m_Chol=lltOfMInv.matrixL();
-        }
-        
-        void Evaluate(RealVectorType const & p, RealType & val,RealVectorType & dp) const
-        {
-            MCPACK_ASSERT(p.rows()==dp.rows(),"p and dp shoudl have the same dimensionality");
-            dp=-m_MInv*p;
+            BOOST_ASSERT_MSG(p.rows()==dp.rows(),"p and dp shoudl have the same dimensionality");
+            dp=-m_mInv*p;
             val=0.5*p.transpose()*dp;
         }
 
-        void Rotate(RealVectorType & p) const
+        /**
+         * \brief rotate the momentum \a p using the kinetic energy matrix
+         *
+         * \param p momentum at which kinetic energy is to be calculated
+         */
+        void rotate(realVectorType & p) const
         {
             p=m_Chol*p;
         }
 
-        IndexType NDim(void) const
+        /**
+         * \brief return the number of dimensions
+         *
+         * \return the number of dimensions of the kinetic energy matrix
+         */
+        indexType numDims(void) const
         {
-            return m_MInv.rows();
+            return m_mInv.rows();
         }
 
     private:
-        RealMatrixType m_MInv;
-        RealMatrixType m_Chol;
+        realMatrixType m_mInv; /**< kinetic energy matrix */
+        realMatrixType m_Chol; /**< Colesky decomposition of the kinetic energy matrix */
     };
 
-    template<typename _RealType>
-    class GaussKineticEnergyDiag
+
+    /**
+    * \ingroup Hamiltonian
+    *
+    * \class gaussKineticEnergyDiag
+    *
+    * \brief A class for computing Gaussain Kinetic Enegry with diagonal energy matrix
+    *
+    * \tparam _realType real floating point type
+    */
+    template<typename _realType>
+    class gaussKineticEnergyDiag
     {
     public:
-        static_assert(std::is_floating_point<_RealType>::value,
+        static_assert(std::is_floating_point<_realType>::value,
             "PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
-        typedef _RealType RealType;
-        typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, 1> RealVectorType;
-        typedef typename Eigen::Matrix<RealType, Eigen::Dynamic, 1> RealDiagMatrixType;
-        typedef typename RealDiagMatrixType::Index IndexType;
+        typedef _realType realType;
+        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, 1> realVectorType;
+        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, 1> realDiagMatrixType;
+        typedef typename realDiagMatrixType::Index indexType;
 
-        GaussKineticEnergyDiag()
-        :m_MInv((IndexType)0)
+        /**
+        * \brief The default constructor
+        */
+        gaussKineticEnergyDiag()
+        :m_mInv((indexType)0)
         {
 
         }
-        
-        explicit GaussKineticEnergyDiag(RealDiagMatrixType const& MInv)
-        :m_MInv(MInv)
+
+        /**
+        * \brief The default constructor that allocates the memory.
+        *
+        * \param mInv the inverse of the kinetic energy matrix
+        */
+        explicit gaussKineticEnergyDiag(realDiagMatrixType const& mInv)
+        :m_mInv(mInv)
         {}
-        
-        void Evaluate(RealVectorType const & p, RealType & val,RealVectorType & dp) const
+
+        /**
+         * \brief evaluate the kinetic energy
+         *
+         * \param p momentum at which kinetic energy is to be calculated
+         * \param val value kinetic energy at \a p
+         * \param dp derivative of the kinetic energy at \a p
+         */
+        void evaluate(realVectorType const & p, realType & val,realVectorType & dp) const
         {
-            MCPACK_ASSERT(p.rows()==dp.rows(),"p and dp shoudl have the same dimensionality");
-            dp=-m_MInv.cwiseProduct(p);
-            val=0.5*p.transpose()*dp;       
+            BOOST_ASSERT_MSG(p.rows()==dp.rows(),"p and dp shoudl have the same dimensionality");
+            dp=-m_mInv.cwiseProduct(p);
+            val=0.5*p.transpose()*dp;
         }
 
-        void Rotate(RealVectorType & p) const
+        /**
+         * \brief rotate the momentum \a p using the kinetic energy matrix
+         *
+         * \param p momentum at which kinetic energy is to be calculated
+         */
+        void rotate(realVectorType & p) const
         {
-            for(IndexType i=0;i<p.rows();++i)
+            for(indexType i=0;i<p.rows();++i)
             {
-                p(i)*=sqrt(1./m_MInv(i));
+                p(i)*=sqrt(1./m_mInv(i));
             }
         }
 
-        IndexType NDim(void) const
+        /**
+         * \brief return the number of dimensions
+         *
+         * \return the number of dimensions of the kinetic energy matrix
+         */
+        indexType numDims(void) const
         {
-            return m_MInv.rows();
+            return m_mInv.rows();
         }
 
     private:
-        RealDiagMatrixType m_MInv;
+        realDiagMatrixType m_mInv; /**< diagonal kinetic energy matrix */
     };
 
 

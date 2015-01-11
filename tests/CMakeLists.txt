@@ -3,9 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 cmake_minimum_required(VERSION 2.8)
+
 project(MCPACKUnitTests CXX)
-if(UNIT_TESTS)
-    enable_testing()
-endif()
 
 add_subdirectory(Hamiltonian)

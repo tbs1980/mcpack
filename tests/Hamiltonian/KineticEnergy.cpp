@@ -4,69 +4,72 @@
 
 #define BOOST_TEST_MODULE KineticEnergy
 #define BOOST_TEST_DYN_LINK
+
 #include <boost/test/unit_test.hpp>
+
 #include <mcpack/CoreHeaders.hpp>
 
 BOOST_AUTO_TEST_CASE(Nd_General_Gauss_Test)
 {
-    typedef double RealType;
-    typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
-    typedef KinEngType::RealVectorType RealVectorType;
-    typedef KinEngType::RealMatrixType RealMatrixType;
-    typedef RealMatrixType::Index IndexType;
+    typedef double realType;
+    typedef mcpack::hamiltonian::gaussKineticEnergy<realType> kinEngType;
+    typedef kinEngType::realVectorType realVectorType;
+    typedef kinEngType::realMatrixType realMatrixType;
+    typedef realMatrixType::Index indexType;
 
-    const IndexType N=100;
+    const indexType N=100;
 
-    RealVectorType x=RealVectorType::Random(N);
-    RealVectorType g=RealVectorType::Zero(N);
-    RealMatrixType MInv=RealMatrixType::Identity(N,N);
-    RealType val=0;
-    KinEngType phi(MInv);
+    realVectorType x=realVectorType::Random(N);
+    realVectorType g=realVectorType::Zero(N);
+    realMatrixType mInv=realMatrixType::Identity(N,N);
+    realType val=0;
+    kinEngType phi(mInv);
 
-    phi.Evaluate(x,val,g);
+    phi.evaluate(x,val,g);
 
-    RealType valTest=-0.5*x.transpose()*MInv*x;
+    realType valTest=-0.5*x.transpose()*mInv*x;
 
     BOOST_CHECK_EQUAL(val,valTest);
 
-    for(IndexType i=0;i<N;++i)
+    for(indexType i=0;i<N;++i)
     {
         BOOST_CHECK_EQUAL(g(i),-x(i));
     }
 
-    BOOST_CHECK_EQUAL(N,phi.NDim());
+    BOOST_CHECK_EQUAL(N,phi.numDims());
 }
+
 
 BOOST_AUTO_TEST_CASE(Nd_Diag_Gauss_Test)
 {
-    typedef double RealType;
-    typedef mcpack::hamiltonian::GaussKineticEnergyDiag<RealType> KinEngType;
-    typedef KinEngType::RealVectorType RealVectorType;
-    typedef KinEngType::RealDiagMatrixType RealDiagMatrixType;
-    typedef RealDiagMatrixType::Index IndexType;
+    typedef double realType;
+    typedef mcpack::hamiltonian::gaussKineticEnergyDiag<realType> kinEngType;
+    typedef kinEngType::realVectorType realVectorType;
+    typedef kinEngType::realDiagMatrixType realDiagMatrixType;
+    typedef realDiagMatrixType::Index indexType;
 
-    const IndexType N=1000000;
+    const indexType N=1000000;
 
-    RealVectorType x=RealVectorType::Random(N);
-    RealVectorType g=RealVectorType::Zero(N);
-    RealDiagMatrixType MInv(N);
-    for(IndexType i=0;i<N;++i)
+    realVectorType x=realVectorType::Random(N);
+    realVectorType g=realVectorType::Zero(N);
+    realDiagMatrixType mInv(N);
+    for(indexType i=0;i<N;++i)
     {
-        MInv(i)=1;
+        mInv(i)=1;
     }
-    RealType val=0;
-    KinEngType phi(MInv);
+    realType val=0;
+    kinEngType phi(mInv);
 
-    phi.Evaluate(x,val,g);
+    phi.evaluate(x,val,g);
 
-    RealType valTest=-0.5*x.transpose()*(MInv.cwiseProduct(x));
+    realType valTest=-0.5*x.transpose()*(mInv.cwiseProduct(x));
 
     BOOST_CHECK_EQUAL(val,valTest);
 
-    for(IndexType i=0;i<N;++i)
+    for(indexType i=0;i<N;++i)
     {
         BOOST_CHECK_EQUAL(g(i),-x(i));
     }
 
-    BOOST_CHECK_EQUAL(N,phi.NDim());
+    BOOST_CHECK_EQUAL(N,phi.numDims());
 }
