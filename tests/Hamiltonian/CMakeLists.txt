@@ -12,3 +12,7 @@ add_test(TestgaussLogPost Test_gaussLogPost)
 add_executable(Test_kineticEnergy kineticEnergy.cpp)
 target_link_libraries(Test_kineticEnergy ${Boost_LIBRARIES})
 add_test(TestKineticEnergy Test_kineticEnergy)
+
+add_executable(Test_leapfrog leapfrog.cpp)
+target_link_libraries(Test_leapfrog ${Boost_LIBRARIES})
+add_test(TestIntegration Test_leapfrog)

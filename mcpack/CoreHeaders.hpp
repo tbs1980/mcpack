@@ -36,9 +36,10 @@
 */
 
 #include "Source/Hamiltonian/kineticEnergy.hpp"
+#include "Source/Hamiltonian/leapfrog.hpp"
 
 /*
-#include "Source/Hamiltonian/Integrator.hpp"
+
 #include "Source/Hamiltonian/HMCProposal.hpp"
 #include "Source/Hamiltonian/ClassicHMC.hpp"
 #include "Source/Hamiltonian/IO.hpp"

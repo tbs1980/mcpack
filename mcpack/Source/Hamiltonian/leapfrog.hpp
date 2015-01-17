@@ -2,13 +2,25 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef MCPACK_LEAPFROG_HPP
-#define MCPACK_LEAPFROG_HPP
+#ifndef MCPACK_leapfrog_HPP
+#define MCPACK_leapfrog_HPP
 
 namespace mcpack { namespace hamiltonian {
 
+    /**
+     * \ingroup Hamiltonian
+     *
+     * \class leapfrog
+     *
+     * \brief A class that implemets leapfrog integrator
+     *
+     * \tparam _potEngType Potentail Energy type
+     * \tparam _kinEngType Kinetic Energy type
+     *
+     * This class implements the leapfrog integrator. MORE INFO TO COME.
+     */
     template<class _potEngType,class _kinEngType>
-    class leapFrog
+    class leapfrog
     {
     public:
         typedef _potEngType potEngType;
@@ -32,30 +44,51 @@ namespace mcpack { namespace hamiltonian {
             "POTENTIAL ENERGY AND KINTETIC ENERGY SHOULD SHOULD HAVE THE SAME FLOATING POINT TYPE");
     public:
 
-        leapFrog(){}
+        /**
+         *  \brief The default constructor.
+         */
+        leapfrog(){}
 
-        leapFrog(potEngType const & G,kinEngType const& K)
+        /**
+         * \brief A constructor that potential and kintetic enrgies as arguments
+         *
+         * \param G Potential energy
+         * \param K Kinetic energy
+         */
+        leapfrog(potEngType const & G,kinEngType const& K)
         :m_G(G),m_K(K)
         {
-            //MCPACK_ASSERT(m_G.numDim()==m_K.numDim(),
-            //    "Pot-Energy and Kin-Energy objects should have the same dimensionality.");
+            BOOST_ASSERT_MSG(m_G.numDims()==m_K.numDims(),
+                "Pot-Energy and Kin-Energy objects should have the same dimensionality.");
         }
 
+        /**
+         * \brief Integrate the Hamiltonian
+         *
+         * \param q positon vector
+         * \param p momentum vector
+         * \param eps epsilon or the step size
+         * \param numSteps number steps in the integration
+         * \param deltaH deifference in Hamiltonian after integration
+         *
+         * This method integrates the Hamilotian from (p,q) to (p',q') through
+         * numSteps steps and epsilon step size.
+         */
         void integrate(realVectorType & q,realVectorType & p,const realType eps,
             const indexType numSteps,realType & deltaH) const
         {
-            //MCPACK_ASSERT(q.rows()==p.rows(),
-            //    "position and momentum should have the same number of dimensions");
-            //MCPACK_ASSERT(q.rows()==m_G.numDim(),
-            //    "position and momentum should have the same number of dimensions");
+            BOOST_ASSERT_MSG(q.rows()==p.rows(),
+                "position and momentum should have the same number of dimensions");
+            BOOST_ASSERT_MSG(q.rows()==m_G.numDims(),
+                "position and momentum should have the same number of dimensions");
 
-            //MCPACK_ASSERT(eps>0 and eps <2,"For stability of the LeapFrog, we require 0<eps<2");
+            BOOST_ASSERT_MSG(eps>0 and eps <2,"For stability of the leapfrog, we require 0<eps<2");
 
             if(numSteps==0) return;
 
             const indexType N=q.rows();
 
-            m_K.Rotate(p);
+            m_K.rotate(p);
 
             realVectorType dp=realVectorType::Zero(N);
             realVectorType dq=realVectorType::Zero(N);
@@ -81,19 +114,24 @@ namespace mcpack { namespace hamiltonian {
             //move the momentum back half a step
             p=p-0.5*eps*dq;
 
-            m_K.Evaluate(p,valK,dp);
+            m_K.evaluate(p,valK,dp);
             realType h1=-(valG+valK);
             deltaH=h1-h0;
         }
 
-        indexType numDim(void) const
+        /**
+         * \brief Retrun the number of dimensions of the Hamiltonian
+         *
+         * \return the number of diemensions of the Hamiltonian
+         */
+        indexType numDims(void) const
         {
-            return m_G.numDim();
+            return m_G.numDims();
         }
 
     private:
-        potEngType m_G;
-        kinEngType m_K;
+        potEngType m_G; /**< potential energy */
+        kinEngType m_K; /**< kinetic energy */
     };
 
 } //namespace hamiltonian
