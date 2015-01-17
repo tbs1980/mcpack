@@ -8,15 +8,13 @@
 #include <boost/test/unit_test.hpp>
 #include <mcpack/CoreHeaders.hpp>
 
-
-
-BOOST_AUTO_TEST_CASE(gaussian_log_posterior)
+template<typename realType>
+void test_gaussian_log_posterior(void)
 {
-    typedef double realType;
-    typedef mcpack::utils::gaussPotentialEnergy<realType> potEngType;
-    typedef potEngType::realVectorType realVectorType;
-    typedef potEngType::realMatrixType realMatrixType;
-    typedef realMatrixType::Index indexType;
+    typedef typename mcpack::utils::gaussPotentialEnergy<realType> potEngType;
+    typedef typename potEngType::realVectorType realVectorType;
+    typedef typename potEngType::realMatrixType realMatrixType;
+    typedef typename realMatrixType::Index indexType;
 
     const indexType N=100;
 
@@ -38,16 +36,15 @@ BOOST_AUTO_TEST_CASE(gaussian_log_posterior)
     {
         BOOST_CHECK_EQUAL(dq(i),dqTest(i));
     }
-
 }
 
-BOOST_AUTO_TEST_CASE(gaussian_log_posterior_diag_sigma_inv)
+template<typename realType>
+void test_gaussian_log_posterior_diag_sigma_inv(void)
 {
-    typedef double realType;
-    typedef mcpack::utils::gaussPotentialEnergyDiag<realType> potEngType;
-    typedef potEngType::realVectorType realVectorType;
-    typedef potEngType::realDiagMatrixType realDiagMatrixType;
-    typedef realDiagMatrixType::Index indexType;
+    typedef typename mcpack::utils::gaussPotentialEnergyDiag<realType> potEngType;
+    typedef typename potEngType::realVectorType realVectorType;
+    typedef typename potEngType::realDiagMatrixType realDiagMatrixType;
+    typedef typename realDiagMatrixType::Index indexType;
 
     const indexType N=100;
 
@@ -75,4 +72,18 @@ BOOST_AUTO_TEST_CASE(gaussian_log_posterior_diag_sigma_inv)
     {
         BOOST_REQUIRE( fabs(dq(i)-dqTest(i)) < 1e-15);
     }
+}
+
+BOOST_AUTO_TEST_CASE(gaussian_log_posterior)
+{
+    test_gaussian_log_posterior<float>();
+    test_gaussian_log_posterior<double>();
+    test_gaussian_log_posterior<long double>();
+}
+
+BOOST_AUTO_TEST_CASE(gaussian_log_posterior_diag_sigma_inv)
+{
+    test_gaussian_log_posterior_diag_sigma_inv<float>();
+    test_gaussian_log_posterior_diag_sigma_inv<double>();
+    test_gaussian_log_posterior_diag_sigma_inv<long double>();
 }

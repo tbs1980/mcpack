@@ -9,13 +9,13 @@
 
 #include <mcpack/CoreHeaders.hpp>
 
-BOOST_AUTO_TEST_CASE(Nd_General_Gauss_Test)
+template<typename realType>
+void test_Nd_General_Gauss(void)
 {
-    typedef double realType;
-    typedef mcpack::hamiltonian::gaussKineticEnergy<realType> kinEngType;
-    typedef kinEngType::realVectorType realVectorType;
-    typedef kinEngType::realMatrixType realMatrixType;
-    typedef realMatrixType::Index indexType;
+    typedef typename mcpack::hamiltonian::gaussKineticEnergy<realType> kinEngType;
+    typedef typename kinEngType::realVectorType realVectorType;
+    typedef typename kinEngType::realMatrixType realMatrixType;
+    typedef typename realMatrixType::Index indexType;
 
     const indexType N=100;
 
@@ -39,14 +39,13 @@ BOOST_AUTO_TEST_CASE(Nd_General_Gauss_Test)
     BOOST_CHECK_EQUAL(N,phi.numDims());
 }
 
-
-BOOST_AUTO_TEST_CASE(Nd_Diag_Gauss_Test)
+template<typename realType>
+void test_Nd_Diag_Gauss(void)
 {
-    typedef double realType;
-    typedef mcpack::hamiltonian::gaussKineticEnergyDiag<realType> kinEngType;
-    typedef kinEngType::realVectorType realVectorType;
-    typedef kinEngType::realDiagMatrixType realDiagMatrixType;
-    typedef realDiagMatrixType::Index indexType;
+    typedef typename mcpack::hamiltonian::gaussKineticEnergyDiag<realType> kinEngType;
+    typedef typename kinEngType::realVectorType realVectorType;
+    typedef typename kinEngType::realDiagMatrixType realDiagMatrixType;
+    typedef typename realDiagMatrixType::Index indexType;
 
     const indexType N=1000000;
 
@@ -72,4 +71,19 @@ BOOST_AUTO_TEST_CASE(Nd_Diag_Gauss_Test)
     }
 
     BOOST_CHECK_EQUAL(N,phi.numDims());
+}
+
+BOOST_AUTO_TEST_CASE(Nd_General_Gauss_Test)
+{
+    test_Nd_General_Gauss<float>();
+    test_Nd_General_Gauss<double>();
+    test_Nd_General_Gauss<long double>();
+}
+
+
+BOOST_AUTO_TEST_CASE(Nd_Diag_Gauss_Test)
+{
+    test_Nd_Diag_Gauss<float>();
+    test_Nd_Diag_Gauss<double>();
+    test_Nd_Diag_Gauss<long double>();
 }
