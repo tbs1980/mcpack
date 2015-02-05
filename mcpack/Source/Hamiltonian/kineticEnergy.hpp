@@ -15,18 +15,18 @@ namespace mcpack { namespace hamiltonian {
      *
      * \brief A class for computing Gaussain Kinetic Enegry.
      *
-     * \tparam _realType real floating point type
+     * \tparam _realScalarType real floating point type
      */
-    template<typename _realType>
+    template<typename _realScalarType>
     class gaussKineticEnergy
     {
     public:
-        static_assert(std::is_floating_point<_realType>::value,
+        static_assert(std::is_floating_point<_realScalarType>::value,
             "PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
-        typedef _realType realType;
-        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, 1> realVectorType;
-        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, Eigen::Dynamic> realMatrixType;
+        typedef _realScalarType realScalarType;
+        typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, 1> realVectorType;
+        typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, Eigen::Dynamic> realMatrixType;
         typedef typename realVectorType::Index indexType;
         typedef typename Eigen::LLT<realMatrixType> LLTType;
 
@@ -62,7 +62,7 @@ namespace mcpack { namespace hamiltonian {
          * \param val value kinetic energy at \a p
          * \param dp derivative of the kinetic energy at \a p
          */
-        void evaluate(realVectorType const & p, realType & val,realVectorType & dp) const
+        void evaluate(realVectorType const & p, realScalarType & val,realVectorType & dp) const
         {
             BOOST_ASSERT_MSG(p.rows()==dp.rows(),"p and dp shoudl have the same dimensionality");
             dp=-m_mInv*p;
@@ -102,18 +102,18 @@ namespace mcpack { namespace hamiltonian {
     *
     * \brief A class for computing Gaussain Kinetic Enegry with diagonal energy matrix
     *
-    * \tparam _realType real floating point type
+    * \tparam _realScalarType real floating point type
     */
-    template<typename _realType>
+    template<typename _realScalarType>
     class gaussKineticEnergyDiag
     {
     public:
-        static_assert(std::is_floating_point<_realType>::value,
+        static_assert(std::is_floating_point<_realScalarType>::value,
             "PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
-        typedef _realType realType;
-        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, 1> realVectorType;
-        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, 1> realDiagMatrixType;
+        typedef _realScalarType realScalarType;
+        typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, 1> realVectorType;
+        typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, 1> realDiagMatrixType;
         typedef typename realDiagMatrixType::Index indexType;
 
         /**
@@ -141,7 +141,7 @@ namespace mcpack { namespace hamiltonian {
          * \param val value kinetic energy at \a p
          * \param dp derivative of the kinetic energy at \a p
          */
-        void evaluate(realVectorType const & p, realType & val,realVectorType & dp) const
+        void evaluate(realVectorType const & p, realScalarType & val,realVectorType & dp) const
         {
             BOOST_ASSERT_MSG(p.rows()==dp.rows(),"p and dp shoudl have the same dimensionality");
             dp=-m_mInv.cwiseProduct(p);

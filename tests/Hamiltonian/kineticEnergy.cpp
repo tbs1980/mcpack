@@ -9,10 +9,10 @@
 
 #include <mcpack/CoreHeaders.hpp>
 
-template<typename realType>
+template<typename realScalarType>
 void test_Nd_General_Gauss(void)
 {
-    typedef typename mcpack::hamiltonian::gaussKineticEnergy<realType> kinEngType;
+    typedef typename mcpack::hamiltonian::gaussKineticEnergy<realScalarType> kinEngType;
     typedef typename kinEngType::realVectorType realVectorType;
     typedef typename kinEngType::realMatrixType realMatrixType;
     typedef typename realMatrixType::Index indexType;
@@ -22,12 +22,12 @@ void test_Nd_General_Gauss(void)
     realVectorType x=realVectorType::Random(N);
     realVectorType g=realVectorType::Zero(N);
     realMatrixType mInv=realMatrixType::Identity(N,N);
-    realType val=0;
+    realScalarType val=0;
     kinEngType phi(mInv);
 
     phi.evaluate(x,val,g);
 
-    realType valTest=-0.5*x.transpose()*mInv*x;
+    realScalarType valTest=-0.5*x.transpose()*mInv*x;
 
     BOOST_CHECK_EQUAL(val,valTest);
 
@@ -39,10 +39,10 @@ void test_Nd_General_Gauss(void)
     BOOST_CHECK_EQUAL(N,phi.numDims());
 }
 
-template<typename realType>
+template<typename realScalarType>
 void test_Nd_Diag_Gauss(void)
 {
-    typedef typename mcpack::hamiltonian::gaussKineticEnergyDiag<realType> kinEngType;
+    typedef typename mcpack::hamiltonian::gaussKineticEnergyDiag<realScalarType> kinEngType;
     typedef typename kinEngType::realVectorType realVectorType;
     typedef typename kinEngType::realDiagMatrixType realDiagMatrixType;
     typedef typename realDiagMatrixType::Index indexType;
@@ -56,12 +56,12 @@ void test_Nd_Diag_Gauss(void)
     {
         mInv(i)=1;
     }
-    realType val=0;
+    realScalarType val=0;
     kinEngType phi(mInv);
 
     phi.evaluate(x,val,g);
 
-    realType valTest=-0.5*x.transpose()*(mInv.cwiseProduct(x));
+    realScalarType valTest=-0.5*x.transpose()*(mInv.cwiseProduct(x));
 
     BOOST_CHECK_EQUAL(val,valTest);
 

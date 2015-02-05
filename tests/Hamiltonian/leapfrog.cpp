@@ -9,12 +9,12 @@
 
 BOOST_AUTO_TEST_CASE(Identiy_Matrix_Gauss)
 {
-    typedef double realType;
-    typedef mcpack::utils::gaussPotentialEnergy<realType> potEngType;
+    typedef double realScalarType;
+    typedef mcpack::utils::gaussPotentialEnergy<realScalarType> potEngType;
     typedef potEngType::realVectorType realVectorType;
     typedef potEngType::realMatrixType realMatrixType;
     typedef realMatrixType::Index indexType;
-    typedef mcpack::hamiltonian::gaussKineticEnergy<realType> kinEngType;
+    typedef mcpack::hamiltonian::gaussKineticEnergy<realScalarType> kinEngType;
     typedef mcpack::hamiltonian::leapfrog<potEngType,kinEngType> leapfrogIntegratorType;
 
     const indexType N=100;
@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(Identiy_Matrix_Gauss)
     realMatrixType sigmaInv=realMatrixType::Identity(N,N);
     realMatrixType mInv=realMatrixType::Identity(N,N);
 
-    const realType eps=1;
+    const realScalarType eps=1;
     const indexType nSteps=10;
 
     // after one iteration we should get
@@ -51,11 +51,11 @@ BOOST_AUTO_TEST_CASE(Identiy_Matrix_Gauss)
 
     leapfrogIntegratorType lP(G,K);
 
-    realType dH=0;
+    realScalarType dH=0;
 
     lP.integrate(q,p,eps,nSteps,dH);
 
-    realType meps=std::numeric_limits<realType>::epsilon();
+    realScalarType meps=std::numeric_limits<realScalarType>::epsilon();
 
     for(indexType i=0;i<N;++i)
     {

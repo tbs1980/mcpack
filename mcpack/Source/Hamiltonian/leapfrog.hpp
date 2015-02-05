@@ -26,18 +26,18 @@ namespace mcpack { namespace hamiltonian {
         typedef _potEngType potEngType;
         typedef _kinEngType kinEngType;
 
-        typedef typename potEngType::realType realType;
+        typedef typename potEngType::realScalarType realScalarType;
         typedef typename potEngType::realVectorType realVectorType;
         typedef typename realVectorType::Index indexType;
 
     private:
-        typedef typename kinEngType::realType realTypeKE;
+        typedef typename kinEngType::realScalarType realScalarTypeKE;
         typedef typename kinEngType::realVectorType realVectorTypeKE;
 
-        static_assert(std::is_floating_point<realType>::value,
+        static_assert(std::is_floating_point<realScalarType>::value,
             "PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
-        static_assert(std::is_same<realType,realTypeKE>::value,
+        static_assert(std::is_same<realScalarType,realScalarTypeKE>::value,
             "POTENTIAL ENERGY AND KINTETIC ENERGY SHOULD SHOULD HAVE THE SAME FLOATING POINT TYPE");
 
         static_assert(std::is_same<realVectorType,realVectorTypeKE>::value,
@@ -74,8 +74,8 @@ namespace mcpack { namespace hamiltonian {
          * This method integrates the Hamilotian from (p,q) to (p',q') through
          * numSteps steps and epsilon step size.
          */
-        void integrate(realVectorType & q,realVectorType & p,const realType eps,
-            const indexType numSteps,realType & deltaH) const
+        void integrate(realVectorType & q,realVectorType & p,const realScalarType eps,
+            const indexType numSteps,realScalarType & deltaH) const
         {
             BOOST_ASSERT_MSG(q.rows()==p.rows(),
                 "position and momentum should have the same number of dimensions");
@@ -92,12 +92,12 @@ namespace mcpack { namespace hamiltonian {
 
             realVectorType dp=realVectorType::Zero(N);
             realVectorType dq=realVectorType::Zero(N);
-            realType valG=0;
-            realType valK=0;
+            realScalarType valG=0;
+            realScalarType valK=0;
             m_G.evaluate(q,valG,dq);
             m_K.evaluate(p,valK,dp);
 
-            realType h0=-(valG+valK);
+            realScalarType h0=-(valG+valK);
 
             //take half a step
             p=p+0.5*eps*dq;
@@ -115,7 +115,7 @@ namespace mcpack { namespace hamiltonian {
             p=p-0.5*eps*dq;
 
             m_K.evaluate(p,valK,dp);
-            realType h1=-(valG+valK);
+            realScalarType h1=-(valG+valK);
             deltaH=h1-h0;
         }
 

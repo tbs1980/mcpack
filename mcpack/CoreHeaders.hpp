@@ -27,7 +27,7 @@
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/assert.hpp>
 
-#include "Source/Utils/gaussLogPost.hpp"
+#include "Source/utils/gaussLogPost.hpp"
 
 /*
 #include "Source/Utils/Macros.hpp"
@@ -37,10 +37,10 @@
 
 #include "Source/Hamiltonian/kineticEnergy.hpp"
 #include "Source/Hamiltonian/leapfrog.hpp"
+#include "Source/Hamiltonian/hmcProposal.hpp"
 
 /*
 
-#include "Source/Hamiltonian/HMCProposal.hpp"
 #include "Source/Hamiltonian/ClassicHMC.hpp"
 #include "Source/Hamiltonian/IO.hpp"
 #include "Source/Hamiltonian/RuntimeControl.hpp"

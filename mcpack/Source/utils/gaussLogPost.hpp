@@ -14,18 +14,18 @@ namespace mcpack { namespace utils {
      *
      * \brief A class for computing Gaussian Potential Energy
      *
-     * \tparam _realType real floating point type
+     * \tparam _realScalarType real floating point type
      */
-    template<typename _realType>
+    template<typename _realScalarType>
     class gaussPotentialEnergy
     {
     public:
-        static_assert(std::is_floating_point<_realType>::value,
+        static_assert(std::is_floating_point<_realScalarType>::value,
             "PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
-        typedef _realType realType;
-        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, 1> realVectorType;
-        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, Eigen::Dynamic> realMatrixType;
+        typedef _realScalarType realScalarType;
+        typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, 1> realVectorType;
+        typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, Eigen::Dynamic> realMatrixType;
         typedef typename realMatrixType::Index indexType;
 
         /**
@@ -58,7 +58,7 @@ namespace mcpack { namespace utils {
          * \param val the potential energy at \a q
          * \param dq the derivative of the potential energy at \a q
          */
-        void evaluate(realVectorType const & q, realType & val,realVectorType & dq) const
+        void evaluate(realVectorType const & q, realScalarType & val,realVectorType & dq) const
         {
             BOOST_ASSERT_MSG(q.rows()==dq.rows() && q.cols()==dq.cols(),
                     "q and dq shoudl have the same dimensionality");
@@ -91,18 +91,18 @@ namespace mcpack { namespace utils {
      *
      * \brief A class for computing Gaussian Potential Energy with diagonal matrix
      *
-     * \tparam _realType real floating point type
+     * \tparam _realScalarType real floating point type
      */
-    template<typename _realType>
+    template<typename _realScalarType>
     class gaussPotentialEnergyDiag
     {
     public:
-        static_assert(std::is_floating_point<_realType>::value,
+        static_assert(std::is_floating_point<_realScalarType>::value,
             "PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
-        typedef _realType realType;
-        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, 1> realVectorType;
-        typedef typename Eigen::Matrix<realType, Eigen::Dynamic, 1> realDiagMatrixType;
+        typedef _realScalarType realScalarType;
+        typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, 1> realVectorType;
+        typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, 1> realDiagMatrixType;
         typedef typename realDiagMatrixType::Index indexType;
 
         /**
@@ -133,7 +133,7 @@ namespace mcpack { namespace utils {
          * \param val the potential energy at \a q
          * \param dq the derivative of the potential energy at \a q
          */
-        void evaluate(realVectorType const & q, realType & val,realVectorType & dq) const
+        void evaluate(realVectorType const & q, realScalarType & val,realVectorType & dq) const
         {
             BOOST_ASSERT_MSG(q.rows()==dq.rows() && q.cols()==dq.cols(),
                     "q and dq shoudl have the same dimensionality");
@@ -154,7 +154,7 @@ namespace mcpack { namespace utils {
         }
 
     private:
-        
+
         realVectorType m_mu; /**< the mean of the potential energy distribution */
         realDiagMatrixType m_sigmaInv; /**< the inverse of the potential energy matrix */
     };

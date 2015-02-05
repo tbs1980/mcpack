@@ -6,12 +6,13 @@
 #define BOOST_TEST_MODULE GaussLogPost
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
+
 #include <mcpack/CoreHeaders.hpp>
 
-template<typename realType>
+template<typename realScalarType>
 void test_gaussian_log_posterior(void)
 {
-    typedef typename mcpack::utils::gaussPotentialEnergy<realType> potEngType;
+    typedef typename mcpack::utils::gaussPotentialEnergy<realScalarType> potEngType;
     typedef typename potEngType::realVectorType realVectorType;
     typedef typename potEngType::realMatrixType realMatrixType;
     typedef typename realMatrixType::Index indexType;
@@ -25,10 +26,10 @@ void test_gaussian_log_posterior(void)
     potEngType G(mu,sigmaInv);
 
     realVectorType dq=sigmaInv*(mu-q);
-    realType val=-0.5*(mu-q).transpose()*sigmaInv*(mu-q);
+    realScalarType val=-0.5*(mu-q).transpose()*sigmaInv*(mu-q);
 
     realVectorType dqTest=realVectorType::Zero(N);
-    realType valTest=0;
+    realScalarType valTest=0;
     G.evaluate(q,valTest,dqTest);
     BOOST_CHECK_EQUAL(val,valTest);
 
@@ -38,10 +39,10 @@ void test_gaussian_log_posterior(void)
     }
 }
 
-template<typename realType>
+template<typename realScalarType>
 void test_gaussian_log_posterior_diag_sigma_inv(void)
 {
-    typedef typename mcpack::utils::gaussPotentialEnergyDiag<realType> potEngType;
+    typedef typename mcpack::utils::gaussPotentialEnergyDiag<realScalarType> potEngType;
     typedef typename potEngType::realVectorType realVectorType;
     typedef typename potEngType::realDiagMatrixType realDiagMatrixType;
     typedef typename realDiagMatrixType::Index indexType;
@@ -59,18 +60,18 @@ void test_gaussian_log_posterior_diag_sigma_inv(void)
     potEngType G(mu,sigmaInv);
 
     realVectorType dq=sigmaInv.cwiseProduct(mu-q);
-    realType val=-0.5*(mu-q).transpose()*(sigmaInv.cwiseProduct(mu-q));
+    realScalarType val=-0.5*(mu-q).transpose()*(sigmaInv.cwiseProduct(mu-q));
 
     realVectorType dqTest=realVectorType::Zero(N);
-    realType valTest=0;
+    realScalarType valTest=0;
     G.evaluate(q,valTest,dqTest);
 
 
-    BOOST_REQUIRE(fabs(val-valTest) < 1e-15);
+    BOOST_REQUIRE(std::abs(val-valTest) < 1e-15);
 
     for(indexType i=0;i<N;++i)
     {
-        BOOST_REQUIRE( fabs(dq(i)-dqTest(i)) < 1e-15);
+        BOOST_REQUIRE( std::abs(dq(i)-dqTest(i)) < 1e-15);
     }
 }
 
