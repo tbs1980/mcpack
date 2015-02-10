@@ -27,17 +27,17 @@
 #include <boost/property_tree/ini_parser.hpp>
 #include <boost/assert.hpp>
 
+#include "Source/utils/randomSTD.hpp"
 #include "Source/utils/gaussLogPost.hpp"
 
 /*
 #include "Source/Utils/Macros.hpp"
-#include "Source/Utils/Random.hpp"
 #include "Source/Utils/TextDataIO.hpp"
 */
 
 #include "Source/Hamiltonian/kineticEnergy.hpp"
 #include "Source/Hamiltonian/leapfrog.hpp"
-#include "Source/Hamiltonian/hmcProposal.hpp"
+#include "Source/Hamiltonian/HMCProposal.hpp"
 
 /*
 

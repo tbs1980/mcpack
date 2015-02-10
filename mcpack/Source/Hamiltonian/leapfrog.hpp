@@ -84,39 +84,44 @@ namespace mcpack { namespace hamiltonian {
 
             BOOST_ASSERT_MSG(eps>0 and eps <2,"For stability of the leapfrog, we require 0<eps<2");
 
-            if(numSteps==0) return;
+            // check if we need to proceed further
+            if(numSteps <= 0)
+            {
+                return;
+            }
 
             const indexType N=q.rows();
 
+            // rotate the momentum to the correct coordinates
             m_K.rotate(p);
 
-            realVectorType dp=realVectorType::Zero(N);
-            realVectorType dq=realVectorType::Zero(N);
-            realScalarType valG=0;
-            realScalarType valK=0;
+            realVectorType dp = realVectorType::Zero(N);
+            realVectorType dq = realVectorType::Zero(N);
+            realScalarType valG(0);
+            realScalarType valK(0);
             m_G.evaluate(q,valG,dq);
             m_K.evaluate(p,valK,dp);
 
-            realScalarType h0=-(valG+valK);
+            realScalarType h0 = -(valG+valK);
 
-            //take half a step
-            p=p+0.5*eps*dq;
+            // take half a step
+            p = p+0.5*eps*dq;
 
             for(indexType i=0;i<numSteps;++i)
             {
                 //now full steps
                 m_K.evaluate(p,valK,dp);
-                q=q-eps*dp;
+                q = q-eps*dp;
                 m_G.evaluate(q,valG,dq);
-                p=p+eps*dq;
+                p = p+eps*dq;
             }
 
-            //move the momentum back half a step
-            p=p-0.5*eps*dq;
+            // move the momentum back half a step
+            p = p-0.5*eps*dq;
 
             m_K.evaluate(p,valK,dp);
-            realScalarType h1=-(valG+valK);
-            deltaH=h1-h0;
+            realScalarType h1 = -(valG+valK);
+            deltaH = h1-h0;
         }
 
         /**
@@ -124,7 +129,7 @@ namespace mcpack { namespace hamiltonian {
          *
          * \return the number of diemensions of the Hamiltonian
          */
-        indexType numDims(void) const
+        inline indexType numDims(void) const
         {
             return m_G.numDims();
         }

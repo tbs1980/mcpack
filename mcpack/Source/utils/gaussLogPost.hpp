@@ -23,9 +23,28 @@ namespace mcpack { namespace utils {
         static_assert(std::is_floating_point<_realScalarType>::value,
             "PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
+        /**
+         * \typedef _realScalarType realScalarType
+         * \brief the floating point type
+         */
         typedef _realScalarType realScalarType;
+
+        /**
+         * \typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, 1> realVectorType;
+         * \brief real vector type
+         */
         typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, 1> realVectorType;
+
+        /**
+         * \typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, Eigen::Dynamic> realMatrixType;
+         * \brief real matrix type
+         */
         typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, Eigen::Dynamic> realMatrixType;
+
+        /**
+         * \typedef typename realMatrixType::Index indexType;
+         * \brief integral type
+         */
         typedef typename realMatrixType::Index indexType;
 
         /**
@@ -64,8 +83,8 @@ namespace mcpack { namespace utils {
                     "q and dq shoudl have the same dimensionality");
             BOOST_ASSERT_MSG(q.rows()==numDims(),"q and dq shoudl have the same dimensionality");
 
-            dq=m_sigmaInv*(m_mu-q);
-            val=-0.5*(m_mu-q).transpose()*dq;
+            dq = m_sigmaInv*(m_mu-q);
+            val = -0.5*(m_mu-q).transpose()*dq;
         }
 
         /**
@@ -73,7 +92,7 @@ namespace mcpack { namespace utils {
          *
          * \return the number of dimensions of the potential energy matrix
          */
-        indexType numDims(void) const
+        inline indexType numDims(void) const
         {
             return m_sigmaInv.rows();
         }
@@ -139,8 +158,8 @@ namespace mcpack { namespace utils {
                     "q and dq shoudl have the same dimensionality");
             BOOST_ASSERT_MSG(q.rows()==numDims(),"q and dq shoudl have the same dimensionality");
 
-            dq=m_sigmaInv.cwiseProduct(m_mu-q);
-            val=-0.5*(m_mu-q).transpose()*dq;
+            dq = m_sigmaInv.cwiseProduct(m_mu-q);
+            val = -0.5*(m_mu-q).transpose()*dq;
         }
 
         /**
@@ -148,7 +167,7 @@ namespace mcpack { namespace utils {
          *
          * \return the number of dimensions of the potential energy matrix
          */
-        indexType numDims(void) const
+        inline indexType numDims(void) const
         {
             return m_sigmaInv.rows();
         }

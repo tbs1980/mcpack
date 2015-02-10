@@ -24,10 +24,34 @@ namespace mcpack { namespace hamiltonian {
         static_assert(std::is_floating_point<_realScalarType>::value,
             "PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
+        /**
+         * \typedef _realScalarType realScalarType;
+         * \brief the floating point type
+         */
         typedef _realScalarType realScalarType;
+
+        /**
+         * \typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, 1> realVectorType;
+         * \brief real vector type
+         */
         typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, 1> realVectorType;
+
+        /**
+         * \typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, Eigen::Dynamic> realMatrixType;
+         * \brief real matrix type
+         */
         typedef typename Eigen::Matrix<realScalarType, Eigen::Dynamic, Eigen::Dynamic> realMatrixType;
+
+        /**
+         * \typedef typename realVectorType::Index indexType;
+         * \brief integral type
+         */
         typedef typename realVectorType::Index indexType;
+
+        /**
+         * \typedef typename Eigen::LLT<realMatrixType> LLTType;
+         * \brief Cholesky decompostion type
+         */
         typedef typename Eigen::LLT<realMatrixType> LLTType;
 
         /**
@@ -65,8 +89,8 @@ namespace mcpack { namespace hamiltonian {
         void evaluate(realVectorType const & p, realScalarType & val,realVectorType & dp) const
         {
             BOOST_ASSERT_MSG(p.rows()==dp.rows(),"p and dp shoudl have the same dimensionality");
-            dp=-m_mInv*p;
-            val=0.5*p.transpose()*dp;
+            dp = -m_mInv*p;
+            val = 0.5*p.transpose()*dp;
         }
 
         /**
@@ -74,9 +98,9 @@ namespace mcpack { namespace hamiltonian {
          *
          * \param p momentum at which kinetic energy is to be calculated
          */
-        void rotate(realVectorType & p) const
+        inline void rotate(realVectorType & p) const
         {
-            p=m_Chol*p;
+            p = m_Chol*p;
         }
 
         /**
@@ -84,7 +108,7 @@ namespace mcpack { namespace hamiltonian {
          *
          * \return the number of dimensions of the kinetic energy matrix
          */
-        indexType numDims(void) const
+        inline indexType numDims(void) const
         {
             return m_mInv.rows();
         }
@@ -144,8 +168,8 @@ namespace mcpack { namespace hamiltonian {
         void evaluate(realVectorType const & p, realScalarType & val,realVectorType & dp) const
         {
             BOOST_ASSERT_MSG(p.rows()==dp.rows(),"p and dp shoudl have the same dimensionality");
-            dp=-m_mInv.cwiseProduct(p);
-            val=0.5*p.transpose()*dp;
+            dp = -m_mInv.cwiseProduct(p);
+            val = 0.5*p.transpose()*dp;
         }
 
         /**
@@ -157,7 +181,7 @@ namespace mcpack { namespace hamiltonian {
         {
             for(indexType i=0;i<p.rows();++i)
             {
-                p(i)*=sqrt(1./m_mInv(i));
+                p(i) *= sqrt(1./m_mInv(i));
             }
         }
 

@@ -14,3 +14,7 @@ add_test(TestKineticEnergy Test_kineticEnergy)
 add_executable(Test_leapfrog leapfrog.cpp)
 target_link_libraries(Test_leapfrog ${Boost_LIBRARIES})
 add_test(TestLeapfrogIntegration Test_leapfrog)
+
+add_executable(Test_HMCProposal HMCProposal.cpp)
+target_link_libraries(Test_HMCProposal ${Boost_LIBRARIES})
+add_test(TestHamiltonianMonteCarloProposal Test_HMCProposal)

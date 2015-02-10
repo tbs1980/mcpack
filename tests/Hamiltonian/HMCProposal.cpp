@@ -1,44 +1,44 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
- 
+
 #define BOOST_TEST_MODULE ClassicHMC
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
+
 #include <mcpack/CoreHeaders.hpp>
 
 BOOST_AUTO_TEST_CASE(classic_hmc_10)
 {
-    typedef double RealType;
-    typedef mcpack::utils::GaussPotentialEnergy<RealType> PotEngType;
-    typedef PotEngType::RealVectorType RealVectorType;
-    typedef PotEngType::RealMatrixType RealMatrixType;
-    typedef RealMatrixType::Index IndexType;
-    typedef mcpack::hamiltonian::GaussKineticEnergy<RealType> KinEngType;
-    typedef mcpack::hamiltonian::LeapFrog<PotEngType,KinEngType> IntegratorType;
-    typedef typename mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
-    typedef mcpack::hamiltonian::HMCProposal<IntegratorType,RandVarGenType> HMCProposalType;
+    typedef double realScalarType;
+    typedef mcpack::utils::gaussPotentialEnergy<realScalarType> potEngType;
+    typedef potEngType::realVectorType realVectorType;
+    typedef potEngType::realMatrixType realMatrixType;
+    typedef realMatrixType::Index indexType;
+    typedef mcpack::hamiltonian::gaussKineticEnergy<realScalarType> kinEngType;
+    typedef mcpack::hamiltonian::leapfrog<potEngType,kinEngType> integratorType;
+    typedef typename mcpack::utils::randomSTD<realScalarType> randVarGenType;
+    typedef mcpack::hamiltonian::HMCProposal<integratorType,randVarGenType> HMCProposalType;
 
-    const IndexType N=10;
+    const indexType N = 10;
 
-    RealVectorType mu=RealVectorType::Zero(N);
-    RealMatrixType SigmaInv=RealMatrixType::Identity(N,N);
-    RealMatrixType MInv=RealMatrixType::Identity(N,N);
-    RealVectorType q0=RealVectorType::Random(N);
+    realVectorType mu = realVectorType::Zero(N);
+    realMatrixType sigmaInv = realMatrixType::Identity(N,N);
+    realMatrixType MInv = realMatrixType::Identity(N,N);
+    realVectorType q0 = realVectorType::Random(N);
 
-    const RealType eps=1;
-    const IndexType Nsteps=10;
+    const realScalarType eps = 1;
+    const indexType Nsteps = 10;
 
-    PotEngType G(mu,SigmaInv);
-    KinEngType K(MInv);
+    potEngType G(mu,sigmaInv);
+    kinEngType K(MInv);
 
-    IntegratorType Lp(G,K);
-
+    integratorType Lp(G,K);
 
     HMCProposalType prop(Lp,eps,Nsteps);
 
-    RealType dH=0;
-    RandVarGenType RVGen(12346l);
+    realScalarType dH = 0;
+    randVarGenType RVGen(12346l);
 
-    prop.Propose(q0,dH,RVGen);
+    prop.propose(q0,dH,RVGen);
 }

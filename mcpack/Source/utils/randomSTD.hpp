@@ -77,7 +77,7 @@ namespace mcpack{ namespace utils {
         {
         }
 
-        void seed(seedType const seed)
+        inline void seed(seedType const seed)
         {
             m_rng.seed(seed);
         }
@@ -125,7 +125,7 @@ namespace mcpack{ namespace utils {
          * \brief set the random number state
          * \param state State of the random number generator to be set
          */
-        inline void setState(std::stringstream const & state)
+        inline void setState(std::stringstream  & state)// cannot use const & here
         {
             state >> m_rng ;
         }
