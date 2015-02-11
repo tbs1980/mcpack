@@ -17,11 +17,39 @@ namespace mcpack { namespace hamiltonian {
     class HMCProposal
     {
     public:
+
+        /**
+         * \typedef _discretisationType discretisationType;
+         * \brief the discretisation of the phase space integral
+         */
         typedef _discretisationType discretisationType;
+
+        /**
+         * \typedef _randVarGenType randVarGenType;
+         * \brief the random variate generator type
+         */
         typedef _randVarGenType randVarGenType;
+
+        /**
+         * \typedef typename discretisationType::realScalarType realScalarType;
+         * \brief real floating point type
+         */
         typedef typename discretisationType::realScalarType realScalarType;
+
+        /**
+         * \typedef typename discretisationType::indexType indexType;
+         * \brief the integral type
+         */
         typedef typename discretisationType::indexType indexType;
+
+        /**
+         * \typedef typename discretisationType::realVectorType realVectorType;
+         * \brief real vector type
+         */
         typedef typename discretisationType::realVectorType realVectorType;
+
+        static_assert(std::is_floating_point<realScalarType>::value,
+            "PARAMETER SHOULD BE A FLOATING POINT TYPE");
 
         /**
          * \brief the default constructor
@@ -57,6 +85,7 @@ namespace mcpack { namespace hamiltonian {
          * position in phase space, a step-size eps and the number steps to
          * take. Examples of this kind of discretisation are Euler's method,
          * Modified Euler's method and leapfrog method.
+         * TODO a full descrption using maths
          */
         void propose(realVectorType & q0,realScalarType & deltaH,
             randVarGenType & rvGen) const
@@ -86,6 +115,16 @@ namespace mcpack { namespace hamiltonian {
 
             // integrate the phase space using discretisation
             m_discr.integrate(q0,p0,eps,numSteps,deltaH);
+        }
+
+        /**
+         * \brief Retrun the number of dimensions of the discretisation type
+         *
+         * \return the number of diemensions of the discretisation
+         */
+        inline indexType numDims(void) const
+        {
+            return m_discr.numDims();
         }
 
     private:
