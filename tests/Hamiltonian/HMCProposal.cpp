@@ -8,16 +8,16 @@
 
 #include <mcpack/CoreHeaders.hpp>
 
-BOOST_AUTO_TEST_CASE(classic_hmc_10)
+template<typename realScalarType>
+void test_classic_hmc_10(void)
 {
-    typedef double realScalarType;
     typedef mcpack::utils::gaussPotentialEnergy<realScalarType> potEngType;
-    typedef potEngType::realVectorType realVectorType;
-    typedef potEngType::realMatrixType realMatrixType;
-    typedef realMatrixType::Index indexType;
+    typedef typename potEngType::realVectorType realVectorType;
+    typedef typename potEngType::realMatrixType realMatrixType;
+    typedef typename realMatrixType::Index indexType;
     typedef mcpack::hamiltonian::gaussKineticEnergy<realScalarType> kinEngType;
     typedef mcpack::hamiltonian::leapfrog<potEngType,kinEngType> integratorType;
-    typedef typename mcpack::utils::randomSTD<realScalarType> randVarGenType;
+    typedef mcpack::utils::randomSTD<realScalarType> randVarGenType;
     typedef mcpack::hamiltonian::HMCProposal<integratorType,randVarGenType> HMCProposalType;
 
     const indexType N = 10;
@@ -41,4 +41,11 @@ BOOST_AUTO_TEST_CASE(classic_hmc_10)
     randVarGenType RVGen(12346l);
 
     prop.propose(q0,dH,RVGen);
+}
+
+BOOST_AUTO_TEST_CASE(classic_hmc_10)
+{
+    test_classic_hmc_10<float>();
+    test_classic_hmc_10<double>();
+    test_classic_hmc_10<long double>();
 }

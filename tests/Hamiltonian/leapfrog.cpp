@@ -7,13 +7,13 @@
 #include <boost/test/unit_test.hpp>
 #include <mcpack/CoreHeaders.hpp>
 
-BOOST_AUTO_TEST_CASE(Identiy_Matrix_Gauss)
+template<typename realScalarType>
+void test_Identiy_Matrix_Gauss(void)
 {
-    typedef double realScalarType;
     typedef mcpack::utils::gaussPotentialEnergy<realScalarType> potEngType;
-    typedef potEngType::realVectorType realVectorType;
-    typedef potEngType::realMatrixType realMatrixType;
-    typedef realMatrixType::Index indexType;
+    typedef typename potEngType::realVectorType realVectorType;
+    typedef typename potEngType::realMatrixType realMatrixType;
+    typedef typename realMatrixType::Index indexType;
     typedef mcpack::hamiltonian::gaussKineticEnergy<realScalarType> kinEngType;
     typedef mcpack::hamiltonian::leapfrog<potEngType,kinEngType> leapfrogIntegratorType;
 
@@ -63,4 +63,11 @@ BOOST_AUTO_TEST_CASE(Identiy_Matrix_Gauss)
         BOOST_REQUIRE( std::abs(p(i)-ptest(i)) < 1e2*meps );
     }
 
+}
+
+BOOST_AUTO_TEST_CASE(Identiy_Matrix_Gauss)
+{
+    test_Identiy_Matrix_Gauss<float>();
+    test_Identiy_Matrix_Gauss<double>();
+    test_Identiy_Matrix_Gauss<long double>();
 }

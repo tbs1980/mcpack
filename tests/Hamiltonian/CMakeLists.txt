@@ -18,3 +18,7 @@ add_test(TestLeapfrogIntegration Test_leapfrog)
 add_executable(Test_HMCProposal HMCProposal.cpp)
 target_link_libraries(Test_HMCProposal ${Boost_LIBRARIES})
 add_test(TestHamiltonianMonteCarloProposal Test_HMCProposal)
+
+add_executable(Test_classicHMC classicHMC.cpp)
+target_link_libraries(Test_classicHMC ${Boost_LIBRARIES})
+add_test(TestClassicHamiltonianMonteCarloProposal Test_classicHMC)
