@@ -39,7 +39,7 @@
 #include "Source/Hamiltonian/leapfrog.hpp"
 #include "Source/Hamiltonian/HMCProposal.hpp"
 #include "Source/Hamiltonian/classicHMC.hpp"
-#include "Source/Hamiltonian/RuntimeControl.hpp"
+#include "Source/Hamiltonian/runtimeControl.hpp"
 
 /*
 
