@@ -9,181 +9,275 @@
 namespace mcpack { namespace hamiltonian {
 
 
-    template<class _MatrixType>
-    class RunCtrl_FiniteSamples
+    /**
+     * \ingroup Hamiltonian
+     *
+     * \class runCtrlFiniteSamples
+     *
+     * \brief A class for controlling runtime behaviour of the sampler
+     *
+     * \tparam _realMatrixType real matrix type
+     *
+     * This class controls the runtime behaviour of the sampler.
+     * TODO more info here.
+     */
+    template<class _realMatrixType>
+    class runCtrlFiniteSamples
     {
     public:
-        typedef _MatrixType MatrixType;
-        typedef typename MatrixType::Index IndexType;
-        typedef typename MatrixType::Scalar RealType;
 
-        RunCtrl_FiniteSamples()
-        :m_NumParas(0),m_Samples(0),m_NumSamples(0),
-        m_PacketSize(0),m_Burn(0),m_NumBurn(0)
-        {}
+        /**
+         * \typedef _realMatrixType realMatrixType
+         * \brief real matrix type
+         */
+        typedef _realMatrixType realMatrixType;
 
-        RunCtrl_FiniteSamples(IndexType const NumParas,IndexType const NumSamples, 
-            IndexType const PacketSize, IndexType const NumBurn,std::string const& root,
-            bool silent)
-        :m_NumParas(NumParas),m_Samples(0),m_NumSamples(NumSamples),
-        m_PacketSize(PacketSize),m_Burn(0),m_NumBurn(NumBurn),m_Root(root),
-        m_Silent(silent),m_LogFileName(root+std::string(".log")),m_Resume(false),
-        m_Continue(true),m_LogFileHasHeader(false)
+        /**
+         * \typedef typename realMatrixType::Index indexType
+         * \breif integral type
+         */
+        typedef typename realMatrixType::Index indexType;
+
+        /**
+         * \typedef typename realMatrixType::Scalar realScalarType
+         * \brief floating point type
+         */
+        typedef typename realMatrixType::Scalar realScalarType;
+
+        static_assert(std::is_floating_point<realScalarType>::value,
+            "PARAMETER SHOULD BE A FLOATING POINT TYPE");
+
+        /**
+         * \brief The default constructor
+         */
+        runCtrlFiniteSamples()
+        :m_numParams(0),m_samples(0),m_numSamples(0),
+        m_packetSize(0),m_burn(0),m_numBurn(0)
         {
-            MCPACK_ASSERT(m_NumSamples>0,"Maximum number of samples should be a positive integer");
-            MCPACK_ASSERT(m_NumBurn>=0,"Number of samples to be burned should be a >= 0");
+
         }
 
-        void Save(MatrixType const & Samples,std::stringstream const& RandState,
-            RealType const AccRate)
+        /**
+         * \brief A constructor that sets up the runtime control
+         * \param numParams The number of parameters
+         * \param numSamples The number of samples required
+         * \param packetSize The size of the packet of samples for each iteration
+         * \param numBurn The number of samples to be burned / ignored
+         * \param root The root of the path to output files
+         * \param silent Output to console?
+         */
+        runCtrlFiniteSamples(indexType const numParams,indexType const numSamples,
+            indexType const packetSize, indexType const numBurn,
+            std::string const& root, bool silent)
+        :m_numParams(numParams),m_samples(0),m_numSamples(numSamples),
+        m_packetSize(packetSize),m_burn(0),m_numBurn(numBurn),m_root(root),
+        m_silent(silent),m_logFileName(root+std::string(".log")),m_resume(false),
+        m_continueSampling(true),m_logFileHasHeader(false)
         {
-            m_RandState=RandState.str();
+            BOOST_ASSERT_MSG(m_numSamples>0,"Maximum number of samples should be a positive integer");
+            BOOST_ASSERT_MSG(m_numBurn>=0,"Number of samples to be burned should be a >= 0");
+        }
 
-            IndexType n=Samples.rows();
-            if(m_Burn >= m_NumBurn)
+        /**
+         * \brief A function to save the control parameters
+         * \param samples   The matrix of samples
+         * \param randState The random number state
+         * \param accRate   acceptance rate
+         */
+        void save(realMatrixType const & samples,std::stringstream const& randState,
+            realScalarType const accRate)
+        {
+            m_randState = randState.str();
+
+            indexType n = samples.rows();
+            if(m_burn >= m_numBurn)
             {
-                m_Samples+=n;
+                m_samples += n;
             }
             else
             {
-                m_Burn+=n;
+                m_burn += n;
             }
 
-            m_Continue = m_Samples >= m_NumSamples ? false : true;
+            m_continueSampling = m_samples >= m_numSamples ? false : true;
 
-            if(!m_LogFileHasHeader)
+            if(!m_logFileHasHeader)
             {
-                WriteInfo2LogFile();
+                writeInfo2LogFile();
             }
 
-            m_Pt.put("Control.Burn",(IndexType) m_Burn);
-            m_Pt.put("Control.Samples",(IndexType) m_Samples);
-            m_Pt.put("Chain.AccRate",(RealType) AccRate);
+            m_pt.put("control.burn",(indexType) m_burn);
+            m_pt.put("control.samples",(indexType) m_samples);
+            m_pt.put("chain.accRate",(realScalarType) accRate);
 
-            std::stringstream ChainState;
-            for(IndexType i=0;i<Samples.cols()-1;++i)
+            std::stringstream chainState;
+            for(indexType i=0;i<samples.cols()-1;++i)
             {
-                ChainState<<Samples(Samples.rows()-1,i)<<" ";
+                chainState<<samples(samples.rows()-1,i)<<" ";
             }
-            ChainState<<Samples(Samples.rows()-1,Samples.cols()-1);
-            m_ChainState=ChainState.str();
-            m_Pt.put("Chain.State",(std::string) ChainState.str());
-            m_Pt.put("Random.State",(std::string) RandState.str());
+            chainState<<samples(samples.rows()-1,samples.cols()-1);
+            m_chainState = chainState.str();
+            m_pt.put("chain.State",(std::string) chainState.str());
+            m_pt.put("random.State",(std::string) randState.str());
 
-            boost::property_tree::ini_parser::write_ini(m_LogFileName,m_Pt);
+            // TODO make this fine and xml file instead?
+            boost::property_tree::ini_parser::write_ini(m_logFileName,m_pt);
         }
 
-
-        IndexType NumParas(void) const
+        /**
+         * \brief Return the number of parameters
+         * \return  the number of parameters
+         */
+        inline indexType numParams(void) const
         {
-            return m_NumParas;
+            return m_numParams;
         }
 
-        IndexType PacketSize(void) const
+        /**
+         * \brief Return the packet size
+         * \return  the packet size
+         */
+        inline indexType packetSize(void) const
         {
-            return m_PacketSize;
+            return m_packetSize;
         }
 
-        std::string Root(void) const
+        /**
+         * \brief Return the root path to the output files
+         * \return  the root path to the output files
+         */
+        inline std::string const& root(void) const
         {
-            return m_Root;
+            return m_root;
         }
 
-        bool Silent(void) const
+        /**
+         * \brief Return the logical paramter for console output
+         * @return  the logical paramter for console output
+         */
+        inline bool silent(void) const
         {
-            return m_Silent;
+            return m_silent;
         }
 
-        bool Resume(void) const
+        /**
+         * \brief Return the logical parameter for resume
+         * \return  the logical parameter for resume
+         */
+        inline bool resume(void) const
         {
-            return m_Resume;
+            return m_resume;
         }
 
-        std::string const & RandState(void) const
+        /**
+         * \breif Return the random number state
+         * @return  the random number state
+         */
+        inline std::string const & randState(void) const
         {
-            return m_RandState;
+            return m_randState;
         }
 
-        std::string const & ChainState(void) const
+        /**
+         * \breif Return the chain state
+         * @return  the chain state
+         */
+        inline std::string const & chainState(void) const
         {
-            return m_ChainState;
+            return m_chainState;
         }
 
-        std::string const & GetLogFileName(void) const
+        /**
+         * \breif Return the log file name
+         * @return  the log file name
+         */
+        inline std::string const & getLogFileName(void) const
         {
-            return m_LogFileName;
+            return m_logFileName;
         }
 
-        void SetLogFileName(std::string const & LogFileName)
+        /**
+         * \brief Set the log file name
+         * \param LogFileName the log file name
+         */
+        inline void setLogFileName(std::string const & LogFileName)
         {
-            m_LogFileName=LogFileName;
+            m_logFileName=LogFileName;
         }
 
-        bool Continue() const
+        /**
+         * \breif Return the logical parameter for continuing sampling
+         * @return the logical parameter for continuing sampling
+         */
+        inline bool continueSampling(void) const
         {
-            return m_Continue;
+            return m_continueSampling;
         }
 
-        void LoadInfoFromLogFile()
+        /**
+         * \brief Load the information from the log file
+         */
+        void loadInfoFromLogFile(void)
         {
             try
             {
-                boost::property_tree::ini_parser::read_ini(m_LogFileName,m_Pt);
+                boost::property_tree::ini_parser::read_ini(m_logFileName,m_pt);
 
                 //now assign data
-                m_NumParas=m_Pt.get<IndexType>("Control.NumParas");
-                m_Samples=m_Pt.get<IndexType>("Control.Samples");
-                m_NumSamples=m_Pt.get<IndexType>("Control.NumSamples");
-                m_PacketSize=m_Pt.get<IndexType>("Control.PacketSize");
-                m_Burn=m_Pt.get<IndexType>("Control.Burn");
-                m_NumBurn=m_Pt.get<IndexType>("Control.NumBurn");
-                m_Root=m_Pt.get<std::string>("Control.Root");
-                m_Silent=m_Pt.get<bool>("Control.Silent");
-                m_ChainState=m_Pt.get<std::string>("Chain.State");
-                m_RandState=m_Pt.get<std::string>("Random.State");
-                m_Resume=true;
-                m_Continue = m_Samples >= m_NumSamples ? false : true;
+                m_numParams=m_pt.get<indexType>("control.numParams");
+                m_samples=m_pt.get<indexType>("control.samples");
+                m_numSamples=m_pt.get<indexType>("control.numSamples");
+                m_packetSize=m_pt.get<indexType>("control.packetSize");
+                m_burn=m_pt.get<indexType>("control.burn");
+                m_numBurn=m_pt.get<indexType>("control.numBurn");
+                m_root=m_pt.get<std::string>("control.root");
+                m_silent=m_pt.get<bool>("control.Silent");
+                m_chainState=m_pt.get<std::string>("chain.State");
+                m_randState=m_pt.get<std::string>("random.State");
+                m_resume=true;
+                m_continueSampling = m_samples >= m_numSamples ? false : true;
 
             }
             catch(std::exception& e)
             {
-                m_Resume=false;
+                m_resume=false;
             }
-            
+
         }
 
-        void WriteInfo2LogFile(void)
+        /**
+         * \brief Write the information to a log file
+         */
+        void writeInfo2LogFile(void)
         {
-            m_Pt.put("Control.NumParas",(IndexType) m_NumParas);
-            m_Pt.put("Control.NumSamples",(IndexType) m_NumSamples);
-            m_Pt.put("Control.NumBurn",(IndexType) m_NumBurn);
-            m_Pt.put("Control.PacketSize",(IndexType) m_PacketSize);
-            m_Pt.put("Control.Root",(std::string)  m_Root);
-            m_Pt.put("Control.Silent",(IndexType) m_Silent);
+            m_pt.put("control.numParams",(indexType) m_numParams);
+            m_pt.put("control.numSamples",(indexType) m_numSamples);
+            m_pt.put("control.numBurn",(indexType) m_numBurn);
+            m_pt.put("control.packetSize",(indexType) m_packetSize);
+            m_pt.put("control.root",(std::string)  m_root);
+            m_pt.put("control.Silent",(indexType) m_silent);
 
-            boost::property_tree::ini_parser::write_ini(m_LogFileName,m_Pt);
+            boost::property_tree::ini_parser::write_ini(m_logFileName,m_pt);
 
-            m_LogFileHasHeader=true;        
+            m_logFileHasHeader = true;
         }
 
     private:
-
-
-        IndexType m_NumParas;
-        IndexType m_Samples;
-        IndexType m_NumSamples;
-        IndexType m_PacketSize;
-        IndexType m_Burn;
-        IndexType m_NumBurn;
-        std::string m_Root;
-        bool m_Silent;
-        std::string m_LogFileName;
-        boost::property_tree::ptree m_Pt;
-        std::string m_RandState;
-        std::string m_ChainState;
-        bool m_Resume;
-        bool m_Continue;
-        bool m_LogFileHasHeader;
+        indexType m_numParams; /**< number of parameters */
+        indexType m_samples; /**< number of samples taken so far*/
+        indexType m_numSamples; /**< number samples required */
+        indexType m_packetSize; /**< packet size */
+        indexType m_burn; /**< number of samples burned so far*/
+        indexType m_numBurn; /**< number samples to be burned */
+        std::string m_root; /**< root path to log files */
+        bool m_silent; /**< output to console */
+        std::string m_logFileName; /**< log file name */
+        boost::property_tree::ptree m_pt; /**< a tree for control parameters */
+        std::string m_randState; /**< random number state */
+        std::string m_chainState; /**< chain state */
+        bool m_resume; /**< resume from previous state */
+        bool m_continueSampling; /**< continue sampling */
+        bool m_logFileHasHeader; /**< log file header present */
     };
 
 }

@@ -4,41 +4,49 @@
 
 #define BOOST_TEST_MODULE RuntimeControl
 #define BOOST_TEST_DYN_LINK
+
 #include <boost/test/unit_test.hpp>
 #include <mcpack/CoreHeaders.hpp>
 
-BOOST_AUTO_TEST_CASE(finite_samples)
+template<typename realScalarType>
+void test_finite_samples(void)
 {
-    typedef double RealType;
-    typedef Eigen::Matrix<RealType, Eigen::Dynamic, Eigen::Dynamic> RealMatrixType;
-    typedef RealMatrixType::Index IndexType;
-    typedef mcpack::hamiltonian::RunCtrl_FiniteSamples<RealMatrixType> RCType;
-    typedef mcpack::utils::RandomVariateGenerator<RealType> RandVarGenType;
+    typedef Eigen::Matrix<realScalarType, Eigen::Dynamic, Eigen::Dynamic> realMatrixType;
+    typedef typename realMatrixType::Index IndexType;
+    typedef mcpack::hamiltonian::runCtrlFiniteSamples<realMatrixType> rCType;
+    typedef mcpack::utils::randomSTD<realScalarType> randVarGenType;
 
-    RandVarGenType RngVar(0);
-    std::stringstream RngState;
-    RngVar.GetState(RngState);
-    RealType AccRate=0.9;
+    randVarGenType rngVar(0);
+    std::stringstream rngState;
+    rngVar.getState(rngState);
+    realScalarType accRate=0.9;
 
-    const IndexType NParas=10;
-    const IndexType NSamples=1000;
-    const IndexType NBurn=200;
-    const IndexType PacketSize=100;
-    const std::string FileRoot("./TestRunCtrl");
+    const IndexType numParas=10;
+    const IndexType numsamples=1000;
+    const IndexType numBurn=200;
+    const IndexType packetSize=100;
+    const std::string fileRoot("./testRunCtrl");
     const bool silent=false;
-    RCType runctrl(NParas,NSamples,PacketSize,NBurn,FileRoot,silent);
+    rCType runctrl(numParas,numsamples,packetSize,numBurn,fileRoot,silent);
 
-    BOOST_REQUIRE(runctrl.Continue());
+    BOOST_REQUIRE(runctrl.continueSampling());
 
-    for(IndexType i=0;i<(NSamples+NBurn)/PacketSize-1;++i)
+    for(IndexType i=0;i<(numsamples+numBurn)/packetSize-1;++i)
     {
-        RealMatrixType Samples=RealMatrixType::Random(PacketSize,NParas);
-        runctrl.Save(Samples,RngState,AccRate);
-        BOOST_REQUIRE(runctrl.Continue());
+        realMatrixType samples=realMatrixType::Random(packetSize,numParas);
+        runctrl.save(samples,rngState,accRate);
+        BOOST_REQUIRE(runctrl.continueSampling());
     }
 
-    RealMatrixType Samples=RealMatrixType::Random(PacketSize,NParas);
-    runctrl.Save(Samples,RngState,AccRate);
-    BOOST_REQUIRE( !runctrl.Continue() );
+    realMatrixType samples=realMatrixType::Random(packetSize,numParas);
+    runctrl.save(samples,rngState,accRate);
+    BOOST_REQUIRE( !runctrl.continueSampling() );
 
+}
+
+BOOST_AUTO_TEST_CASE(finite_samples)
+{
+    test_finite_samples<float>();
+    test_finite_samples<double>();
+    test_finite_samples<long double>();
 }
