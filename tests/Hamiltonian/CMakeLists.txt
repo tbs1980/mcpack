@@ -26,3 +26,11 @@ add_test(TestClassicHamiltonianMonteCarloProposal Test_classicHMC)
 add_executable(Test_runtimeControl runtimeControl.cpp)
 target_link_libraries(Test_runtimeControl ${Boost_LIBRARIES})
 add_test(TestRuntimeControl Test_runtimeControl)
+
+add_executable(Test_IO IO.cpp)
+target_link_libraries(Test_IO ${Boost_LIBRARIES})
+add_test(TestIuputOutput Test_IO)
+
+add_executable(Test_Sampler Sampler.cpp)
+target_link_libraries(Test_Sampler ${Boost_LIBRARIES})
+add_test(TestSampler Test_Sampler)

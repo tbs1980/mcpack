@@ -7,76 +7,146 @@
 
 namespace mcpack { namespace hamiltonian{
 
-    template<class _MatrixType>
-    class IO_WriteAll
+    /**
+     * \ingroup Hamiltonian
+     *
+     * \class IOWriteAllParams
+     *
+     * \brief A class for managing the IO.
+     *
+     * \tparam _realMatrixType real matrix type
+     *
+     * This class manages the IO of the sampler. In particular this class
+     * writes the states of all the parameters to the chain output file.
+     */
+    template<class _realMatrixType>
+    class IOWriteAllParams
     {
     public:
-        typedef _MatrixType MatrixType;
-        typedef typename MatrixType::Index IndexType;
 
-        IO_WriteAll(){}
+        /**
+         * \typedef _realMatrixType realMatrixType
+         * \brief real matrix type
+         */
+        typedef _realMatrixType realMatrixType;
 
-        explicit IO_WriteAll(std::string const FileName)
-        :m_FileName(FileName),m_Separation(std::string(",")),m_precision(10)
+        /**
+         * \typedef typename realMatrixType::Scalar realScalarType
+         * \breif floating point type
+         */
+        typedef typename realMatrixType::Scalar realScalarType;
+
+        /**
+         * \typedef typename realMatrixType::Index indexType
+         * \breif integral type
+         */
+        typedef typename realMatrixType::Index indexType;
+
+        static_assert(std::is_floating_point<realScalarType>::value,
+            "PARAMETER SHOULD BE A FLOATING POINT TYPE");
+
+        /**
+         * \brief The default constructor
+         */
+        IOWriteAllParams(){}
+
+        /**
+         * \brief A constructor that sets up the IO for the sampler
+         * \param  fileName The name of the output file
+         */
+        explicit IOWriteAllParams(std::string const& fileName)
+        :m_fileName(fileName),m_delimiter(std::string(",")),m_precision(10)
         {
 
         }
 
-        IO_WriteAll(IO_WriteAll  const & other)
+        /**
+         * \brief A constructor that sets up the IO for the sampler
+         * \param fileName The name of the output file
+         * \param delimiter The delimiter between two numbers e.g. a coma
+         * \param precision The precision with which the output is written
+         */
+        IOWriteAllParams(std::string const& fileName,std::string const & delimiter,
+            unsigned int const precision)
+        :m_fileName(fileName),m_delimiter(delimiter),m_precision(precision)
         {
-            m_FileName=other.m_FileName;
-            m_Separation=other.m_Separation;
-            m_precision=other.m_precision;
+
         }
 
-        ~IO_WriteAll()
+        /**
+         * \brief The copy constructor
+         * \param other The class from which the members are to be copied
+         */
+        IOWriteAllParams(IOWriteAllParams  const & other)
         {
-            m_File.close();
+            m_fileName = other.m_fileName;
+            m_delimiter = other.m_delimiter;
+            m_precision = other.m_precision;
         }
-    
-        void Write(MatrixType const& Samples)
+
+        /**
+         * \breif The default destructor
+         */
+        ~IOWriteAllParams()
         {
-            if(!m_File.is_open())
+            m_file.close();
+        }
+
+        /**
+         * \brief write the samples to a file
+         * \param samples the MCMC samples from the sampler
+         */
+        void write(realMatrixType const& samples)
+        {
+            if(!m_file.is_open())
             {
-                m_File.open(m_FileName.c_str(),std::ios::app);
+                m_file.open(m_fileName.c_str(),std::ios::app);
             }
 
-            if(m_File.is_open())
+            if(m_file.is_open())
             {
-                m_File<<std::scientific;
-                m_File<<std::setprecision(m_precision);
-                for(IndexType i=0;i<Samples.rows();++i)
+                m_file<<std::scientific;
+                m_file<<std::setprecision(m_precision);
+                for(indexType i=0;i<samples.rows();++i)
                 {
-                    for(IndexType j=0;j<Samples.cols()-1;++j)
+                    for(indexType j=0;j<samples.cols()-1;++j)
                     {
-                        m_File<<Samples(i,j)<<m_Separation;
+                        m_file<<samples(i,j)<<m_delimiter;
                     }
-                    m_File<<Samples(i,(Samples.cols()-1) )<<std::endl;
-                }               
+                    m_file<<samples(i,(samples.cols()-1) )<<std::endl;
+                }
             }
             else
             {
-                std::string message=std::string("Error in opening the file ")+m_FileName;
-                throw mcpack::utils::TextDataException(message);
+                std::string message = std::string("Error in opening the file ")+m_fileName;
+                throw std::runtime_error(message);
             }
         }
 
-        std::string GetFileName(void) const
+        /**
+         * \brief Return the output file name
+         * \return  the output file name
+         */
+        inline std::string getFileName(void) const
         {
-            return m_FileName;
+            return m_fileName;
         }
 
-        void SetFileName(std::string const& FileName)
+        /**
+         * \brief Set the output file name
+         * \param fileName the output file name
+         */
+        inline void setFileName(std::string const& fileName)
         {
-            m_FileName=FileName;
+            m_fileName = fileName;
         }
-        
+
     private:
-        std::string m_FileName;
-        std::ofstream m_File;
-        std::string m_Separation;
-        unsigned m_precision;
-        
+        std::string m_fileName; /**< the file output file name */
+        std::ofstream m_file; /**< output file handler*/
+        std::string m_delimiter; /**< delimiter */
+        unsigned int m_precision; /**< precision */
+
     };
 }
 }

@@ -2,81 +2,156 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef MCPACK_SAMPLER_HPP
-#define MCPACK_SAMPLER_HPP
+#ifndef MCPACK_sampler_HPP
+#define MCPACK_sampler_HPP
 
 namespace mcpack{ namespace hamiltonian{
 
-    template<class _Engine,class _IOType,class _RunCtrlType>
-    class Sampler
+    /**
+     * \ingroup Hamiltonian
+     *
+     * \class sampler
+     *
+     * \brief A class for performing MCMC sampling
+     *
+     * \tparam _engineType MCMC Engine type
+     * \tparam _IOType Input-output type
+     * \tparam _runCtrlType Runtime-control type
+     *
+     * A class that performs the MCMC sampling using the specified engine,
+     * IO and Runtime-control.
+     */
+    template<class _engineType,class _IOType,class _runCtrlType>
+    class sampler
     {
     public:
-        typedef _Engine EngineType;
+
+        /**
+         * \typedef _engineType engineType
+         * \brief MCMC Engine type
+         */
+        typedef _engineType engineType;
+
+        /**
+         * \typedef _IOType IOType
+         * \brief Input-output type
+         */
         typedef _IOType IOType;
-        typedef _RunCtrlType RunCtrlType;
 
-        typedef typename EngineType::RealMatrixType RealMatrixType;
-        typedef typename EngineType::RealVectorType RealVectorType;
-        typedef typename EngineType::RealType RealType;
-        typedef typename EngineType::IndexType IndexType;
-        
-        Sampler(EngineType const & Eng,IOType const& IO,RunCtrlType const& RunCtrl)
-        :m_Eng(Eng),m_IO(IO),m_RunCtrl(RunCtrl)
+        /**
+         * \typedef _runCtrlType runCtrlType
+         * \brief Runtime-control type
+         */
+        typedef _runCtrlType runCtrlType;
+
+        /**
+         * \typedef typename engineType::realMatrixType realMatrixType
+         * \brief real matrix type
+         */
+        typedef typename engineType::realMatrixType realMatrixType;
+
+        /**
+         * \typedef typename engineType::realVectorType realVectorType
+         * \breif real vector type
+         */
+        typedef typename engineType::realVectorType realVectorType;
+
+        /**
+         * \typedef typename engineType::realScalarType realScalarType
+         * \brief real floating point type
+         */
+        typedef typename engineType::realScalarType realScalarType;
+
+        /**
+         * \typedef typename engineType::indexType indexType
+         * \brief integral type
+         */
+        typedef typename engineType::indexType indexType;
+
+        static_assert(std::is_floating_point<realScalarType>::value,
+            "PARAMETER SHOULD BE A FLOATING POINT TYPE");
+
+        /**
+         * \brief A constructor that sets up the sampler
+         *
+         * \param eng MCMC Engine
+         * \param IO input output handle
+         * \param runCtrl Runtime-control
+         */
+        sampler(engineType const & eng,IOType const& IO,runCtrlType const& runCtrl)
+        :m_eng(eng),m_IO(IO),m_runCtrl(runCtrl)
         {
-            m_RunCtrl.LoadInfoFromLogFile();
+            m_runCtrl.loadInfoFromLogFile();
 
-            if(!m_RunCtrl.Resume())
+            //TODO make the console output using boost.log
+
+            if(!m_runCtrl.resume())
             {
-                WriteOutput2Console(std::string("No resume files present "),m_RunCtrl.Silent());
+                writeOutput2Console(std::string("No resume files present "),m_runCtrl.silent());
 
-                m_RunCtrl.WriteInfo2LogFile();
+                m_runCtrl.writeInfo2LogFile();
             }
         }
 
-        void Run()
+        /**
+         * \brief Run the MCMC sampler
+         */
+        void run(void)
         {
-            RealMatrixType Samples(m_RunCtrl.PacketSize(),m_RunCtrl.NumParas());
+            realMatrixType samples(m_runCtrl.packetSize(),m_runCtrl.numParams());
 
-            if(m_RunCtrl.Resume())
+            if(m_runCtrl.resume())
             {
-                WriteOutput2Console(std::string("Resuming from previous run"),m_RunCtrl.Silent());
+                writeOutput2Console(std::string("Resuming from previous run"),m_runCtrl.silent());
 
-                if(m_RunCtrl.Continue())
+                if(m_runCtrl.continueSampling())
                 {
-                    std::stringstream RandState;
-                    RandState<<m_RunCtrl.RandState();
-                    m_Eng.SetRandState(RandState);
+                    std::stringstream randState;
+                    randState<<m_runCtrl.randState();
+                    m_eng.setRandState(randState);
 
-                    RealVectorType ChainState=
-                        mcpack::utils::String2Vector<RealVectorType>(m_RunCtrl.ChainState(),std::string(" "));
-                    m_Eng.SetStartPoint(ChainState);
-                }   
+                    //TODO change this to a boost tokeniser?
+                    realVectorType chainState=
+                        mcpack::utils::String2Vector<realVectorType>(m_runCtrl.chainState(),std::string(" "));
+                    m_eng.setStartPoint(chainState);
+                }
                 else
                 {
-                    WriteOutput2Console(std::string("Sampling already finished in the previous run"),m_RunCtrl.Silent());
+                    writeOutput2Console(std::string("Sampling already finished in the previous run"),m_runCtrl.silent());
                 }
             }
             else
             {
-                WriteOutput2Console(std::string("Starting sampling from scratch"),m_RunCtrl.Silent());
+                writeOutput2Console(std::string("Starting sampling from scratch"),m_runCtrl.silent());
             }
-            
-            while(m_RunCtrl.Continue())
+
+            while(m_runCtrl.continueSampling())
             {
-                std::stringstream RandState;
+                std::stringstream randState;
 
-                m_Eng.Generate(Samples);
+                m_eng.generate(samples);
 
-                m_Eng.GetRandState(RandState);
-                RealType AccRate=m_Eng.GetAcceptanceRate();
+                m_eng.getRandState(randState);
+                realScalarType accRate=m_eng.getAcceptanceRate();
 
-                m_RunCtrl.Save(Samples,RandState,AccRate);
+                m_runCtrl.save(samples,randState,accRate);
 
-                m_IO.Write(Samples);
+                m_IO.write(samples);
+
+                //TODO add tuning facility
+                //while( m_runCtrl.continueTuning() )
+                //{
+                //    m_tuner.tune(samples,accRate)
+                //}
             }
         }
 
-        static void WriteOutput2Console(std::string message,bool silent)
+        /**
+         * \brief write output to console
+         * \param message message to output
+         * \param silent  is working in silent mode?
+         */
+        static void writeOutput2Console(std::string message,bool silent)
         {
             if(!silent)
             {
@@ -85,13 +160,12 @@ namespace mcpack{ namespace hamiltonian{
         }
 
     private:
-
-        EngineType m_Eng;
-        IOType m_IO;
-        RunCtrlType m_RunCtrl;
+        engineType m_eng; /**< MCMC Engine*/
+        IOType m_IO; /**< Input-Output Handle*/
+        runCtrlType m_runCtrl; /**< Runtime-Control */
     };
 
 }//namespace hamiltonian
 }//namespace mcpack
 
-#endif //MCPACK_SAMPLER_HPP
+#endif //MCPACK_sampler_HPP

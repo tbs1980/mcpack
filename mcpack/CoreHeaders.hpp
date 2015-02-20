@@ -30,21 +30,15 @@
 #include "Source/utils/randomSTD.hpp"
 #include "Source/utils/gaussLogPost.hpp"
 
-/*
-#include "Source/Utils/Macros.hpp"
-#include "Source/Utils/TextDataIO.hpp"
-*/
+#include "Source/utils/macros.hpp"
+#include "Source/utils/TextDataIO.hpp"
 
 #include "Source/Hamiltonian/kineticEnergy.hpp"
 #include "Source/Hamiltonian/leapfrog.hpp"
 #include "Source/Hamiltonian/HMCProposal.hpp"
 #include "Source/Hamiltonian/classicHMC.hpp"
 #include "Source/Hamiltonian/runtimeControl.hpp"
-
-/*
-
 #include "Source/Hamiltonian/IO.hpp"
 #include "Source/Hamiltonian/Sampler.hpp"
-*/
 
 #endif //MCPACK_COREHEADERS_HPP
